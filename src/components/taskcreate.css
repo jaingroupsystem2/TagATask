@@ -447,7 +447,6 @@
 }
 
 .task_container{
-    background-color: antiquewhite;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
