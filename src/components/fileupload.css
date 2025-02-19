@@ -1,0 +1,82 @@
+.file-upload-container {
+  position: relative;
+  display: inline-block;
+}
+
+.upload-icon-container {
+  position: relative;
+}
+
+.upload-icon {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.upload-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Hover-triggered file list */
+.file-list {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  width:180px;
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  z-index: 10;
+}
+
+.file-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.file-item:last-child {
+  border-bottom: none;
+}
+
+.file-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-action-icon {
+  margin-left: 8px;
+  cursor: pointer;
+  color: gray;
+  transition: color 0.2s;
+}
+
+.file-action-icon:hover {
+  color: black;
+}
+
+.delete-icon {
+  color: red;
+}
+
+.add-file-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  cursor: pointer;
+  color: #007bff;
+}

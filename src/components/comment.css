@@ -1,0 +1,221 @@
+.comment-box-container {
+  position: relative;
+  display: inline-block;
+}
+
+.comment-icon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.popup-container {
+  
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 1000;
+  width: 200px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+
+.edit-input {
+  width: 90%;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+.comment-input{
+  width: 95%;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+
+.saved-comment {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  flex-grow: 1;
+  text-align: left;
+  font-family: Poppins, sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+
+.edit-input {
+  margin-bottom: 10px;
+}
+
+.delete-icon {
+  cursor: pointer;
+  color: black;
+  margin-left: 10px;
+  padding: 5px;
+}
+
+#my-tooltip{
+  width: 200px;
+  color: aqua;
+  border: none ;  /* Removes border */
+  outline: none ;
+}
+
+
+
+.time_name{
+  display: flex;
+  flex-direction: row;
+  border: 1px solid red;
+  margin: 0;
+  padding: 0;
+  height: 20px;
+  width: 100%;
+}
+
+.comment-section
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.comment-time-auther
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height:15px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 5px;
+}
+
+.comment-time-auther .comment-time, p
+{
+    font-size: 10px;
+}
+
+.comment-item
+{
+  border: 1px solid #cabfbf;
+  border-radius: 4px;
+}
+
+/* tooltip  */
+
+.custom-tooltip {
+  background-color: white;
+  padding: 5px;
+  border-radius: 8px;
+  color: black;
+  font-family: Arial, sans-serif;
+  max-width: 400px; /* Ensures text wraps properly */
+  word-wrap: break-word;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
+.tooltip-message {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.tooltip-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: gray;
+  padding-top: 4px;
+  border-top: 1px solid #e0e0e0;
+  gap: 5px;
+}
+
+.tooltip-author {
+  font-weight: 600;
+  color: #555;
+}
+
+.tooltip-time {
+  font-style: italic;
+  color: #777;
+}
+
+/* Comment Box Styling */
+.comment-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f1f1f1;
+  border-radius: 6px;
+}
+
+.saved-comment {
+  cursor: pointer;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  max-width: 220px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.comment-input {
+  width: 90%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.delete-icon {
+  color: rgb(139, 130, 130);
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .custom-tooltip {
+    max-width: 90%;
+  }
+
+  .comment-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .saved-comment {
+    max-width: 90%;
+  }
+}
+
+@media (max-width= 1200px) {
+    .count_layer
+      {
+        top: -31px;
+          left: -1px;
+      }
+}
