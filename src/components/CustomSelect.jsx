@@ -53,8 +53,8 @@ useEffect(()=>
 
   // delete Tags 
   const handleDelete = async(tag,e)=>{
+    e.stopPropagation();
     setDropdownOpen(false);
-    e.preventDefault();
     setSelectedTags((prevTags) => 
       prevTags.filter((selected) => selected[0] !== tag[0])
     );
