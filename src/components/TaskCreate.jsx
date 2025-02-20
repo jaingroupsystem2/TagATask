@@ -168,7 +168,7 @@ useEffect(() => {
         .then((data) => {
           console.log("Success:", data);
           console.log("this function is getting called from useEffect function.");
-          toast.success(data.message,{position: 'top-center',hideProgressBar: true});
+          toast.success(data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
           console.log("this portion is getting hitted");
           setTasks([]);
           console.log(isModalOpen)
@@ -262,7 +262,7 @@ useEffect(() => {
       );
       if(response.data.success){
         fetchAllottee(setAllottee,setError);
-        toast.success(response.data.message,{position: 'top-center',hideProgressBar: true});
+        toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
       }
   
       if (!response.data.success) {
@@ -815,7 +815,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
         .then(data => {
           console.log("Success:", data);
           console.log("this function is getting called from useEffect function.");
-          toast.success(data.message,{position: 'top-center',hideProgressBar: true});
+          toast.success(data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
           console.log("this portion is getting hitted");
           setTasks([]);
           console.log(isModalOpen)

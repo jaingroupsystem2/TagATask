@@ -25,6 +25,7 @@ useEffect(()=>
   console.log("tags",selectedTags);
   
 })
+
   const handleToggleDropdown = async (event) => {
     setDropdownOpen(!dropdownOpen);
     if (!dropdownOpen) {
@@ -52,12 +53,11 @@ useEffect(()=>
 
   // delete Tags 
   const handleDelete = async(tag,e)=>{
-    e.preventDefault();
     setDropdownOpen(false);
+    e.preventDefault();
     setSelectedTags((prevTags) => 
       prevTags.filter((selected) => selected[0] !== tag[0])
     );
-    
     await deleteTagsByUserId(taskPriorityId, tag[0]); 
 
   }
@@ -91,6 +91,7 @@ useEffect(()=>
   const handleKeyDown = async (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
+      setDropdownOpen(false);
       if (!searchTerm.trim()) return;
       if (!selectedTags.some((tag) => tag[1].toLowerCase() === searchTerm.toLowerCase())) {
         const temp_id = Date.now();

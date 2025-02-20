@@ -155,7 +155,7 @@ export const updateTaskOrderAPI = async (targetAllotteeName,section,reorderedTas
 
     // Log successful update response from backend
     console.log('Task order updated successfully:', response.data);
-    toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,});
+    toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
   } catch (error) {
     console.error('Error updating task order:', error);
   }
@@ -180,7 +180,7 @@ export const sendEditTasksData = async (tasksData,edit_card_allottee_id) => {
     console.log('Edit tasks response:', response.data.message);
     if( response.data.message)
     {
-      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true});
+      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
     }
     fetchAllottee();
   } catch (error) {
@@ -204,7 +204,7 @@ export const deleteTask = async(task_priority_id,allottee_id , allotter_id)=>{
         'Accept': 'application/json',
       },
     });
-    toast.success(response.data.message,{position: 'top-center',hideProgressBar: true});
+    toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
   }catch(error){
     console.error('Error while deleting task from edit popup:', error);
   }
@@ -225,7 +225,7 @@ export const sendComment = async(task_priority_id , comment_text)=>{
         'Accept': 'application/json',
       },
     });
-    toast.success(response.data.message,{position: 'top-center',hideProgressBar: true});
+    toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
   }catch(error){
     console.error('Error while deleting task from edit popup:', error);
   }
@@ -311,7 +311,7 @@ export const deleteTagsByUserId = async (task_priority_id,tag_id) => {
     });
     if(response.data.success)
     {
-      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true});
+      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true , autoClose: 300});
     }
     else{
       toast.error(response.data.message,{position: 'top-center',hideProgressBar: true});
