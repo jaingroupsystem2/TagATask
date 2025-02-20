@@ -94,7 +94,7 @@ useEffect(()=>
       if (!searchTerm.trim()) return;
       if (!selectedTags.some((tag) => tag[1].toLowerCase() === searchTerm.toLowerCase())) {
         const temp_id = Date.now();
-        const tagObject = [temp_id, searchTerm];
+        const tagObject = ["", searchTerm];
         console.log("🔹 New Tag Object (Immediate):", tagObject , taskPriorityId);
         setSelectedTags((prevTags) => [...prevTags, tagObject]);
         sendCustomTags(tagObject , index)
