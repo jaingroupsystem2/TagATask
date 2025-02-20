@@ -40,7 +40,7 @@ useEffect(()=>
     setDropdownOpen(false);
     console.log("log",tag[0]);
     
-   // sendCustomTags(tag , index);
+    sendCustomTags(tag , index);
     if (selectedTags.some(selected => selected[0] === tag[0])) {
       setSelectedTags(selectedTags.filter((selected) => selected[0] !== tag[0]));
     } else {
