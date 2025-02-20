@@ -60,7 +60,6 @@ useEffect(()=>
     
     await deleteTagsByUserId(taskPriorityId, tag[0]); 
 
-
   }
 
 
