@@ -55,7 +55,7 @@ const CustomSelect = ({ taskPriorityId , sendCustomTags ,index }) => {
 
 
   const handleSearch = async(event) => {
-    const query = event.target.value.toLowerCase();
+    const query = event.target.value.toUpperCase();
     setSearchTerm(query);
     const filtered = tagOptions.filter((tag) =>
       tag[1].toLowerCase().includes(query)
