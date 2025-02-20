@@ -311,10 +311,10 @@ export const deleteTagsByUserId = async (task_priority_id,tag_id) => {
     });
     if(response.data.success)
     {
-      toast.success(response.data.message);
+      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true});
     }
     else{
-      toast.error(response.data.message)
+      toast.error(response.data.message,{position: 'top-center',hideProgressBar: true});
     }
   } catch (error) {
     console.error("Error fetching tags:", error.response ? error.response.data : error.message);
