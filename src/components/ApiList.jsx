@@ -292,3 +292,31 @@ export const get_tag_data = async () => {
 };
 
  
+// Delete Tag by Tag  ID
+export const deleteTagsByUserId = async (task_priority_id,tag_id) => {
+  console.log("hit delete", tag_id);
+  
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const current_user_id = urlParams.get('id');
+    const payload = {
+      "task_priority_id":task_priority_id,
+      "tag_id":tag_id
+    }
+    const response = await axios.post(`${Base_URL}/api_list/task_tag_destroy`,payload,{
+      headers: {
+        'Accept': 'application/json',
+        'ngrok-skip-browser-warning': "any",
+      },
+    });
+    if(response.data.success)
+    {
+      toast.success(response.data.message);
+    }
+    else{
+      toast.error(response.data.message)
+    }
+  } catch (error) {
+    console.error("Error fetching tags:", error.response ? error.response.data : error.message);
+  }
+};

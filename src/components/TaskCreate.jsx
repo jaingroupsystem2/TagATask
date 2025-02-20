@@ -67,6 +67,9 @@ const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
 console.log("currentAllotee",currentAllotee);
 
   useEffect(() => {
+    console.log("all data are ", tasks);
+    console.log("all tags are ", tasks.label);
+    
     if (editingTask) {
       console.log("Editing task is now true");
       // Perform actions here
@@ -914,7 +917,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
     //const commentsArray = allTask.map(task => task[7]); 
     // console.log("comments ..........." , commentsArray);
     
-    const transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment]) => {
+    const transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,labels]) => {
       const taskRef = React.createRef();
       all_taskrefs.push(taskRef);
       return {
@@ -925,7 +928,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
           ref: taskRef,
           completed: completionDate ? true : false,
           datetime: completionDate || verificationDate || null,
-          label: [],
+          label: labels,
           workType: '',
           priority: priority,
           comments: comment || null, 
@@ -985,7 +988,6 @@ const handleAllotteeClick = (allotteeName, tasks) => {
 };
 
 const saveEditTask =  async (taskId, allotteeId, updatedText) => {
-  console.log("this is from 915");
   try {
       const dataToEdit = {
         task_id: taskId,
@@ -1232,8 +1234,7 @@ const closeModal = () => {
 const handleCrossbtn = async()=>{
   try{
     if(editingTask){
-      console.log("this function is from outside click");
-      console.log(tasks);
+      console.log("hii",tasks);
       closeModal();
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
       await sendEditTasksData(sanitizedData,edit_card_allottee_id);
@@ -1371,6 +1372,7 @@ const handleCrossbtn = async()=>{
                               taskPriorityId={tasks[index].taskId}
                               sendCustomTags={handleCustomTags}
                               index={index}
+                              allLabel={Array.isArray(task.label) ? task.label : []}
                             />
                           </div>
 

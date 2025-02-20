@@ -1,22 +1,30 @@
 import React, { useState, useEffect, useRef } from "react";
-import { fetchTagsByUserId, sendTagsByUserId  } from "../components/ApiList";
+import { fetchTagsByUserId, sendTagsByUserId ,deleteTagsByUserId  } from "../components/ApiList";
 import "./customselect.css";
 import LabelOutlinedIcon from "@mui/icons-material/LabelOutlined";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
 
-const CustomSelect = ({ taskPriorityId , sendCustomTags ,index }) => {
+const CustomSelect = ({ taskPriorityId , sendCustomTags ,index ,allLabel}) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [tagOptions, setTagOptions] = useState([]);
   const [filteredTags, setFilteredTags] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState(allLabel);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    console.log("Updated selected tags:------------------->", selectedTags);
-  }, [selectedTags]);
-
+  // useEffect(() => {
+  //   if (Array.isArray(allLabel) && allLabel.length > 0) {
+  //     setSelectedTags(allLabel);
+  //   }
+  //   console.log("tagssssss",selectedTags);
+    
+  // }, [selectedTags]);
+useEffect(()=>
+{
+  console.log("tags",selectedTags);
+  
+})
   const handleToggleDropdown = async (event) => {
     setDropdownOpen(!dropdownOpen);
     if (!dropdownOpen) {
@@ -30,7 +38,9 @@ const CustomSelect = ({ taskPriorityId , sendCustomTags ,index }) => {
   const handleSelectTag = async (tag, event) => {
     event.stopPropagation();
     setDropdownOpen(false);
-    sendCustomTags(tag , index);
+    console.log("log",tag[0]);
+    
+   // sendCustomTags(tag , index);
     if (selectedTags.some(selected => selected[0] === tag[0])) {
       setSelectedTags(selectedTags.filter((selected) => selected[0] !== tag[0]));
     } else {
@@ -39,6 +49,21 @@ const CustomSelect = ({ taskPriorityId , sendCustomTags ,index }) => {
     await sendTagsByUserId(taskPriorityId, tag[0],tag[1]);
     setSearchTerm("");
   };
+
+  // delete Tags 
+  const handleDelete = async(tag,e)=>{
+    e.preventDefault();
+    setDropdownOpen(false);
+    setSelectedTags((prevTags) => 
+      prevTags.filter((selected) => selected[0] !== tag[0])
+    );
+    
+    await deleteTagsByUserId(taskPriorityId, tag[0]); 
+
+
+  }
+
+
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setDropdownOpen(false);
@@ -97,7 +122,7 @@ const CustomSelect = ({ taskPriorityId , sendCustomTags ,index }) => {
               >
                 {tag[1]}
               </p>
-              <span className="remove-tag" onClick={(e) => handleSelectTag(tag, e)}>
+              <span className="remove-tag" onClick={(e) => handleDelete(tag, e)}>
                 &#x2716;
               </span>
             </div>
