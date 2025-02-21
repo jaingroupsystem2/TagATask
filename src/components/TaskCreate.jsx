@@ -25,6 +25,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import {Tooltip} from "react-tooltip";
 import Tagview from './Tagview/Tagview';
 
+
 function TaskCreate() {
   const [inputValue, setInputValue] = useState('');
   const [tasks, setTasks] = useState([]);
@@ -55,6 +56,7 @@ function TaskCreate() {
   const [tagoption, setTagoptions] = useState([]);
   const [toDoCount,setToDoCount] = useState(0);
   const [currentAllotee,setCurrentAllotee] = useState("");
+  
   const accessTag = [564,219,26];
 const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
 //  const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
@@ -278,7 +280,7 @@ useEffect(() => {
   const showToastMessage = () => {
     toast.warn("Please select an Allottee", {
       position: "top-center",hideProgressBar: true,
-      style: { backgroundColor: "white", color: "black" }
+      style: { backgroundColor: "white", color: "black",autoClose:400 }
     });
   };
 
@@ -289,14 +291,16 @@ useEffect(() => {
       toast.success(
         message,{
           position:validPosition,
-          style: toastStyles
+          style: toastStyles,
+          autoClose:400
         }
       );
     }
     else if(type=="warning"){
       toast.warn(message,{
         position:validPosition,
-        style: toastStyles
+        style: toastStyles,
+        autoClose:400
       });
     }
     else if(type == "error"){
@@ -1014,7 +1018,7 @@ const saveEditTask =  async (taskId, allotteeId, updatedText) => {
         setTimeout(fetchAllotteeData, 200);
         setTasks([]);
         setInputValue('');
-        toast.success(data.data.message,{position: 'top-center',hideProgressBar: true});
+        toast.success(data.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
       } else {
         console.error('No data returned from edit task API');
       }
@@ -1074,9 +1078,9 @@ const handleDropOnAllotteeContainer = async (targetAllotteeName) => {
       //   style: { backgroundColor: "white", color: "black" },
       // });
       if(response.data.message == 'Task Reallocated Successfully.'){
-        toast.success(response.data.message,{position: 'top-center',hideProgressBar: true});
+        toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
       }else{
-        toast.warn(response.data.message,{position: 'top-center',hideProgressBar: true});
+        toast.warn(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
       }
       // toast.success(response.data.message,{position: 'top-center',});
       console.log("API response:", response.data);
@@ -1131,7 +1135,7 @@ const handleAllotteeReorder = (targetAllotteeName,cardIndex) => {
     .then((response) => {
       console.log("Backend response:", response.data);
       fetchAllotteeData();
-      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true});
+      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
     })
     .catch((error) => {
       console.error("Error sending allottee reorder data:", error);
@@ -1210,7 +1214,7 @@ const handleRevertClick = async (taskId) => {
 
     if (response.data.success) {
       console.log("Backend updated task status successfully for taskId:", taskId);
-      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true});
+      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
       fetchAllottee(setAllottee,setError);
     } else {
       console.error('Backend failed to update task status:', response.data.errors);
@@ -1587,6 +1591,7 @@ const handleCrossbtn = async()=>{
                         </div>
                         )
                       }   
+                      
                       <div
                         onClick={() => editTask(taskId, taskDescription, allotteeName)}
                         suppressContentEditableWarning={true}
