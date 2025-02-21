@@ -55,6 +55,7 @@ function TaskCreate() {
   const [tagoption, setTagoptions] = useState([]);
   const [toDoCount,setToDoCount] = useState(0);
   const [currentAllotee,setCurrentAllotee] = useState("");
+  const accessTag = [564,219,26];
 const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
 //  const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
   useEffect(() => {
@@ -530,6 +531,7 @@ useEffect(() => {
 
 const confirmDeleteTask = (index) => {
   const isConfirmed = window.confirm("Are you sure you want to delete this task?");
+  console.log("delete new task",tasks);
   
   if (isConfirmed) {
     handleDeleteTask(index);
@@ -1391,7 +1393,8 @@ const handleCrossbtn = async()=>{
                           </div>
 
 
-                          {tasks[index].allotterId === currentAllotee ? <div className='timer_inp'>
+                          {(tasks[index].allotterId === currentAllotee || !tasks[index].taskId) && (
+                           <div className='timer_inp'>
                             <WorkType selectedOption={task.workType}
                               setSelectedOption={(value) => {
                                 const updatedTasks = [...tasks];
@@ -1399,15 +1402,17 @@ const handleCrossbtn = async()=>{
                                 setTasks(updatedTasks);
                               }}
                             />
-                          </div> :<div></div> }
+                          </div>)} 
                           
 
                         </div>
-                      {tasks[index].allotterId === currentAllotee ?  <button className="delete-button" onClick={() => confirmDeleteTask(index)}>
-                          <DeleteOutlinedIcon className='cross_button' style={{ fontSize: 30 }} />
-                        </button>
-                         : <div></div>
-                      }
+                        {(tasks[index].allotterId === currentAllotee || !tasks[index].taskId) && (
+                            <button className="delete-button" onClick={() => confirmDeleteTask(index)}>
+                              <DeleteOutlinedIcon className='cross_button' style={{ fontSize: 30 }} />
+                            </button>
+                        )}
+                         
+                      
                        
                   </div>
                 </div>
@@ -1463,11 +1468,15 @@ const handleCrossbtn = async()=>{
 
 
 
-      <div className='toggle_button'>
-        <p className='toggle_text'>Personnel</p>
-        <ToggleButton onToggleChange={handleToggleChange}/>
-        <p className='toggle_text'>Tag</p>
-      </div>
+       {  accessTag.includes(currentAllotee) && 
+              <div className='toggle_button'>
+                <p className='toggle_text'>Personnel</p>
+                <ToggleButton onToggleChange={handleToggleChange}/>
+                <p className='toggle_text'>Tag</p>
+              </div>
+       }
+
+
       {!isToggleOn ?
       <div className='task_container'>
         {/* <h1 className='allottee_wise_task'>Allottee Wise Tasks</h1> */}
