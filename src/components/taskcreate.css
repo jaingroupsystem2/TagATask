@@ -455,7 +455,7 @@
     width: 99vw;
 }
 
-.each_task{
+.task-item-container .each_task{
    width: 90%;
    padding: 10px;
    margin: -2px;
@@ -466,8 +466,9 @@
    color: rgb(99, 86, 86);
    text-overflow: ellipsis;
    max-height: 82px;
-   -webkit-line-clamp: 2;
+   -webkit-line-clamp: 4;
    overflow: hidden;
+   display: -webkit-box;
 }
 
 .task-item-container{
@@ -533,7 +534,7 @@
     color: #484848;
     text-align: left;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 10px;
     width: 100%;
 }
 
