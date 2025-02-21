@@ -465,10 +465,11 @@
    font-size: 18px;
    color: rgb(99, 86, 86);
    text-overflow: ellipsis;
-   max-height: 82px;
+   max-height: 66px;
    -webkit-line-clamp: 4;
    overflow: hidden;
    display: -webkit-box;
+   -webkit-box-orient: vertical;
 }
 
 .task-item-container{
