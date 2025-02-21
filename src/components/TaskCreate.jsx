@@ -101,6 +101,8 @@ useEffect(() => {
       console.log(tasks);
       closeModal();
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
+      console.log("this is sanitizedData from line no 104",sanitizedData);
+      
       sendEditTasksData(sanitizedData,edit_card_allottee_id);
       fetchAllottee(setAllottee,setError);
     }
@@ -356,6 +358,8 @@ useEffect(() => {
       isBold: false,
       isItalic: false,
       ref: React.createRef(),
+      current_personnel_id:currentAllotee,
+      allottee_id :edit_card_allottee_id[0]
     };
     setTasks((prevTasks) => [...prevTasks, newTask]);
 
@@ -767,6 +771,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
       console.log("Saving all data from first line", { inputValue, tasks });
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
       sendEditTasksData(sanitizedData,edit_card_allottee_id);
+      console.log("this is sanitizedData from line no 104",sanitizedData ,edit_card_allottee_id);
       fetchAllottee(setAllottee,setError);
       fetchAllotteeData();
     }else{
@@ -1245,6 +1250,7 @@ const handleCrossbtn = async()=>{
       closeModal();
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
       await sendEditTasksData(sanitizedData,edit_card_allottee_id);
+      console.log("this is sanitizedData from line no 104",sanitizedData,edit_card_allottee_id);
       await fetchAllottee(setAllottee,setError);
     }else{
       closeModal();
@@ -1599,7 +1605,6 @@ const handleCrossbtn = async()=>{
                         className="each_task"
                         style={{
                           padding: "5px",
-                          minHeight: "20px",
                           whiteSpace: "pre-wrap",
                           fontSize: "15px",
                         }}
@@ -1638,7 +1643,6 @@ const handleCrossbtn = async()=>{
                         className="each_task"
                         style={{
                           padding: "5px",
-                          minHeight: "20px",
                           whiteSpace: "pre-wrap",
                           fontSize: "15px",
                           
