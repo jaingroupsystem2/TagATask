@@ -5,6 +5,7 @@
 
 .upload-icon-container {
   position: relative;
+  display: none;
 }
 
 .upload-icon {
