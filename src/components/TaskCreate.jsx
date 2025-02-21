@@ -71,8 +71,8 @@ const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
 console.log("currentAllotee",currentAllotee);
 
   useEffect(() => {
-    console.log("all data are ", tasks);
-    console.log("all tags are ", tasks.label);
+    // console.log("all data are ", tasks);
+    // console.log("all tags are ", tasks.label);
     
     if (editingTask) {
       console.log("Editing task is now true");
@@ -359,7 +359,7 @@ useEffect(() => {
       isItalic: false,
       ref: React.createRef(),
       current_personnel_id:currentAllotee,
-      allottee_id :edit_card_allottee_id[0]
+      allottee_id :edit_card_allottee_id?.[0] || null
     };
     setTasks((prevTasks) => [...prevTasks, newTask]);
 
@@ -1282,7 +1282,6 @@ const handleCrossbtn = async()=>{
 
   const handleCustomTags =(tag , index)=>
   {
-      console.log("new TAGS" , tag);
       const newTasks = [...tasks];
       newTasks[index].selectedTags = tag;
       setTasks(newTasks);
