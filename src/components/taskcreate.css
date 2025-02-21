@@ -469,6 +469,7 @@
    -webkit-line-clamp: 2;
    overflow: hidden;
 }
+
 .task-item-container{
     display: flex;
     align-items: flex-start;
