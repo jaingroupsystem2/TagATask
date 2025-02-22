@@ -24,6 +24,7 @@ import { setEditingTask } from '../components/slices/Taskslice';
 import "react-tooltip/dist/react-tooltip.css";
 import {Tooltip} from "react-tooltip";
 import Tagview from './Tagview/Tagview';
+import SearchableDropdown from './SearchableDropdown ';
 
 
 
@@ -131,7 +132,7 @@ useEffect(() => {
 
     const userId = params.get("id");
     const dataToSave = {
-      title: inputValue.trim(),
+      title: inputValue,
       user_id: userId,
       items: updatedTasks
         .map((task) => ({
@@ -149,12 +150,14 @@ useEffect(() => {
         ),
     };
 
+    console.log("dataaaaaaaaaaaaaaaaaaaa",dataToSave);
+    
     if (dataToSave.title || dataToSave.items.length > 0) {
       setSavedItems((prevItems) => [...prevItems, dataToSave]);
       setTasks([]);
       setInputValue("");
       if (editableInputRef.current) editableInputRef.current.value = "";
-      document.getElementById("inputField").focus();
+      //document.getElementById("inputField").focus();
 
       fetch(`${Base_URL}/create_task`, {
         method: "POST",
@@ -783,7 +786,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
 
     const userId = params.get('id');
     const dataToSave = {
-      title: inputValue.trim(),
+      title: inputValue,
       user_id: userId,
       items: tasks.map((task) => {
         let formattedText = DOMPurify.sanitize(task.text);
@@ -804,9 +807,9 @@ const handleAllotteeClick = (allotteeName, tasks) => {
     if (dataToSave.title || dataToSave.items.length > 0) {
       setSavedItems((prevItems) => [...prevItems, dataToSave]);
       setTasks([]);
-      setInputValue('');
+      //setInputValue('');
       if (editableInputRef.current) editableInputRef.current.value = '';
-      document.getElementById('inputField').focus();
+      //document.getElementById('inputField').focus();
 
       fetch(`${Base_URL}/create_task`, {
         method: 'POST',
@@ -864,7 +867,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
     );
 
     setSavedItems((prevItems) => prevItems.filter((_, index) => index !== itemIndex));
-    document.getElementById('inputField').focus();
+   // document.getElementById('inputField').focus();
   };
 
   const handleTaskInput = (index, event) => {
@@ -1290,6 +1293,12 @@ const handleCrossbtn = async()=>{
       
   }
   
+  useEffect(()=>
+  {
+    console.log("input........................." , inputValue);
+
+  },[inputValue])
+  
 
   return (
 
@@ -1300,26 +1309,32 @@ const handleCrossbtn = async()=>{
             <button className="close_button" onClick={handleCrossbtn}>
               <img src={closebutton} className="close_icon" height={15} width={15} />
             </button>
-            <select
+
+            {/* <select
               className="select_allottee"
               id="inputField"
               value={inputValue || ''}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyPress}
               style={{
                 display:editingTask?'none':'block'
               }}
-              autoFocus={true}
             >
-              <option value="" disabled>
-                Select Allottee
-              </option>
+            
+              
               {data.map(([id, name]) => (
                 <option key={id} value={id} multiple={false}>
                   {name}
                 </option>
               ))}
-            </select>
+            </select> */}
+
+            <div className='select_allottee'  
+                style={{
+                display:editingTask?'none':'block'
+                }}
+             >
+                <SearchableDropdown data={data} setInputValue={setInputValue}  />
+            </div>
 
             <div 
               className="editable-div-container" 
@@ -1374,14 +1389,23 @@ const handleCrossbtn = async()=>{
                           }
                   </div>
                   <div className="second-container">
-                        <TargetTime
-                          dateTime={task.datetime}
-                          onDatetimeChange={(newDatetime) => handleDatetimeChange(index, newDatetime)}
-                          onKeyDown={(e) => handleTaskKeyDown(index, e)}
-                        />
+                  <Tooltip id="my-tooltip" className='revert_tooltip' style={{ maxWidth: "70px"}}/>
+
+                        <div data-tooltip-id="my-tooltip"
+                             data-tooltip-content="Time"
+                             data-tooltip-place="top">
+                              <TargetTime
+                                dateTime={task.datetime}
+                                onDatetimeChange={(newDatetime) => handleDatetimeChange(index, newDatetime)}
+                                onKeyDown={(e) => handleTaskKeyDown(index, e)}
+                              />
+                          </div>  
+
 
                         <div id='icon_div'>
-                          <div>
+                          <div  data-tooltip-id="my-tooltip"
+                                data-tooltip-content="Label"
+                                data-tooltip-place="top">
                             <CustomSelect
                               taskPriorityId={tasks[index].taskId}
                               sendCustomTags={handleCustomTags}
@@ -1390,7 +1414,11 @@ const handleCrossbtn = async()=>{
                             />
                           </div>
 
-                          <div className='comment_sectoin'>
+
+                          <div className='comment_sectoin' 
+                            data-tooltip-id="my-tooltip"
+                            data-tooltip-content="Comment"
+                            data-tooltip-place="top">
                             <Comment
                               comments={Array.isArray(task.comments) ? task.comments : []}
                               sendComments={ handleCommentsChange}
@@ -1399,7 +1427,8 @@ const handleCrossbtn = async()=>{
                               comment_delete = {deleteComment}
                             />
                             <div className='count_layer'>{tasks[index] && tasks[index].comments && tasks[index].comments.length>0 ?tasks[index].comments.length:null}</div>
-                          </div>  
+                          </div>
+                           
                           <div>
                             <FileUpload fileIndex= {index} sendFile={handleFileChange} />
                           </div>
@@ -1504,6 +1533,7 @@ const handleCrossbtn = async()=>{
               return !verificationDate && allotterId === currentPersonnelId;
             });
             let to_do_tasks = [...part1Tasks, ...part2Tasks];
+
             const part1FollowUpTasks = tasks.filter(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
               return !verificationDate && allotteeId === currentPersonnelId;
             });
@@ -1517,6 +1547,7 @@ const handleCrossbtn = async()=>{
             });
             // Remove reallocated tasks from to_do_tasks
             to_do_tasks = to_do_tasks.filter(task => !reallocatedTasks.includes(task));
+            console.log("todo-task.................",to_do_tasks);
             
             // Add reallocated tasks to follow_up_tasks
             follow_up_tasks = [...follow_up_tasks, ...reallocatedTasks];
@@ -1535,6 +1566,8 @@ const handleCrossbtn = async()=>{
             });
             // Add these tasks to to_do_tasks
             to_do_tasks = [...to_do_tasks, ...tasksToMoveToDo];
+
+            
             return (
               <div
                 className="allottee_container"
