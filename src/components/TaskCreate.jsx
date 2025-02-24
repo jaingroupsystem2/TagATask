@@ -69,7 +69,7 @@ const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
     tasksRef.current = tasks;
   }, [tasks]);
 
-console.log("currentAllotee",currentAllotee);
+//console.log("currentAllotee",currentAllotee);
 
   useEffect(() => {
     // console.log("all data are ", tasks);
@@ -102,7 +102,9 @@ useEffect(() => {
       console.log(tasks);
       closeModal();
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
-      console.log("this is sanitizedData from line no 104",sanitizedData);
+      console.log("this is sanitizedData from line no 104",edit_card_allottee_id);
+      console.log("this is sanitizedData from line no 106",sanitizedData);
+
       
       sendEditTasksData(sanitizedData,edit_card_allottee_id);
       fetchAllottee(setAllottee,setError);
@@ -157,7 +159,7 @@ useEffect(() => {
       setTasks([]);
       setInputValue("");
       if (editableInputRef.current) editableInputRef.current.value = "";
-      //document.getElementById("inputField").focus();
+     // document.getElementById("inputField").focus();
 
       fetch(`${Base_URL}/create_task`, {
         method: "POST",
@@ -215,6 +217,7 @@ useEffect(() => {
       }, 100);
     }
   };
+
 
   window.addEventListener("mousedown", handleClick);
 
@@ -774,7 +777,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
       console.log("Saving all data from first line", { inputValue, tasks });
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
       sendEditTasksData(sanitizedData,edit_card_allottee_id);
-      console.log("this is sanitizedData from line no 104",sanitizedData ,edit_card_allottee_id);
+      console.log("this is sanitizedData from line no 104" ,edit_card_allottee_id);
       fetchAllottee(setAllottee,setError);
       fetchAllotteeData();
     }else{
@@ -807,9 +810,9 @@ const handleAllotteeClick = (allotteeName, tasks) => {
     if (dataToSave.title || dataToSave.items.length > 0) {
       setSavedItems((prevItems) => [...prevItems, dataToSave]);
       setTasks([]);
-      //setInputValue('');
+      setInputValue('');
       if (editableInputRef.current) editableInputRef.current.value = '';
-      //document.getElementById('inputField').focus();
+     // document.getElementById('inputField').focus();
 
       fetch(`${Base_URL}/create_task`, {
         method: 'POST',
@@ -867,7 +870,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
     );
 
     setSavedItems((prevItems) => prevItems.filter((_, index) => index !== itemIndex));
-   // document.getElementById('inputField').focus();
+    //document.getElementById('inputField').focus();
   };
 
   const handleTaskInput = (index, event) => {
@@ -1255,7 +1258,7 @@ const handleCrossbtn = async()=>{
       console.log("sanitizedData data",sanitizedData);
       
       await sendEditTasksData(sanitizedData,edit_card_allottee_id);
-      console.log("this is sanitizedData from line no 104",sanitizedData,edit_card_allottee_id);
+      console.log("this is sanitizedData from line no 104",edit_card_allottee_id);
       await fetchAllottee(setAllottee,setError);
     }else{
       closeModal();
@@ -1404,7 +1407,7 @@ const handleCrossbtn = async()=>{
 
                         <div id='icon_div'>
                           <div  data-tooltip-id="my-tooltip"
-                                data-tooltip-content="Label"
+                                data-tooltip-content="Add Label"
                                 data-tooltip-place="top">
                             <CustomSelect
                               taskPriorityId={tasks[index].taskId}
@@ -1526,12 +1529,26 @@ const handleCrossbtn = async()=>{
           Object.entries(Allottee).map(([allotteeName, tasks] , cardIndex) => {
             const urlParams = new URLSearchParams(window.location.search);
             const currentPersonnelId = parseInt(urlParams.get('id'));
-            const part1Tasks = tasks.filter(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
-              return !completionDate && allotteeId === currentPersonnelId;
-            });
-            const part2Tasks = tasks.filter(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
-              return !verificationDate && allotterId === currentPersonnelId;
-            });
+            let part1Tasks  = [];
+            let part2Tasks = [];
+            
+            if((tasks[0][4] == currentPersonnelId) && (tasks[0][5] == currentPersonnelId))
+            {
+              part1Tasks = tasks.filter(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
+                return !completionDate && allotteeId === currentPersonnelId;
+              });
+            }
+            else{
+              part1Tasks = tasks.filter(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
+                return !completionDate && allotteeId === currentPersonnelId;
+              });
+  
+               part2Tasks = tasks.filter(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
+                return !verificationDate && allotterId === currentPersonnelId;
+              });
+            }
+           
+
             let to_do_tasks = [...part1Tasks, ...part2Tasks];
 
             const part1FollowUpTasks = tasks.filter(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
@@ -1541,13 +1558,15 @@ const handleCrossbtn = async()=>{
               return completionDate;
             });
             let follow_up_tasks = part1FollowUpTasks.filter(task => part2FollowUpTasks.includes(task));
+
             // Reallocate tasks where verification and completion are missing but allotter is currentPersonnelId
             const reallocatedTasks = tasks.filter(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
-              return !verificationDate && !completionDate && allotterId === currentPersonnelId;
+              return !verificationDate && !completionDate && allotterId === currentPersonnelId && allotteeId !== currentPersonnelId;
             });
+
             // Remove reallocated tasks from to_do_tasks
             to_do_tasks = to_do_tasks.filter(task => !reallocatedTasks.includes(task));
-            console.log("todo-task.................",to_do_tasks);
+            //console.log("todo-task.................",to_do_tasks);
             
             // Add reallocated tasks to follow_up_tasks
             follow_up_tasks = [...follow_up_tasks, ...reallocatedTasks];
@@ -1567,7 +1586,7 @@ const handleCrossbtn = async()=>{
             // Add these tasks to to_do_tasks
             to_do_tasks = [...to_do_tasks, ...tasksToMoveToDo];
 
-            
+
             return (
               <div
                 className="allottee_container"
@@ -1608,7 +1627,7 @@ const handleCrossbtn = async()=>{
                         className='checkbox'
                       />
                       {
-                        allotterId==currentPersonnelId &&(
+                        allotterId==currentPersonnelId && allotteeId !== currentPersonnelId ? (
                         <div>
                           <Tooltip id="my-tooltip" className='revert_tooltip'/>
                           <img 
@@ -1630,7 +1649,7 @@ const handleCrossbtn = async()=>{
                               delayShow={200}
                             />
                         </div>
-                        )
+                        ) : null
                       }   
                       
                       <div

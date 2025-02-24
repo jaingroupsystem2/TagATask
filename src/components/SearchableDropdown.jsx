@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import './SearchableDropdown.css'
+import './SearchableDropdown.css';
 
-const SearchableDropdown = ({ data,setInputValue }) => {
+const SearchableDropdown = ({ data, setInputValue }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
@@ -9,6 +9,21 @@ const SearchableDropdown = ({ data,setInputValue }) => {
   const filteredData = data.filter(([id, name]) =>
     name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleSelect = (id, name) => {
+    setSelectedValue(name);
+    setInputValue(id);
+    setIsDropdownOpen(false);
+    setSearchTerm("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && filteredData.length > 0) {
+      handleSelect(filteredData[0][0], filteredData[0][1]); // Select the first result
+    } else if (e.key === "Escape") {
+      setIsDropdownOpen(false); // Close dropdown on Escape
+    }
+  };
 
   return (
     <div className="dropdown-container">
@@ -29,6 +44,7 @@ const SearchableDropdown = ({ data,setInputValue }) => {
             placeholder="Search Allottee..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown} // Listen for Enter key
             autoFocus
           />
 
@@ -39,12 +55,7 @@ const SearchableDropdown = ({ data,setInputValue }) => {
                 <div
                   key={id}
                   className="dropdown-option"
-                  onClick={() => {
-                    setSelectedValue(name);
-                    setInputValue(id);
-                    setIsDropdownOpen(false);
-                    setSearchTerm("");
-                  }}
+                  onClick={() => handleSelect(id, name)}
                 >
                   {name}
                 </div>
