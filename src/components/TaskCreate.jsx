@@ -24,7 +24,7 @@ import { setEditingTask } from '../components/slices/Taskslice';
 import "react-tooltip/dist/react-tooltip.css";
 import {Tooltip} from "react-tooltip";
 import Tagview from './Tagview/Tagview';
-import SearchableDropdown from './SearchableDropdown ';
+import SearchableDropdown from './SearchableDropdown';
 
 
 
