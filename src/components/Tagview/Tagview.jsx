@@ -3,6 +3,9 @@ import { get_tag_data } from "../ApiList";
 import drag from '../../assets/drag.png';
 import "./tagview.css";
 import { updateTaskOrderAPI} from '../ApiList';
+import axios  from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function Tagview() {
@@ -39,6 +42,7 @@ function Tagview() {
   };
 
   // Handle Drop and Call Backend
+  
   const handleTaskReorder = async (targetAllotteeName, targetTaskIndex, section , cardIndex) => {
      if (!draggingTask) {
        console.error("No task is being dragged.");
@@ -92,6 +96,50 @@ function Tagview() {
      setDraggingTask(null);
    };
    
+
+// Handle checked box 
+
+const handleCheckboxChange = async (taskId, isChecked) => {
+  if (!taskId || typeof isChecked !== "boolean") {
+    console.error("Invalid parameters passed to handleCheckboxChange:", {
+      taskId,
+      isChecked,
+    });
+    return;
+  }
+
+  // Access setAllottee directly from the component's state
+
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentPersonnelId = parseInt(urlParams.get('id'));
+    const response = await axios.post(
+      `${Base_URL}/done_mark`,
+      {
+        task_priority_id: taskId,
+        completed: isChecked,
+        current_personnel: currentPersonnelId
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'ngrok-skip-browser-warning': 'any', // Custom header
+        }
+      }
+    );
+    if(response.data.success){
+      datafetchfunction();
+      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+    }
+
+    if (!response.data.success) {
+      console.error("Backend failed to update task status:", response.data.errors);
+    }
+  } catch (networkError) {
+    console.error("Network error while updating task status:", networkError);
+  }
+};
 
 
 
@@ -201,7 +249,10 @@ function Tagview() {
                       <input
                         type="checkbox"
                         style={{ marginRight: "10px" }}
-                        className='checkbox'
+                        checked={false}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
+                        className='checkbox'                        
                       />
                       <div className="each_task" style={{ padding: "5px" }}>{taskDescription}</div>
                     </div>
@@ -226,7 +277,10 @@ function Tagview() {
                       <img className="drag_image_logo" src={drag} height={15} width={15} alt="drag" />
                       <input
                         type="checkbox"
-                          style={{ marginRight: "10px" }}
+                        checked={allotteeId==currentPersonnelId && completionDate !=null}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
+                        style={{ marginRight: "10px" }}
                         className='checkbox'
                       />
                       <div className="each_task" style={{ padding: "5px" }}>{taskDescription}</div>

@@ -15,3 +15,12 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
 }
+.checkbox{
+    font-size: large;
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+    accent-color: grey;
+    border: none;
+    margin-top: 5px;
+}
