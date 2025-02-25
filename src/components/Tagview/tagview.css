@@ -1,0 +1,17 @@
+.task-item-container .each_task
+{
+    width: 90%;
+    padding: 10px;
+    margin: -2px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    text-align: left;
+    font-size: 15px;
+    color: rgb(99, 86, 86);
+    text-overflow: ellipsis;
+    max-height: 61px;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
