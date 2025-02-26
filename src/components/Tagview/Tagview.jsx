@@ -6,14 +6,24 @@ import { updateTaskOrderAPI} from '../ApiList';
 import axios  from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import revert_icon from '../../assets/revert.png';
+import "react-tooltip/dist/react-tooltip.css";
+import {Tooltip} from "react-tooltip";
+
 
 
 function Tagview() {
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
+  //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
+
   const [tagviewdata, setTagViewData] = useState([]);
   const [draggedTask, setDraggedTask] = useState(null);
   const [draggedCategory, setDraggedCategory] = useState(null);
   const [draggingTask, setDraggingTask] = useState(null);
+  const [draggingAllottee, setDraggingAllottee] = useState(null);
+  const [allotteeCardIndex,setAllotteeCardIndex] = useState(0);
+  
+  
 
 
   // Fetch Data
@@ -35,6 +45,12 @@ function Tagview() {
     setDraggingTask({taskId, taskDescription, category})
 
   };
+
+  const dragAllotteeCard = (allotteeindex,tagName)=>{
+    setDraggingAllottee(tagName);
+    setAllotteeCardIndex(allotteeindex);
+   // console.log("Dragging allottee:", allotteeName,"modalitem",allotteeCardIndex,allotteeindex);
+  }
 
   // Allow Drop
   const handleTaskDragOver = (e) => {
@@ -95,7 +111,104 @@ function Tagview() {
    
      setDraggingTask(null);
    };
+
+  // Handle drop same card or different card 
+  // const handleDrop = (tagName,cardIndex) => {
+  //   if (draggingTask) {
+  //     handleDropOnAllotteeContainer(tagName);
+  //   } else if (draggingAllottee) {
+  //     handleAllotteeReorder(tagName,cardIndex);
+  //   }
+  // };
+
+  // const handleDropOnAllotteeContainer = async (targetAllotteeName) => {
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const currentPersonnelId = parseInt(urlParams.get('id'));
+  //   if (!draggingTask) return;
+  //   if (draggingTask.category !== targetAllotteeName) {
+  //     console.log("Dragged Task ID:", draggingTask.taskId);
+  //     console.log("Dropped on Allottee:", targetAllotteeName);
+  //     const dataToSend = {
+  //       current_personnel_id : currentPersonnelId,
+  //       task_priority_id: draggingTask.taskId,
+  //       allocated_to: targetAllotteeName,
+  //     };
+  
+  //     try {
+  //       const response = await axios.post(
+  //         `${Base_URL}/task_transfer`,
+  //         dataToSend,
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             "Accept": "application/json",
+  //             "ngrok-skip-browser-warning": "any"
+  //           }
+  //         }
+  //       );
+  //       setTimeout(datafetchfunction, 0);
+  //       // toast.success("Task transferred Successfully !", {
+  //       //   position: "top-center", 
+  //       //   style: { backgroundColor: "white", color: "black" },
+  //       // });
+  //       if(response.data.message == 'Task Reallocated Successfully.'){
+  //         toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+  //       }else{
+  //         toast.warn(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+  //       }
+  //       // toast.success(response.data.message,{position: 'top-center',});
+  //       console.log("API response:", response.data);
+  //     } catch (error) {
+  //       console.error("Error sending task transfer data:", error);
+  //     }
+  //   }else{
+  //     console.log("Dragged task dropped within the same allottee. No transfer required.");
+  //   }
+  // };
    
+
+  // // Handle Allotee Reorder 
+  // const handleAllotteeReorder = (targetAllotteeName,cardIndex) => {
+  //   if (!draggingAllottee || draggingAllottee === targetAllotteeName) {
+  //     console.log("No draggingAllottee or dropped on the same allottee.");
+  //     return;
+  //   }
+  //   const old_card_order = Object.keys(tagviewdata);
+  //   console.log("Dragged Allottee:", draggingAllottee);
+  //   console.log("Dropped Over Allottee:", cardIndex);
+  //   console.log("these are allottees",Object.keys(tagviewdata));
+  
+  //   old_card_order.splice(allotteeCardIndex,1);
+  //   old_card_order.splice(cardIndex,0,draggingAllottee);
+  //   console.log("old card order",old_card_order);
+    
+  //   const userId = new URLSearchParams(window.location.search).get('id');
+  //   const dataToSend = {
+  //     current_user: userId,
+  //     draggedAllottee: draggingAllottee,
+  //     droppedAllottee: targetAllotteeName,
+  //     fullOrder: old_card_order,
+  //   };
+  
+  //   axios
+  //     .post(`${Base_URL}/allottee_card_reorder`, dataToSend, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Accept: "application/json",
+  //         'ngrok-skip-browser-warning': "any",
+  //       },
+  //     })
+  //     .then((response) => {
+  //       console.log("Backend response:", response.data);
+  //       datafetchfunction();
+  //       toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error sending allottee reorder data:", error);
+  //     });
+  
+  //   setDraggingAllottee(null);
+  // };
 
 // Handle checked box 
 
@@ -141,7 +254,35 @@ const handleCheckboxChange = async (taskId, isChecked) => {
   }
 };
 
+// revert Button 
+const handleRevertClick = async (taskId) => {
+  try {
+    const response = await axios.post(`${Base_URL}/revert`, {
+      task_priority_id: taskId,
+      status: "task is reverted",
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'ngrok-skip-browser-warning': 'any', // Custom header
+      }
+    }
+  );
 
+    if (response.data.success) {
+      console.log("Backend updated task status successfully for taskId:", taskId);
+      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+      datafetchfunction();
+
+    } else {
+      console.error('Backend failed to update task status:', response.data.errors);
+      toast.error(response.data.message,{position: 'top-center',hideProgressBar: true});
+    }
+  } catch (error) {
+    console.error('An error occurred while updating task status:', error);
+  }
+};
 
 
 
@@ -199,8 +340,10 @@ const handleCheckboxChange = async (taskId, isChecked) => {
                 return !verificationDate && !completionDate && allotterId === currentPersonnelId && allotteeId !== currentPersonnelId;
               }
             );
+        
 
             to_do_tasks = to_do_tasks.filter((task) => !reallocatedTasks.includes(task));
+           
 
             follow_up_tasks = [...follow_up_tasks, ...reallocatedTasks];
 
@@ -215,6 +358,7 @@ const handleCheckboxChange = async (taskId, isChecked) => {
                 return allotterId === currentPersonnelId && completionDate && !verificationDate;
               }
             );
+          
 
             follow_up_tasks = follow_up_tasks.filter(
               ([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
@@ -228,6 +372,10 @@ const handleCheckboxChange = async (taskId, isChecked) => {
               <div
                 className="allottee_container"
                 key={category}
+                // draggable
+                // onDragOver={handleTaskDragOver}
+                // onDragStart={()=>{dragAllotteeCard(cardIndex,category)}}
+                // onDrop={() => handleDrop(category,cardIndex)}
               >
                 <p className="name_text">{category}</p>
 
@@ -254,6 +402,31 @@ const handleCheckboxChange = async (taskId, isChecked) => {
                         onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
                         className='checkbox'                        
                       />
+                       {
+                        allotterId==currentPersonnelId && allotteeId !== currentPersonnelId ? (
+                        <div>
+                          <Tooltip id="my-tooltip" className='revert_tooltip'/>
+                          <img 
+                            data-tooltip-id="my-tooltip"
+                            data-tooltip-content="Revert This Task"
+                            data-tooltip-place="top"
+                            src={revert_icon} 
+                            className='revert_icon'
+                            data-tip="Send back this task to the Allottee"
+                            onClick={(e) =>{
+                              e.stopPropagation();
+                              handleRevertClick(taskId);
+                            }
+                            }/>
+                            <Tooltip
+                              place="top"
+                              type="dark"
+                              effect="solid"
+                              delayShow={200}
+                            />
+                        </div>
+                        ) : null
+                      }   
                       <div className="each_task" style={{ padding: "5px" }}>{taskDescription}</div>
                     </div>
                   ))}
