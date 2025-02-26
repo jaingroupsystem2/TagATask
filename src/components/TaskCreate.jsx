@@ -59,9 +59,9 @@ function TaskCreate() {
   const [toDoCount,setToDoCount] = useState(0);
   const [currentAllotee,setCurrentAllotee] = useState("");
   
-  const accessTag = [564,219,26];
+  const accessTag = [564,219,26,533];
 const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
-//  const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
+  //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const currentPersonnelId = parseInt(urlParams.get('id'));
@@ -210,9 +210,12 @@ useEffect(() => {
           fetchAllottee(setAllottee,setError);
           dispatch(setEditingTask(false));
         }
-        saveAllDataWithInputValue();
-        console.log("Clicked outside");
-        closeModal();
+        else{
+          saveAllDataWithInputValue();
+          console.log("Clicked outside");
+          closeModal();
+        }
+       
           // updateData();
       }, 100);
     }
@@ -773,6 +776,9 @@ const handleAllotteeClick = (allotteeName, tasks) => {
 
 
   const saveAllData = useCallback(() => {
+    console.log('====================================');
+    console.log(editingTask);
+    console.log('====================================');
     if(editingTask){
       console.log("Saving all data from first line", { inputValue, tasks });
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
@@ -1548,7 +1554,6 @@ const handleCrossbtn = async()=>{
               });
             }
            
-
             let to_do_tasks = [...part1Tasks, ...part2Tasks];
 
             const part1FollowUpTasks = tasks.filter(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
@@ -1557,6 +1562,7 @@ const handleCrossbtn = async()=>{
             const part2FollowUpTasks = tasks.filter(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
               return completionDate;
             });
+            
             let follow_up_tasks = part1FollowUpTasks.filter(task => part2FollowUpTasks.includes(task));
 
             // Reallocate tasks where verification and completion are missing but allotter is currentPersonnelId
