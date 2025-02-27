@@ -113,58 +113,64 @@ function Tagview() {
    };
 
   // Handle drop same card or different card 
-  // const handleDrop = (tagName,cardIndex) => {
-  //   if (draggingTask) {
-  //     handleDropOnAllotteeContainer(tagName);
-  //   } else if (draggingAllottee) {
-  //     handleAllotteeReorder(tagName,cardIndex);
-  //   }
-  // };
+  const handleDrop = (tagName,cardIndex) => {
+    if (draggingTask) {
+      handleDropOnAllotteeContainer(tagName);
+    } 
+    // else if (draggingAllottee) {
+    //   handleAllotteeReorder(tagName,cardIndex);
+    // }
+  };
 
-  // const handleDropOnAllotteeContainer = async (targetAllotteeName) => {
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   const currentPersonnelId = parseInt(urlParams.get('id'));
-  //   if (!draggingTask) return;
-  //   if (draggingTask.category !== targetAllotteeName) {
-  //     console.log("Dragged Task ID:", draggingTask.taskId);
-  //     console.log("Dropped on Allottee:", targetAllotteeName);
-  //     const dataToSend = {
-  //       current_personnel_id : currentPersonnelId,
-  //       task_priority_id: draggingTask.taskId,
-  //       allocated_to: targetAllotteeName,
-  //     };
+  const handleDropOnAllotteeContainer = async (targetAllotteeName) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentPersonnelId = parseInt(urlParams.get('id'));
+    if (!draggingTask) return;
+    if (draggingTask.category !== targetAllotteeName) {
+      console.log("Dragged Task ID:", draggingTask.taskId);
+      console.log("Dropped on Allottee:", targetAllotteeName);
+      console.log("Dropped on Allottee:", draggingTask.category);
+
+      const dataToSend = {
+        current_personnel_id : currentPersonnelId,
+        task_priority_id: draggingTask.taskId,
+        dragged_to_tag: targetAllotteeName,
+        dragged_from_tag:draggingTask.category
+      };
+      console.log("nnnnnnnnnnnn", dataToSend);
+      
   
-  //     try {
-  //       const response = await axios.post(
-  //         `${Base_URL}/task_transfer`,
-  //         dataToSend,
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             "Accept": "application/json",
-  //             "ngrok-skip-browser-warning": "any"
-  //           }
-  //         }
-  //       );
-  //       setTimeout(datafetchfunction, 0);
-  //       // toast.success("Task transferred Successfully !", {
-  //       //   position: "top-center", 
-  //       //   style: { backgroundColor: "white", color: "black" },
-  //       // });
-  //       if(response.data.message == 'Task Reallocated Successfully.'){
-  //         toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
-  //       }else{
-  //         toast.warn(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
-  //       }
-  //       // toast.success(response.data.message,{position: 'top-center',});
-  //       console.log("API response:", response.data);
-  //     } catch (error) {
-  //       console.error("Error sending task transfer data:", error);
-  //     }
-  //   }else{
-  //     console.log("Dragged task dropped within the same allottee. No transfer required.");
-  //   }
-  // };
+      try {  
+        const response = await axios.post(
+          `${Base_URL}/task_tag_transfer`,
+          dataToSend,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "ngrok-skip-browser-warning": "any"
+            }
+          }
+        );
+        setTimeout(datafetchfunction(), 0);
+        // toast.success("Task transferred Successfully !", {
+        //   position: "top-center", 
+        //   style: { backgroundColor: "white", color: "black" },
+        // });
+        if(response.data.message){
+          toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+        }else{
+          toast.warn(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+        }
+        // toast.success(response.data.message,{position: 'top-center',});
+        console.log("API response:", response.data);
+      } catch (error) {
+        console.error("Error sending task transfer data:", error);
+      }
+    }else{
+      console.log("Dragged task dropped within the same allottee. No transfer required.");
+    }
+  };
    
 
   // // Handle Allotee Reorder 
@@ -253,6 +259,7 @@ const handleCheckboxChange = async (taskId, isChecked) => {
     console.error("Network error while updating task status:", networkError);
   }
 };
+
 
 // revert Button 
 const handleRevertClick = async (taskId) => {
@@ -372,10 +379,10 @@ const handleRevertClick = async (taskId) => {
               <div
                 className="allottee_container"
                 key={category}
-                // draggable
-                // onDragOver={handleTaskDragOver}
-                // onDragStart={()=>{dragAllotteeCard(cardIndex,category)}}
-                // onDrop={() => handleDrop(category,cardIndex)}
+                draggable
+                onDragOver={handleTaskDragOver}
+                onDragStart={()=>{dragAllotteeCard(cardIndex,category)}}
+                onDrop={() => handleDrop(category,cardIndex)}
               >
                 <p className="name_text">{category}</p>
 
