@@ -222,6 +222,7 @@ useEffect(() => {
   };
 
 
+  
   window.addEventListener("mousedown", handleClick);
 
   return () => {
@@ -1245,8 +1246,11 @@ const handleRevertClick = async (taskId) => {
 
 
 
-const openModal = () => {
-  setIsModalOpen(true);
+const openModal = (event) => {
+  event.stopPropagation(); // Prevents immediate closing
+  setTimeout(() => {
+    setIsModalOpen(true);
+  }, 100);
 };
 
 const closeModal = () => {
@@ -1521,7 +1525,7 @@ const handleCrossbtn = async()=>{
        {  accessTag.includes(currentAllotee) && 
               <div className='toggle_button'>
                 <p className='toggle_text'>Personnel</p>
-                <ToggleButton onToggleChange={handleToggleChange}/>
+                 <ToggleButton onToggleChange={handleToggleChange}/>
                 <p className='toggle_text'>Tag</p>
               </div>
        }
