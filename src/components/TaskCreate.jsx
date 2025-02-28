@@ -1246,11 +1246,8 @@ const handleRevertClick = async (taskId) => {
 
 
 
-const openModal = (event) => {
-  event.stopPropagation(); // Prevents immediate closing
-  setTimeout(() => {
-    setIsModalOpen(true);
-  }, 100);
+const openModal = () => {
+  setIsModalOpen(true);
 };
 
 const closeModal = () => {
