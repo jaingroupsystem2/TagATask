@@ -170,7 +170,7 @@ export const updateTagViewTaskOrderAPI = async (targetAllotteeName,section,reord
     const payload = {
       "current_personnel_id":userId,
       "tag_description":targetAllotteeName,
-      "Section_Name":section,
+      "section_name":section,
       "all_task_data":reorderedTasks,
     };
 
