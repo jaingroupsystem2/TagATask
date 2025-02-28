@@ -3,7 +3,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 
  const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
-//  const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
+  //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
 
 export const handleCheckboxChange = async (taskId, isChecked, setAllottee) => {
   // Initial input validation and logging
@@ -131,7 +131,7 @@ export const fetchAllottee = async (setAllottee, setError) => {
 };
 
 
-
+// update task reorder on Exicutive view 
 export const updateTaskOrderAPI = async (targetAllotteeName,section,reorderedTasks) => {
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get('id');
@@ -147,6 +147,37 @@ export const updateTaskOrderAPI = async (targetAllotteeName,section,reorderedTas
     console.log("Payload sent to backend:", payload);
 
     const response = await axios.post(`${Base_URL}/task_order`, payload, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    });
+
+    // Log successful update response from backend
+    console.log('Task order updated successfully:', response.data);
+    toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+  } catch (error) {
+    console.error('Error updating task order:', error);
+  }
+};
+
+// update task reorder on tagview 
+
+export const updateTagViewTaskOrderAPI = async (targetAllotteeName,section,reorderedTasks) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get('id');
+  try {
+    const payload = {
+      "current_personnel_id":userId,
+      "tag_description":targetAllotteeName,
+      "Section_Name":section,
+      "all_task_data":reorderedTasks,
+    };
+
+    // Log payload to Chrome console
+    console.log("Payload sent to backend:", payload);
+
+    const response = await axios.post(`${Base_URL}/tag_task_priority_create`, payload, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
