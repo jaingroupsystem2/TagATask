@@ -166,13 +166,17 @@ export const updateTaskOrderAPI = async (targetAllotteeName,section,reorderedTas
 export const updateTagViewTaskOrderAPI = async (targetAllotteeName,section,reorderedTasks) => {
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get('id');
+  const payload = {
+    "current_personnel_id":userId,
+    "tag_description":targetAllotteeName,
+    "section_name":section,
+    "all_task_data":reorderedTasks,
+  };
+console.log("..............",payload);
+
+
   try {
-    const payload = {
-      "current_personnel_id":userId,
-      "tag_description":targetAllotteeName,
-      "section_name":section,
-      "all_task_data":reorderedTasks,
-    };
+   
 
     // Log payload to Chrome console
     console.log("Payload sent to backend:", payload);
