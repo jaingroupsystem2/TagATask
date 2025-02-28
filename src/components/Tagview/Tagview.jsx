@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { get_tag_data } from "../ApiList";
 import drag from '../../assets/drag.png';
 import "./tagview.css";
-import { updateTaskOrderAPI} from '../ApiList';
+import { updateTagViewTaskOrderAPI} from '../ApiList';
 import axios  from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -102,8 +102,8 @@ function Tagview() {
    
      const targetTaskId = newTargetTask === "top" ? "top" : newTargetTask.taskId;
    
-     await updateTaskOrderAPI(targetAllotteeName, section, reorderedTasks.map((task) => ({
-       taskId: task.taskId,
+     await updateTagViewTaskOrderAPI(targetAllotteeName, section, reorderedTasks.map((task) => ({
+       task_priority_id: task.taskId,
        description: task.description,
      })));
      datafetchfunction();
@@ -127,18 +127,13 @@ function Tagview() {
     const currentPersonnelId = parseInt(urlParams.get('id'));
     if (!draggingTask) return;
     if (draggingTask.category !== targetAllotteeName) {
-      console.log("Dragged Task ID:", draggingTask.taskId);
-      console.log("Dropped on Allottee:", targetAllotteeName);
-      console.log("Dropped on Allottee:", draggingTask.category);
 
       const dataToSend = {
         current_personnel_id : currentPersonnelId,
         task_priority_id: draggingTask.taskId,
         dragged_to_tag: targetAllotteeName,
         dragged_from_tag:draggingTask.category
-      };
-      console.log("nnnnnnnnnnnn", dataToSend);
-      
+      };      
   
       try {  
         const response = await axios.post(
@@ -152,11 +147,7 @@ function Tagview() {
             }
           }
         );
-        setTimeout(datafetchfunction(), 0);
-        // toast.success("Task transferred Successfully !", {
-        //   position: "top-center", 
-        //   style: { backgroundColor: "white", color: "black" },
-        // });
+        setTimeout(datafetchfunction, 0);
         if(response.data.message){
           toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
         }else{
@@ -217,7 +208,6 @@ function Tagview() {
   // };
 
 // Handle checked box 
-
 const handleCheckboxChange = async (taskId, isChecked) => {
   if (!taskId || typeof isChecked !== "boolean") {
     console.error("Invalid parameters passed to handleCheckboxChange:", {

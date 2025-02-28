@@ -1248,6 +1248,7 @@ const handleRevertClick = async (taskId) => {
 
 const openModal = () => {
   setIsModalOpen(true);
+  
 };
 
 const closeModal = () => {
@@ -1402,7 +1403,7 @@ const handleCrossbtn = async()=>{
                   <Tooltip id="my-tooltip" className='revert_tooltip' style={{ maxWidth: "70px"}}/>
 
                         <div data-tooltip-id="my-tooltip"
-                             data-tooltip-content="Time"
+                             data-tooltip-content="Target Time"
                              data-tooltip-place="top">
                               <TargetTime
                                 dateTime={task.datetime}
