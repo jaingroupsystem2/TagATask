@@ -37,7 +37,6 @@ function Tagview({openModal , setTagModalPopup,editTask }) {
   const datafetchfunction = async () => {
     const data = await get_tag_data();
     setTagViewData(data);
-    console.log("this is tagviewdata -----", data);
   };
 
   useEffect(() => {

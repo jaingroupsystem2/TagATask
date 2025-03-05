@@ -86,10 +86,7 @@ function TaskCreate() {
     console.log("now the task is in edit mode.",editingTask);
   }, [editingTask]);
 
-  useEffect(()=>{
-    console.log(`the status of editing state ${editingTask}`);
-  },[editingTask])
-  
+ 
   
   useEffect(() => {
     sendUserId(setData, setError);
@@ -97,6 +94,43 @@ function TaskCreate() {
     fetchAllottee(setAllottee, setError);
     console.log("these are all followup tasks",tasks);
   }, [tasks]);
+
+
+  // send tag edit popupdata
+   const sendTagviewEditData = async (tasksData) => {
+  
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('id');
+    console.log("this is from 165",edit_card_allottee_id,userId);
+    console.log("taskTagsData",tasksData);
+   
+  
+    try {
+      
+      const response = await axios.post(`${Base_URL}/task_create_from_tag_view`, tasksData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      });
+      console.log('Edit tasks response:', response.data.message);
+      if( response.data.message)
+      {
+        toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+      }
+      fetchAllottee();
+    } catch (error) {
+      console.error('Error editing tasks:', error);
+    }
+  };
+
+
+
+
+
+
+
+
 
 
 useEffect(() => {
@@ -108,9 +142,19 @@ useEffect(() => {
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
       console.log("this is sanitizedData from line no 104",edit_card_allottee_id);
       console.log("this is sanitizedData from line no 106",sanitizedData);
-
+      console.log("Tagview",tagModalPopup);
       
-      sendEditTasksData(sanitizedData,edit_card_allottee_id);
+      if(tagModalPopup)
+        {
+          console.log(" updateData tag sanitizedData",sanitizedData);
+          sendTagviewEditData(sanitizedData);
+        }
+        else{
+          sendEditTasksData(sanitizedData,edit_card_allottee_id);
+          console.log(" updateData sanitizedData",sanitizedData);
+
+        }
+      //sendEditTasksData(sanitizedData,edit_card_allottee_id);
       fetchAllottee(setAllottee,setError);
     }
   }
@@ -215,6 +259,7 @@ useEffect(() => {
     setTimeout(() => {
       if (tagModalPopup) {
         console.log("Closing tag modal...");
+        updateData();
         setTagModalPopup(false);  // ✅ Close the tag modal
         setIsModalOpen(false);    // ✅ Ensure the main modal is also closed
       } else if (editingTask) {
@@ -368,19 +413,39 @@ useEffect(() => {
       showToastMessage();
       return;
     }
-    const newTask = {
-      text: initialChar,
-      completed: false,
-      datetime: null,
-      label: [],
-      workType: '',
-      comments: [],
-      isBold: false,
-      isItalic: false,
-      ref: React.createRef(),
-      current_personnel_id:currentAllotee,
-      allottee_id :edit_card_allottee_id?.[0] || null
-    };
+    let newTask;
+    if(tagModalPopup)
+    {
+        newTask = {
+        text: initialChar,
+        completed: false,
+        datetime: null,
+        workType: '',
+        comments: [],
+        isBold: false,
+        isItalic: false,
+        ref: React.createRef(),
+        current_personnel_id:currentAllotee,
+        allottee_id : null
+      };
+    }
+    else{
+        newTask = {
+        text: initialChar,
+        completed: false,
+        datetime: null,
+        label: [],
+        workType: '',
+        comments: [],
+        isBold: false,
+        isItalic: false,
+        ref: React.createRef(),
+        current_personnel_id:currentAllotee,
+        allottee_id :edit_card_allottee_id?.[0] || null
+      };
+
+    }
+   
     setTasks((prevTasks) => [...prevTasks, newTask]);
 
     setTimeout(() => {
@@ -810,8 +875,18 @@ const handleAllotteeClick = (allotteeName, tasks) => {
     if(editingTask){
       console.log("Saving all data from first line", { inputValue, tasks });
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
-      sendEditTasksData(sanitizedData,edit_card_allottee_id);
-      console.log("this is sanitizedData from line no 104" ,edit_card_allottee_id);
+      console.log("Tagview",tagModalPopup);
+      
+      if(tagModalPopup)
+        {
+          console.log(" saveAllData sanitizedData",sanitizedData);
+        }
+        else{
+           sendEditTasksData(sanitizedData,edit_card_allottee_id);
+           console.log(" saveAllData sanitizedData",sanitizedData);
+
+        }  
+            console.log("this is sanitizedData from line no 104" ,edit_card_allottee_id);
       fetchAllottee(setAllottee,setError);
       fetchAllotteeData();
     }else{
@@ -961,7 +1036,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
     {
       let all_taskrefs = [];
       console.log("this is all tasks type",typeof(followUpTasks),allTask);
-      const transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,labels]) => {
+      const transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,taskAlloteeName]) => {
         const taskRef = React.createRef();
         all_taskrefs.push(taskRef);
         return {
@@ -972,7 +1047,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
             ref: taskRef,
             completed: completionDate ? true : false,
             datetime: completionDate || verificationDate || null,
-            label: labels,
+            taskAlloteeName: taskAlloteeName,
             workType: '',
             priority: priority,
             comments: comment || null, 
@@ -1036,12 +1111,14 @@ const handleAllotteeClick = (allotteeName, tasks) => {
                 updatedText: task.text,
             }));
             console.log("these are updatedtask", updatedTasks);
-            if(isTagView)
+            if(tagModalPopup)
             {
-
+                console.log("tagview updatedTasks", updatedTasks);
             }
             else{
               saveEditTask(updatedTasks);
+              console.log("exicutive updatedTasks", updatedTasks);
+
             }
             console.log("these are all updated tasks", updatedTasks);
             // setEditingTask(null);
@@ -1238,13 +1315,6 @@ const handleFileChange = async(fileIndex , fileName) =>
   }
 
 
-
-
-
-
-
-
-
 const handleDrop = (allotteeName,cardIndex) => {
   // console.log("this is card index",allotteeCardIndex);
   // setAllotteeCardIndex(null);
@@ -1328,8 +1398,17 @@ const handleCrossbtn = async()=>{
       closeModal();
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
       console.log("sanitizedData data",sanitizedData);
+      console.log("Tagview",tagModalPopup);
       
-      await sendEditTasksData(sanitizedData,edit_card_allottee_id);
+      if(tagModalPopup)
+      {
+        console.log("handleCrossbtn sanitizedData",sanitizedData);
+      }
+      else{
+        await sendEditTasksData(sanitizedData,edit_card_allottee_id);
+        console.log("handleCrossbtn sanitizedData",sanitizedData);
+
+      }
       console.log("this is sanitizedData from line no 104",edit_card_allottee_id);
       await fetchAllottee(setAllottee,setError);
     }else{
@@ -1363,9 +1442,19 @@ const handleCrossbtn = async()=>{
 
   const handleCustomTags =(tag , index)=>
   {
+    if(tagModalPopup)
+    {
+      const newTasks = [...tasks];
+      newTasks[index].allottee_id = tag;
+      setTasks(newTasks);
+    }
+    else
+    {
       const newTasks = [...tasks];
       newTasks[index].selectedTags = tag;
       setTasks(newTasks);
+    }
+      
       
   }
   
@@ -1486,15 +1575,14 @@ const handleCrossbtn = async()=>{
                                       data-tooltip-place="top">
                                   <SelectAlotee
                                     // taskPriorityId={tasks[index].taskId}
-                                    // sendCustomTags={handleCustomTags}
-                                    // index={index}
-                                    // allLabel={Array.isArray(task.label) ? task.label : []}
-                                    setTagAloteeName={setTagAloteeName}
+                                    setTaskAloteeName={handleCustomTags}
+                                    index={index}
+                                    taskAlloteeName={task.taskAlloteeName}
                                     options={data}
+                                    setTagAloteeName={setTagAloteeName}
                                   />
                                 </div>
-      
-      
+                                
                                 <div className='comment_sectoin' 
                                   data-tooltip-id="my-tooltip"
                                   data-tooltip-content="Comment"

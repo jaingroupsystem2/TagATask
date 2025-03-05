@@ -174,7 +174,10 @@ export const updateTagViewTaskOrderAPI = async (targetAllotteeName,section,reord
   };
 console.log("..............",payload);
 
+
   try {
+   
+
     // Log payload to Chrome console
     console.log("Payload sent to backend:", payload);
 
@@ -199,6 +202,7 @@ export const sendEditTasksData = async (tasksData,edit_card_allottee_id) => {
   const userId = urlParams.get('id');
   console.log("this is from 165",edit_card_allottee_id,userId);
   console.log("tasksData",tasksData);
+ 
 
   try {
     const currentPersonnelId = new URLSearchParams(window.location.search).get('id');
@@ -316,7 +320,6 @@ export const get_tag_data = async () => {
         'ngrok-skip-browser-warning': "any",
       },
     });
-    console.log("Tags value from API:", response.data.tags);
     return response.data.tags;
   } catch (error) {
     console.error("Error fetching tags:", error.response ? error.response.data : error.message);

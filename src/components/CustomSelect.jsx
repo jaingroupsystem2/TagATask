@@ -142,7 +142,6 @@ const CustomSelect = ({ taskPriorityId , sendCustomTags ,index ,allLabel}) => {
           />
 
           {/* Filtered Dropdown Options */}
-          {console.log("this is tag options",filteredTags)}
           {filteredTags && filteredTags.length > 0 ? (
             filteredTags.map((option, index) => (
               <div 
