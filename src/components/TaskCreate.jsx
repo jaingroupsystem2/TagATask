@@ -61,6 +61,7 @@ function TaskCreate() {
   const [currentAllotee,setCurrentAllotee] = useState("");
   const [tagModalPopup,setTagModalPopup] = useState(false);
   const [tagAloteeName,setTagAloteeName] = useState([]);
+  const [tagName , setTagName] = useState("");
 
   
   const accessTag = [564,219,26,533];
@@ -97,17 +98,19 @@ function TaskCreate() {
 
 
   // send tag edit popupdata
-   const sendTagviewEditData = async (tasksData) => {
+   const sendTagviewEditData = async (tasksData , tagName) => {
   
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('id');
-    console.log("this is from 165",edit_card_allottee_id,userId);
+    console.log("this is from 165",tagName,userId);
     console.log("taskTagsData",tasksData);
-   
-  
+    const payload = {
+      "tag_id":tagName,
+      "tasksData":tasksData
+    }
     try {
       
-      const response = await axios.post(`${Base_URL}/task_create_from_tag_view`, tasksData, {
+      const response = await axios.post(`${Base_URL}/task_create_from_tag_view`, payload, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -147,7 +150,7 @@ useEffect(() => {
       if(tagModalPopup)
         {
           console.log(" updateData tag sanitizedData",sanitizedData);
-          sendTagviewEditData(sanitizedData);
+          sendTagviewEditData(sanitizedData , tagName);
         }
         else{
           sendEditTasksData(sanitizedData,edit_card_allottee_id);
@@ -1036,6 +1039,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
    
     if(isTagView)
     {
+      setTagName(allotteeName);
       let all_taskrefs = [];
       console.log("this is all tasks type",typeof(followUpTasks),allTask);
       const transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,taskAlloteeName]) => {
