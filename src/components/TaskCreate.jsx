@@ -522,6 +522,8 @@ useEffect(() => {
       datetime: null,
       label: [],
       ref: React.createRef(),
+      current_personnel_id:currentAllotee,
+      allottee_id :edit_card_allottee_id?.[0] || null
     };
     setTasks((prevTasks) => {
       const newTasks = [...prevTasks];
