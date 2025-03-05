@@ -9,10 +9,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import revert_icon from '../../assets/revert.png';
 import "react-tooltip/dist/react-tooltip.css";
 import {Tooltip} from "react-tooltip";
+import { setEditingTask } from '../../components/slices/Taskslice';
+import { useSelector, useDispatch } from 'react-redux';
 
 
 
-function Tagview() {
+
+function Tagview({openModal , setTagModalPopup,editTask }) {
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
 
@@ -22,7 +25,11 @@ function Tagview() {
   const [draggingTask, setDraggingTask] = useState(null);
   const [draggingAllottee, setDraggingAllottee] = useState(null);
   const [allotteeCardIndex,setAllotteeCardIndex] = useState(0);
+  const editingTask = useSelector((state) => state.task.editingTask);
+  const dispatch = useDispatch();
   
+
+
   
 
 
@@ -30,15 +37,12 @@ function Tagview() {
   const datafetchfunction = async () => {
     const data = await get_tag_data();
     setTagViewData(data);
-    console.log("this is tagviewdata -----", data);
   };
 
   useEffect(() => {
     datafetchfunction();
-    
   }, []);
   
-
 
   // Handle Drag Start
   const handleDragStart = (taskId, taskDescription, category) => {
@@ -63,6 +67,11 @@ function Tagview() {
      if (!draggingTask) {
        console.error("No task is being dragged.");
        return;
+     }
+     if(section != section)
+     {
+      toast.warn("Not Applicable",{position: 'top-center',hideProgressBar: true,autoClose:400});
+      return;
      }
    
      const sectionContainer = document.getElementById(
@@ -281,6 +290,23 @@ const handleRevertClick = async (taskId) => {
   }
 };
 
+// open modal 
+const tagViewModalOpen = (tagname,to_do_tasks,follow_up_tasks)=>
+{
+  openModal();
+  dispatch(setEditingTask(true));
+  editTask(tagname, to_do_tasks, follow_up_tasks, true); // ✅ TagView
+  setTagModalPopup(true)
+}
+
+
+// remove html element 
+// const stripHtml = (html) => {
+//   const tempDiv = document.createElement("div");
+//   tempDiv.innerHTML = html;
+//   return tempDiv.textContent || tempDiv.innerText || "";
+// };
+
 
 
 
@@ -294,6 +320,10 @@ const handleRevertClick = async (taskId) => {
 
             let part1Tasks = [];
             let part2Tasks = [];
+            // console.log("t",tasks[0][4]);
+            // console.log("e",tasks[0][5]);
+            
+           
 
             if (tasks[0][4] == currentPersonnelId && tasks[0][5] == currentPersonnelId) {
               part1Tasks = tasks.filter(
@@ -301,21 +331,24 @@ const handleRevertClick = async (taskId) => {
                   return !completionDate && allotteeId === currentPersonnelId;
                 }
               );
+              
             } else {
               part1Tasks = tasks.filter(
                 ([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
                   return !completionDate && allotteeId === currentPersonnelId;
                 }
               );
-
+             
               part2Tasks = tasks.filter(
                 ([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
                   return !verificationDate && allotterId === currentPersonnelId;
                 }
               );
+            
             }
 
             let to_do_tasks = [...part1Tasks, ...part2Tasks];
+           
 
             const part1FollowUpTasks = tasks.filter(
               ([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) => {
@@ -340,8 +373,7 @@ const handleRevertClick = async (taskId) => {
         
 
             to_do_tasks = to_do_tasks.filter((task) => !reallocatedTasks.includes(task));
-           
-
+          
             follow_up_tasks = [...follow_up_tasks, ...reallocatedTasks];
 
             follow_up_tasks = follow_up_tasks.filter(
@@ -364,6 +396,10 @@ const handleRevertClick = async (taskId) => {
             );
 
             to_do_tasks = [...to_do_tasks, ...tasksToMoveToDo];
+            
+            // to_do_tasks = to_do_tasks.filter((task, index, self) => 
+            //   index === self.findIndex(t => t[0] === task[0]) // Keep only the first occurrence of each taskId
+            // );
 
             return (
               <div
@@ -373,6 +409,7 @@ const handleRevertClick = async (taskId) => {
                 onDragOver={handleTaskDragOver}
                 onDragStart={()=>{dragAllotteeCard(cardIndex,category)}}
                 onDrop={() => handleDrop(category,cardIndex)}
+                onClick={()=>{tagViewModalOpen(category,to_do_tasks,follow_up_tasks)}}
               >
                 <p className="name_text">{category}</p>
 
@@ -424,7 +461,11 @@ const handleRevertClick = async (taskId) => {
                         </div>
                         ) : null
                       }   
-                      <div className="each_task" style={{ padding: "5px" }}>{taskDescription}</div>
+                      <div 
+                        className="each_task" 
+                        style={{ padding: "5px" }} 
+                        dangerouslySetInnerHTML={{ __html: taskDescription }}
+                      />
                     </div>
                   ))}
                 </div>
@@ -453,7 +494,12 @@ const handleRevertClick = async (taskId) => {
                         style={{ marginRight: "10px" }}
                         className='checkbox'
                       />
-                      <div className="each_task" style={{ padding: "5px" }}>{taskDescription}</div>
+                      <div 
+                          className="each_task" 
+                          style={{ padding: "5px" }} 
+                          dangerouslySetInnerHTML={{ __html: taskDescription }}
+                      />
+
                     </div>
                   ))}
                 </div>
