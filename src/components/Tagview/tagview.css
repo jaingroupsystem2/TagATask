@@ -24,3 +24,7 @@
     border: none;
     margin-top: 5px;
 }
+.task-item-container
+{
+    padding: 2px;
+}

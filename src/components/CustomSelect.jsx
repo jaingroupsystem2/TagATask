@@ -20,11 +20,8 @@ const CustomSelect = ({ taskPriorityId , sendCustomTags ,index ,allLabel}) => {
   //   console.log("tagssssss",selectedTags);
     
   // }, [selectedTags]);
-useEffect(()=>
-{
-  console.log("tags",selectedTags);
   
-})
+
 
   const handleToggleDropdown = async (event) => {
     setDropdownOpen(!dropdownOpen);
@@ -79,7 +76,7 @@ useEffect(()=>
 
 
   const handleSearch = async(event) => {
-    const query = event.target.value.toUpperCase();
+    const query = event.target.value;
     setSearchTerm(query);
     const filtered = tagOptions.filter((tag) =>
       tag[1].toLowerCase().includes(query)
