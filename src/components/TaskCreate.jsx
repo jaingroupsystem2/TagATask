@@ -105,8 +105,9 @@ function TaskCreate() {
     console.log("this is from 165",tagName,userId);
     console.log("taskTagsData",tasksData);
     const payload = {
-      "tag_id":tagName,
-      "tasksData":tasksData
+      "tag_description":tagName,
+      "all_tasks":tasksData,
+      "current_personal":userId
     }
     try {
       
