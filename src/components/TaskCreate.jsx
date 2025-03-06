@@ -107,7 +107,7 @@ function TaskCreate() {
     const payload = {
       "tag_description":tagName,
       "all_tasks":tasksData,
-      "current_personal":userId
+      "current_personnel_id":userId
     }
     try {
       
@@ -150,8 +150,13 @@ useEffect(() => {
       
       if(tagModalPopup)
         {
-          console.log(" updateData tag sanitizedData",sanitizedData);
-          sendTagviewEditData(sanitizedData , tagName);
+          const sanitizetagViewdData = tasks.map(({ ref, taskId, ...rest }) => ({
+            task_priority_id: taskId, 
+            ...rest
+          }));
+          
+          console.log(" updateData tag sanitizedData",sanitizetagViewdData);
+          sendTagviewEditData(sanitizetagViewdData , tagName);
         }
         else{
           sendEditTasksData(sanitizedData,edit_card_allottee_id);
@@ -430,7 +435,9 @@ useEffect(() => {
         isItalic: false,
         ref: React.createRef(),
         current_personnel_id:currentAllotee,
-        allottee_id : null
+        allottee_id : null,
+        selectedTags:null
+
       };
     }
     else{
@@ -719,6 +726,7 @@ const confirmDeleteTask = (index) => {
           });
     return; // Prevent moving the task
   }
+  
    
   
     const sectionContainer = document.getElementById(
@@ -1037,13 +1045,13 @@ const handleAllotteeClick = (allotteeName, tasks) => {
   const editTask = async (allotteeName, to_do_tasks, followUpTasks , isTagView =false ) => {
     setToDoCount(to_do_tasks.length);
     let allTask  = to_do_tasks.concat(followUpTasks);
-   
+    let transformedTasks;
     if(isTagView)
     {
       setTagName(allotteeName);
       let all_taskrefs = [];
       console.log("this is all tasks type",typeof(followUpTasks),allTask);
-      const transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,taskAlloteeName]) => {
+       transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,taskAlloteeName]) => {
         const taskRef = React.createRef();
         all_taskrefs.push(taskRef);
         return {
@@ -1081,7 +1089,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
         //const commentsArray = allTask.map(task => task[7]); 
         // console.log("comments ..........." , commentsArray);
         
-        const transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,labels]) => {
+         transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,labels]) => {
           const taskRef = React.createRef();
           all_taskrefs.push(taskRef);
           return {
@@ -1453,6 +1461,7 @@ const handleCrossbtn = async()=>{
     {
       const newTasks = [...tasks];
       newTasks[index].allottee_id = tag;
+      newTasks[index].selectedTags = tagName;
       setTasks(newTasks);
     }
     else
