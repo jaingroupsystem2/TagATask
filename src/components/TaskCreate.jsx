@@ -62,6 +62,8 @@ function TaskCreate() {
   const [tagModalPopup,setTagModalPopup] = useState(false);
   const [tagAloteeName,setTagAloteeName] = useState([]);
   const [tagName , setTagName] = useState("");
+  const tagviewRef = useRef(); // Create a ref
+
 
   
   const accessTag = [564,219,26,533];
@@ -122,6 +124,7 @@ function TaskCreate() {
       {
         toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
       }
+      tagviewRef.current.fetchData(); // ✅ Calling child function
       fetchAllottee();
     } catch (error) {
       console.error('Error editing tasks:', error);
@@ -270,7 +273,10 @@ useEffect(() => {
         console.log("Closing tag modal...");
         updateData();
         setTagModalPopup(false);  // ✅ Close the tag modal
-        setIsModalOpen(false);    // ✅ Ensure the main modal is also closed
+        setIsModalOpen(false); 
+        fetchAllottee(setAllottee, setError);
+        dispatch(setEditingTask(false));
+        // ✅ Ensure the main modal is also closed
       } else if (editingTask) {
         console.log("Updating and closing modal...");
         updateData();
@@ -418,10 +424,17 @@ useEffect(() => {
   };
 
   const createNewTask = (initialChar) => {
-    if (!inputValue) {
-      showToastMessage();
-      return;
+
+    if(tagModalPopup)
+    {
+
+    }else{
+      if (!inputValue) {
+        showToastMessage();
+        return;
+      }
     }
+   
     let newTask;
     if(tagModalPopup)
     {
@@ -505,23 +518,7 @@ useEffect(() => {
       return;
     }
 
-    // delete using backspace 
-    
-    // if (event.key === 'Backspace' && tasks[index].ref.current.innerText.trim() === '') {
-    //   event.preventDefault();
-    //   //handleDeleteTask(index);
-    //   // if (tasks.length > 0) {
-    //   //   if (index > 0) {
-    //   //     const previousTask = tasks[index - 1];
-    //   //     setTimeout(() => {
-    //   //       previousTask.ref.current.focus();
-    //   //       moveCursorToEnd(previousTask.ref.current);
-    //   //     }, 0);
-    //   //   } else {
-    //   //     setTimeout(() => editableInputRef.current.focus(), 0);
-    //   //   }
-    //   // }
-    // }
+   
 
     if (event.key === 'Enter') {
       event.preventDefault();
@@ -572,10 +569,18 @@ useEffect(() => {
       closeModal();
       return;
     }
-    if (!inputValue) {
-      showToastMessage();
-      return;
-    }
+    
+    if(tagModalPopup)
+      {
+  
+      }else{
+        if (!inputValue) {
+          showToastMessage();
+          return;
+        }
+      }
+    
+    
     if (event.key === 'Backspace' && tasks.length > 0) {
       event.preventDefault();
       const lastTask = tasks[tasks.length - 1];
@@ -711,69 +716,80 @@ const confirmDeleteTask = (index) => {
       return;
     }
 
-    const draggedTaskSection = draggingTask.section; // The original section of the dragged task
-    console.log("draggedTaskSection",draggedTaskSection);
-    
+    const draggedTaskSection = draggingTask.section;
 
-  // Check if the task is being moved between To-Do and Follow-Up
-  if ((draggedTaskSection === "To-Do" && section === "Follow-Up") || 
-      (draggedTaskSection === "Follow-Up" && section === "To-Do")) {
-        
+    if ((draggedTaskSection === "To-Do" && section === "Follow-Up") || 
+        (draggedTaskSection === "Follow-Up" && section === "To-Do")) {
           toast.error("Not Applicable: Cannot move tasks between To-Do and Follow-Up", { 
             position: 'top-center', 
             hideProgressBar: true, 
             autoClose: 400 
           });
-    return; // Prevent moving the task
-  }
-  
-   
-  
+        return;
+    }
+
     const sectionContainer = document.getElementById(
       section === "To-Do" ? `to_do_tasks_${cardIndex}` : `follow_up_tasks_${cardIndex}`
-  );
-  
+    );
+
     if (!sectionContainer) {
       console.error(`Section container not found for section: ${section}`);
       return;
     }
-  
+
+    // Get all tasks including their completed status
     const reorderedTasks = Array.from(
       sectionContainer.querySelectorAll(".task-item-container")
     ).map((taskElement) => ({
       taskId: taskElement.getAttribute("data-task-id"),
       description: taskElement.getAttribute("data-task-description"),
+      completed: taskElement.querySelector(".checkbox")?.checked || false, // ✅ Get completed status
     }));
-    console.log("this is all the tasks", reorderedTasks);
-  
+
+    console.log("All tasks in section:", reorderedTasks);
+
     const draggedItemIndex = reorderedTasks.findIndex(
       (item) => item.taskId == draggingTask.taskId
     );
+
     if (draggedItemIndex === -1) {
       console.error("Dragged item not found in reordered tasks.");
       return;
     }
-  
+
     const [draggedItem] = reorderedTasks.splice(draggedItemIndex, 1);
-  
+
+    const targetTask = reorderedTasks[targetTaskIndex];
+
+    // ✅ Ensure `targetTask` exists before checking its properties
+    if (targetTask && (
+        (draggedItem.completed && !targetTask.completed) || 
+        (!draggedItem.completed && targetTask.completed)  && (
+          (draggedItem.verificationDate && !targetTask.verificationDate) || 
+          (!draggedItem.verificationDate && targetTask.verificationDate)  
+        ))
+      ) {
+        toast.error("Task transfer not possible: Cannot mix completed and incomplete tasks.", {
+            position: 'top-center',
+            hideProgressBar: true,
+            autoClose: 400
+        });
+        return;
+    }
+
     reorderedTasks.splice(targetTaskIndex, 0, draggedItem);
-  
-    const newTargetTask = targetTaskIndex === 0
-      ? "top"
-      : reorderedTasks[targetTaskIndex - 1];
-  
-    const targetTaskId = newTargetTask === "top" ? "top" : newTargetTask.taskId;
-  
+
     await updateTaskOrderAPI(targetAllotteeName, section, reorderedTasks.map((task) => ({
       taskId: task.taskId,
       description: task.description,
     })));
+
     await fetchAllottee(setAllottee, setError);
     console.log("Reordered Tasks sent to backend:", reorderedTasks);
-  
+
     setDraggingTask(null);
-  };
-  
+};
+
 
 
 
@@ -1040,7 +1056,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
 };
 
 
-  
+
 
   const editTask = async (allotteeName, to_do_tasks, followUpTasks , isTagView =false ) => {
     setToDoCount(to_do_tasks.length);
@@ -1050,8 +1066,8 @@ const handleAllotteeClick = (allotteeName, tasks) => {
     {
       setTagName(allotteeName);
       let all_taskrefs = [];
-      console.log("this is all tasks type",typeof(followUpTasks),allTask);
-       transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,taskAlloteeName]) => {
+      //console.log("this is all tasks type",typeof(followUpTasks),allTask);
+        transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,taskAlloteeName]) => {
         const taskRef = React.createRef();
         all_taskrefs.push(taskRef);
         return {
@@ -1128,6 +1144,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
             console.log("these are updatedtask", updatedTasks);
             if(tagModalPopup)
             {
+              
                 console.log("tagview updatedTasks", updatedTasks);
             }
             else{
@@ -2043,7 +2060,7 @@ const handleCrossbtn = async()=>{
       </div>
       :
       <div className='task_container'>
-        <Tagview openModal={openModal} setTagModalPopup = {setTagModalPopup} editTask={editTask}  />
+        <Tagview  ref={tagviewRef} openModal={openModal} setTagModalPopup = {setTagModalPopup} editTask={editTask}  />
       </div>
       }
     </div>

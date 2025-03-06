@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useImperativeHandle, forwardRef} from "react";
 import { get_tag_data } from "../ApiList";
 import drag from '../../assets/drag.png';
 import "./tagview.css";
@@ -15,7 +15,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 
 
-function Tagview({openModal , setTagModalPopup,editTask }) {
+const Tagview = forwardRef(({ openModal, setTagModalPopup, editTask }, ref) => {
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
 
@@ -29,15 +29,17 @@ function Tagview({openModal , setTagModalPopup,editTask }) {
   const dispatch = useDispatch();
   
 
-
-  
-
-
   // Fetch Data
   const datafetchfunction = async () => {
     const data = await get_tag_data();
     setTagViewData(data);
   };
+
+
+  useImperativeHandle(ref, () => ({
+
+    fetchData: datafetchfunction,
+  }));
 
   useEffect(() => {
     datafetchfunction();
@@ -512,6 +514,6 @@ const tagViewModalOpen = (tagname,to_do_tasks,follow_up_tasks)=>
       )}
     </div>
   );
-}
+})
 
 export default Tagview;
