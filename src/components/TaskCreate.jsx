@@ -309,7 +309,12 @@ useEffect(() => {
       } else {
         console.log("Saving and closing modal...");
         saveAllDataWithInputValue();
-        setIsModalOpen(false);  // ✅ Ensure modal closes
+        if(isMobile)
+        {
+          setIsModalOpen(true);  // ✅ Ensure modal closes
+        }else{
+          setIsModalOpen(false);  // ✅ Ensure modal closes
+        }
       }
     }, 100);
   };
