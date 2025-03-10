@@ -23,7 +23,7 @@ const SelectAlotee = ({ setTaskAloteeName, index , taskAlloteeName, options, set
   const handleSelect = (id, name) => {
     setSelectedValue({ id, name });
     setTagAloteeName(id);
-    setTaskAloteeName(id,index);
+    setTaskAloteeName(id,name,index);
     setIsDropdownOpen(false);
     setSearchTerm("");
   };

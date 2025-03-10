@@ -26,6 +26,8 @@ import {Tooltip} from "react-tooltip";
 import Tagview from './Tagview/Tagview';
 import SearchableDropdown from './SearchableDropdown';
 import SelectAlotee from './Tagview/SelectAlotee';
+import { FaChevronDown, FaChevronUp } from "react-icons/fa"; // Import icons
+
 
 
 
@@ -63,8 +65,8 @@ function TaskCreate() {
   const [tagAloteeName,setTagAloteeName] = useState([]);
   const [tagName , setTagName] = useState("");
   const tagviewRef = useRef(); // Create a ref
-
-
+  const [expandedCards, setExpandedCards] = useState({});
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   
   const accessTag = [564,219,26,533];
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
@@ -76,7 +78,16 @@ function TaskCreate() {
     tasksRef.current = tasks;
   }, [tasks]);
 
-//console.log("currentAllotee",currentAllotee);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   useEffect(() => {
     // console.log("all data are ", tasks);
@@ -102,6 +113,8 @@ function TaskCreate() {
   // send tag edit popupdata
    const sendTagviewEditData = async (tasksData , tagName) => {
   
+    console.log("handle crosss");
+    
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('id');
     console.log("this is from 165",tagName,userId);
@@ -132,20 +145,9 @@ function TaskCreate() {
   };
 
 
-
-
-
-
-
-
-
-
 useEffect(() => {
   const updateData = () => {
     if(editingTask){
-      console.log("this function is from outside click");
-      console.log(tasks);
-      closeModal();
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
       console.log("this is sanitizedData from line no 104",edit_card_allottee_id);
       console.log("this is sanitizedData from line no 106",sanitizedData);
@@ -153,6 +155,23 @@ useEffect(() => {
       
       if(tagModalPopup)
         {
+          const hasUnassignedTask = tasks.some(task => 
+            !task.taskId && (!task.allottee_id || task.allottee_id === null)
+          );
+  
+          if (hasUnassignedTask) {
+            toast.warn("Please select an Allottee before proceeding!", {
+              position: "top-center",
+              hideProgressBar: true,
+              autoClose: 400,
+            });
+            console.log("Tagview inside",tagModalPopup);
+            setTagModalPopup(true)
+            setTasks([...tasks]);
+            openModal();
+            return; // Prevent modal from closing
+          }
+          
           const sanitizetagViewdData = tasks.map(({ ref, taskId, ...rest }) => ({
             task_priority_id: taskId, 
             ...rest
@@ -160,14 +179,17 @@ useEffect(() => {
           
           console.log(" updateData tag sanitizedData",sanitizetagViewdData);
           sendTagviewEditData(sanitizetagViewdData , tagName);
+          closeModal(); 
+          dispatch(setEditingTask(false));
         }
         else{
+          closeModal();
           sendEditTasksData(sanitizedData,edit_card_allottee_id);
           console.log(" updateData sanitizedData",sanitizedData);
-
         }
       //sendEditTasksData(sanitizedData,edit_card_allottee_id);
       fetchAllottee(setAllottee,setError);
+      setTagModalPopup(false);  // ✅ Close the tag modal
     }
   }
   
@@ -261,8 +283,12 @@ useEffect(() => {
 
 
   const handleClick = (event) => {
-    if (containerRef.current && containerRef.current.contains(event.target)) {
-      console.log("Clicked inside");
+    if (
+      containerRef.current &&
+      containerRef.current.contains(event.target) ||
+      event.target.closest('.allottee_container') // Ignore clicks inside tagview cards
+    ) {
+      console.log("Clicked inside modal or tagview card");
       return;
     }
   
@@ -272,10 +298,8 @@ useEffect(() => {
       if (tagModalPopup) {
         console.log("Closing tag modal...");
         updateData();
-        setTagModalPopup(false);  // ✅ Close the tag modal
-        setIsModalOpen(false); 
-        fetchAllottee(setAllottee, setError);
-        dispatch(setEditingTask(false));
+        
+       
         // ✅ Ensure the main modal is also closed
       } else if (editingTask) {
         console.log("Updating and closing modal...");
@@ -1420,7 +1444,6 @@ const closeModal = () => {
   setTasks([]);
   setInputValue('');
   setTagModalPopup(false);
-
 };
 
 const handleCrossbtn = async()=>{
@@ -1434,7 +1457,28 @@ const handleCrossbtn = async()=>{
       
       if(tagModalPopup)
       {
+        const hasUnassignedTask = tasks.some(task => 
+          !task.taskId && (!task.allottee_id || task.allottee_id === null)
+        );
+
+        if (hasUnassignedTask) {
+          toast.warn("Please select an Allottee before proceeding!", {
+            position: "top-center",
+            hideProgressBar: true,
+            autoClose: 400,
+          });
+          setTagModalPopup(true)
+          setTasks([...tasks]);
+          openModal();
+          return; // Prevent modal from closing
+        }
         console.log("handleCrossbtn sanitizedData",sanitizedData);
+        const sanitizetagViewdData = tasks.map(({ ref, taskId, ...rest }) => ({
+          task_priority_id: taskId, 
+          ...rest
+        }));
+        
+        sendTagviewEditData(sanitizetagViewdData , tagName);
       }
       else{
         await sendEditTasksData(sanitizedData,edit_card_allottee_id);
@@ -1474,22 +1518,69 @@ const handleCrossbtn = async()=>{
 
   const handleCustomTags =(tag , index)=>
   {
-    if(tagModalPopup)
-    {
-      const newTasks = [...tasks];
-      newTasks[index].allottee_id = tag;
-      newTasks[index].selectedTags = tagName;
-      setTasks(newTasks);
-    }
-    else
-    {
       const newTasks = [...tasks];
       newTasks[index].selectedTags = tag;
       setTasks(newTasks);
-    }
-      
-      
   }
+
+
+// Allotee name change on tagview .........
+  const handleAlloteeChange = async(alloteeId , alloteeName, index) =>
+    {
+      const task = tasks[index];
+      if (!task.taskId) {
+        console.log("New Task - No API call needed", task);
+        const updatedTasks = [...tasks];
+        updatedTasks[index].allottee_id = alloteeId;
+        updatedTasks[index].selectedTags = tagName;
+        setTasks(updatedTasks);
+        return;
+      }
+    
+       // If the task already has an allottee, check if it has changed
+       if (task.allotteeId !== alloteeId) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentPersonnelId = parseInt(urlParams.get('id'));
+        console.log(`Calling API: Changing allottee from ${task.allotteeId} to ${alloteeId}`);
+    
+        // Update the UI first
+        const updatedTasks = [...tasks];
+        updatedTasks[index].allottee_id = alloteeId;
+        setTasks(updatedTasks);
+    
+        // Prepare API payload
+        const dataToSend = {
+          current_personnel_id : currentPersonnelId,
+          task_priority_id: task.taskId,
+          allocated_to: alloteeName,
+        };
+
+        console.log("allotee Change ", dataToSend);
+    
+        try {
+          const response = await axios.post(
+            `${Base_URL}/task_transfer`,
+            dataToSend,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "ngrok-skip-browser-warning": "any"
+              }
+            }
+          );
+          setTimeout(fetchAllotteeData, 0);
+          if(response.data.message == 'Task Reallocated Successfully.'){
+            toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+          }else{
+            toast.warn(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+          }
+          console.log("API response:", response.data);
+        } catch (error) {
+          console.error("Error sending task transfer data:", error);
+        }
+      }
+    }
   
   useEffect(()=>
   {
@@ -1604,11 +1695,11 @@ const handleCrossbtn = async()=>{
       
                               <div id='icon_div'>
                                 <div  data-tooltip-id="my-tooltip"
-                                      data-tooltip-content="Add Label"
+                                      data-tooltip-content="Add Allotee"
                                       data-tooltip-place="top">
                                   <SelectAlotee
                                     // taskPriorityId={tasks[index].taskId}
-                                    setTaskAloteeName={handleCustomTags}
+                                    setTaskAloteeName={handleAlloteeChange}
                                     index={index}
                                     taskAlloteeName={task.taskAlloteeName}
                                     options={data}
@@ -1932,125 +2023,146 @@ const handleCrossbtn = async()=>{
 
 
             return (
-              <div
-                className="allottee_container"
+          
+                <div className={`allottee_container ${expandedCards[cardIndex] ? "expanded" : ""}`}
                 key={allotteeName}
                 draggable
                 onDragOver={handleTaskDragOver}
                 onDragStart={()=>{dragAllotteeCard(cardIndex,allotteeName)}}
                 onDrop={() => handleDrop(allotteeName,cardIndex)}
-                onClick={() => {
-                  dispatch(setEditingTask(true));
-                  editTask(allotteeName ,to_do_tasks, follow_up_tasks , false)
-                  }
-                }
+               
               >
-                <p className="name_text">{allotteeName}</p>
-                {/* To-Do Tasks */}
-                <div id={`to_do_tasks_${cardIndex}`} className='to_do_section'>
-                  {to_do_tasks.length > 0 && <h3 className='section'>To-Do</h3>}
-                  {to_do_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId ], index) => (
-                    <div
-                      key={taskId}
-                      className="task-item-container"
-                      draggable
-                      data-task-id={taskId}
-                      data-task-description={taskDescription}
-                      onDragStart={() => handleTaskDragStart(taskId, taskDescription, allotteeName ,"To-Do")}
-                      onDragOver={handleTaskDragOver}
-                      onDrop={() => handleTaskReorder(allotteeName, index, "To-Do" , cardIndex)}
-                      onDragEnd={() => setDraggingTask(null)}
-                    >
-                      <img className="drag_image_logo" src={drag} height={15} width={15} alt="drag" />
-                      <input
-                        type="checkbox"
-                        checked={false}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
-                        style={{ marginRight: "10px" }}
-                        className='checkbox'
-                      />
-                      {
-                        allotterId==currentPersonnelId && allotteeId !== currentPersonnelId ? (
-                        <div>
-                          <Tooltip id="my-tooltip" className='revert_tooltip'/>
-                          <img 
-                            data-tooltip-id="my-tooltip"
-                            data-tooltip-content="Revert This Task"
-                            data-tooltip-place="top"
-                            src={revert_icon} 
-                            className='revert_icon'
-                            data-tip="Send back this task to the Allottee"
-                            onClick={(e) =>{
-                              e.stopPropagation();
-                              handleRevertClick(taskId);
-                            }
-                            }/>
-                            <Tooltip
-                              place="top"
-                              type="dark"
-                              effect="solid"
-                              delayShow={200}
-                            />
-                        </div>
-                        ) : null
-                      }   
-                      
-                      <div
-                        onClick={() => editTask(taskId, taskDescription, allotteeName)}
-                        suppressContentEditableWarning={true}
-                        className="each_task"
-                        style={{
-                          padding: "5px",
-                          whiteSpace: "pre-wrap",
-                          fontSize: "15px",
-                        }}
-                        dangerouslySetInnerHTML={{ __html: taskDescription }}
-                      />
-                    </div>
-                  ))}
-                </div>
-                {/* Follow-Up Tasks */}
-                <div id={`follow_up_tasks_${cardIndex}` } className='follow_up_tasks'>
-                {(to_do_tasks.length > 0 && follow_up_tasks.length>0) && <hr className='section'/>} 
-                {follow_up_tasks.length > 0 && <h3 className='section'>Follow-Up</h3>}
+               {isMobile ? (
+    <div className="card_header" onClick={() => 
+        setExpandedCards((prev) => ({ ...prev, [cardIndex]: !prev[cardIndex] }))
+    }>
+        <p className="name_text">{allotteeName}</p>
+        {expandedCards[cardIndex] ? <FaChevronUp className="arrow_icon" /> : <FaChevronDown className="arrow_icon" />}
+    </div>
+) : (
+    <p className="name_text">{allotteeName}</p>
+)}
 
-                  {follow_up_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId], index) => (
-                    <div
-                      key={taskId}
-                      className="task-item-container"
-                      draggable
-                      data-task-id={taskId}
-                      data-task-description={taskDescription}
-                      onDragStart={() => handleTaskDragStart(taskId, taskDescription, allotteeName,"Follow-Up")}
-                      onDragOver={handleTaskDragOver}
-                      onDrop={() => handleTaskReorder(allotteeName, index,"Follow-Up" , cardIndex)}
-                      onDragEnd={() => setDraggingTask(null)}
-                    >
-                      <img className="drag_image_logo" src={drag} height={15} width={15} alt="drag" />
-                      <input
-                        type="checkbox"
-                        checked={allotteeId==currentPersonnelId && completionDate !=null}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
-                        style={{ marginRight: "10px" }}
-                        className='checkbox'
-                      />
-                      <div
-                        
-                        suppressContentEditableWarning={true}
-                        className="each_task"
-                        style={{
-                          padding: "5px",
-                          whiteSpace: "pre-wrap",
-                          fontSize: "15px",
+                {/* To-Do Tasks */}
+                {(expandedCards || !isMobile) && (
+
+                <div className={`card_body_wrapper ${expandedCards[cardIndex] ? "open" : "closed"}`}  
+                        onClick={() => {
+                        dispatch(setEditingTask(true));
+                        editTask(allotteeName ,to_do_tasks, follow_up_tasks , false)
+                        }
+                      }
+                >
+    
+                    <div id={`to_do_tasks_${cardIndex}`} className='to_do_section'>
+                      {to_do_tasks.length > 0 && <h3 className='section'>To-Do</h3>}
+                      {to_do_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId ], index) => (
+                        <div
+                          key={taskId}
+                          className="task-item-container"
+                          draggable
+                          data-task-id={taskId}
+                          data-task-description={taskDescription}
+                          onDragStart={() => handleTaskDragStart(taskId, taskDescription, allotteeName ,"To-Do")}
+                          onDragOver={handleTaskDragOver}
+                          onDrop={() => handleTaskReorder(allotteeName, index, "To-Do" , cardIndex)}
+                          onDragEnd={() => setDraggingTask(null)}
+                        >
+                          <img className="drag_image_logo" src={drag} height={15} width={15} alt="drag" />
+                          <input
+                            type="checkbox"
+                            checked={false}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
+                            style={{ marginRight: "10px" }}
+                            className='checkbox'
+                          />
+                          {
+                            allotterId==currentPersonnelId && allotteeId !== currentPersonnelId ? (
+                            <div>
+                              <Tooltip id="my-tooltip" className='revert_tooltip'/>
+                              <img 
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content="Revert This Task"
+                                data-tooltip-place="top"
+                                src={revert_icon} 
+                                className='revert_icon'
+                                data-tip="Send back this task to the Allottee"
+                                onClick={(e) =>{
+                                  e.stopPropagation();
+                                  handleRevertClick(taskId);
+                                }
+                                }/>
+                                <Tooltip
+                                  place="top"
+                                  type="dark"
+                                  effect="solid"
+                                  delayShow={200}
+                                />
+                            </div>
+                            ) : null
+                          }   
                           
-                        }}
-                        dangerouslySetInnerHTML={{ __html: taskDescription }}
-                      />
+                          <div
+                            onClick={() => editTask(taskId, taskDescription, allotteeName)}
+                            suppressContentEditableWarning={true}
+                            className="each_task"
+                            style={{
+                              padding: "5px",
+                              whiteSpace: "pre-wrap",
+                              fontSize: "15px",
+                            }}
+                            dangerouslySetInnerHTML={{ __html: taskDescription }}
+                          />
+                        </div>
+                      ))}
                     </div>
-                  ))}
+
+
+                    {/* Follow-Up Tasks */}
+                    <div id={`follow_up_tasks_${cardIndex}` } className='follow_up_tasks'>
+                    {(to_do_tasks.length > 0 && follow_up_tasks.length>0) && <hr className='section'/>} 
+                    {follow_up_tasks.length > 0 && <h3 className='section'>Follow-Up</h3>}
+
+                      {follow_up_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId], index) => (
+                        <div
+                          key={taskId}
+                          className="task-item-container"
+                          draggable
+                          data-task-id={taskId}
+                          data-task-description={taskDescription}
+                          onDragStart={() => handleTaskDragStart(taskId, taskDescription, allotteeName,"Follow-Up")}
+                          onDragOver={handleTaskDragOver}
+                          onDrop={() => handleTaskReorder(allotteeName, index,"Follow-Up" , cardIndex)}
+                          onDragEnd={() => setDraggingTask(null)}
+                        >
+                          <img className="drag_image_logo" src={drag} height={15} width={15} alt="drag" />
+                          <input
+                            type="checkbox"
+                            checked={allotteeId==currentPersonnelId && completionDate !=null}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
+                            style={{ marginRight: "10px" }}
+                            className='checkbox'
+                          />
+                          <div
+                            
+                            suppressContentEditableWarning={true}
+                            className="each_task"
+                            style={{
+                              padding: "5px",
+                              whiteSpace: "pre-wrap",
+                              fontSize: "15px",
+                              
+                            }}
+                            dangerouslySetInnerHTML={{ __html: taskDescription }}
+                          />
+                        </div>
+                      ))}
+                    </div>
                 </div>
+
+                )}
               </div>
             );
           })

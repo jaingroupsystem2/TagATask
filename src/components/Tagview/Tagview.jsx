@@ -11,6 +11,8 @@ import "react-tooltip/dist/react-tooltip.css";
 import {Tooltip} from "react-tooltip";
 import { setEditingTask } from '../../components/slices/Taskslice';
 import { useSelector, useDispatch } from 'react-redux';
+import { FaChevronDown, FaChevronUp } from "react-icons/fa"; // Import icons
+
 
 
 
@@ -27,13 +29,24 @@ const Tagview = forwardRef(({ openModal, setTagModalPopup, editTask }, ref) => {
   const [allotteeCardIndex,setAllotteeCardIndex] = useState(0);
   const editingTask = useSelector((state) => state.task.editingTask);
   const dispatch = useDispatch();
-  
+  const [expandedCards, setExpandedCards] = useState({});
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // Fetch Data
   const datafetchfunction = async () => {
     const data = await get_tag_data();
     setTagViewData(data);
   };
+
+  // for responsive design 
+ useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
 
   useImperativeHandle(ref, () => ({
@@ -293,8 +306,10 @@ const handleRevertClick = async (taskId) => {
 };
 
 // open modal 
-const tagViewModalOpen = (tagname,to_do_tasks,follow_up_tasks)=>
+const tagViewModalOpen = (tagname,to_do_tasks,follow_up_tasks,event)=>
 {
+  event.stopPropagation(); // Stop the click from bubbling up
+  event.preventDefault(); 
   openModal();
   dispatch(setEditingTask(true));
   editTask(tagname, to_do_tasks, follow_up_tasks, true); // ✅ TagView
@@ -411,100 +426,120 @@ const tagViewModalOpen = (tagname,to_do_tasks,follow_up_tasks)=>
                 onDragOver={handleTaskDragOver}
                 onDragStart={()=>{dragAllotteeCard(cardIndex,category)}}
                 onDrop={() => handleDrop(category,cardIndex)}
-                onClick={()=>{tagViewModalOpen(category,to_do_tasks,follow_up_tasks)}}
               >
-                <p className="name_text">{category}</p>
+                         {isMobile ? (
+                                  <div className="card_header" onClick={() => 
+                                            setExpandedCards((prev) => ({ ...prev, [cardIndex]: !prev[cardIndex] }))
+                                        }>
+                                            <p className="name_text">{category}</p>
+                                            {expandedCards[cardIndex] ? <FaChevronUp className="arrow_icon" /> : <FaChevronDown className="arrow_icon" />}
+                                  </div>
+                                      ) : (
+                                          <p className="name_text">{category}</p>
+                                      )}
+               
+                               {/* To-Do Tasks */}
+                               {(expandedCards || !isMobile) && (
+               
+                               <div className={`card_body_wrapper ${expandedCards[cardIndex] ? "open" : "closed"}`}  
+                                      onClick={(event)=>{tagViewModalOpen(category,to_do_tasks,follow_up_tasks,event)}}
 
-                <div id={`to_do_tasks_${cardIndex}`} className="to_do_section">
-                  {to_do_tasks.length > 0 && <h3 className="section">To-Do</h3>}
-                  {to_do_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId ], index) => (
-                    <div
-                      key={index}
-                      className="task-item-container"
-                      draggable
-                      data-task-id={taskId}
-                      data-task-description={taskDescription}
-                      onDragStart={() => handleDragStart(taskId, taskDescription, category)}
-                      onDragOver={handleTaskDragOver}
-                      onDrop={() => handleTaskReorder(category, index, "To-Do" , cardIndex)}
-                      onDragEnd={() => setDraggingTask(null)}   
-                    >
-                      <img className="drag_image_logo" src={drag} height={15} width={15} alt="drag" />
-                      <input
-                        type="checkbox"
-                        style={{ marginRight: "10px" }}
-                        checked={false}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
-                        className='checkbox'                        
-                      />
-                       {
-                        allotterId==currentPersonnelId && allotteeId !== currentPersonnelId ? (
-                        <div>
-                          <Tooltip id="my-tooltip" className='revert_tooltip'/>
-                          <img 
-                            data-tooltip-id="my-tooltip"
-                            data-tooltip-content="Revert This Task"
-                            data-tooltip-place="top"
-                            src={revert_icon} 
-                            className='revert_icon'
-                            data-tip="Send back this task to the Allottee"
-                            onClick={(e) =>{
-                              e.stopPropagation();
-                              handleRevertClick(taskId);
-                            }
-                            }/>
-                            <Tooltip
-                              place="top"
-                              type="dark"
-                              effect="solid"
-                              delayShow={200}
-                            />
-                        </div>
-                        ) : null
-                      }   
-                      <div 
-                        className="each_task" 
-                        style={{ padding: "5px" }} 
-                        dangerouslySetInnerHTML={{ __html: taskDescription }}
-                      />
-                    </div>
-                  ))}
-                </div>
+                               >
 
-                <div id={`follow_up_tasks_${cardIndex}`} className="follow_up_tasks">
-                  {(to_do_tasks.length > 0 && follow_up_tasks.length > 0) && <hr className="section" />}
-                  {follow_up_tasks.length > 0 && <h3 className="section">Follow-Up</h3>}
-                  {follow_up_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId ], index) => (
-                    <div
-                      key={index}
-                      className="task-item-container"
-                      draggable
-                      data-task-id={taskId}
-                      data-task-description={taskDescription}
-                      onDragStart={() => handleDragStart(taskId, taskDescription, category)}
-                      onDragOver={handleTaskDragOver}
-                      onDrop={() => handleTaskReorder(category, index, "Follow-Up" , cardIndex)}
-                      onDragEnd={() => setDraggingTask(null)}  
-                    >
-                      <img className="drag_image_logo" src={drag} height={15} width={15} alt="drag" />
-                      <input
-                        type="checkbox"
-                        checked={allotteeId==currentPersonnelId && completionDate !=null}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
-                        style={{ marginRight: "10px" }}
-                        className='checkbox'
-                      />
-                      <div 
-                          className="each_task" 
-                          style={{ padding: "5px" }} 
-                          dangerouslySetInnerHTML={{ __html: taskDescription }}
-                      />
+                              <div id={`to_do_tasks_${cardIndex}`} className="to_do_section">
+                                {to_do_tasks.length > 0 && <h3 className="section">To-Do</h3>}
+                                {to_do_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId ], index) => (
+                                  <div
+                                    key={index}
+                                    className="task-item-container"
+                                    draggable
+                                    data-task-id={taskId}
+                                    data-task-description={taskDescription}
+                                    onDragStart={() => handleDragStart(taskId, taskDescription, category)}
+                                    onDragOver={handleTaskDragOver}
+                                    onDrop={() => handleTaskReorder(category, index, "To-Do" , cardIndex)}
+                                    onDragEnd={() => setDraggingTask(null)}   
+                                  >
+                                    <img className="drag_image_logo" src={drag} height={15} width={15} alt="drag" />
+                                    <input
+                                      type="checkbox"
+                                      style={{ marginRight: "10px" }}
+                                      checked={false}
+                                      onClick={(e) => e.stopPropagation()}
+                                      onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
+                                      className='checkbox'                        
+                                    />
+                                    {
+                                      allotterId==currentPersonnelId && allotteeId !== currentPersonnelId ? (
+                                      <div>
+                                        <Tooltip id="my-tooltip" className='revert_tooltip'/>
+                                        <img 
+                                          data-tooltip-id="my-tooltip"
+                                          data-tooltip-content="Revert This Task"
+                                          data-tooltip-place="top"
+                                          src={revert_icon} 
+                                          className='revert_icon'
+                                          data-tip="Send back this task to the Allottee"
+                                          onClick={(e) =>{
+                                            e.stopPropagation();
+                                            handleRevertClick(taskId);
+                                          }
+                                          }/>
+                                          <Tooltip
+                                            place="top"
+                                            type="dark"
+                                            effect="solid"
+                                            delayShow={200}
+                                          />
+                                      </div>
+                                      ) : null
+                                    }   
+                                    <div 
+                                      className="each_task" 
+                                      style={{ padding: "5px" }} 
+                                      dangerouslySetInnerHTML={{ __html: taskDescription }}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
 
-                    </div>
-                  ))}
-                </div>
+                              <div id={`follow_up_tasks_${cardIndex}`} className="follow_up_tasks">
+                                {(to_do_tasks.length > 0 && follow_up_tasks.length > 0) && <hr className="section" />}
+                                {follow_up_tasks.length > 0 && <h3 className="section">Follow-Up</h3>}
+                                {follow_up_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId ], index) => (
+                                  <div
+                                    key={index}
+                                    className="task-item-container"
+                                    draggable
+                                    data-task-id={taskId}
+                                    data-task-description={taskDescription}
+                                    onDragStart={() => handleDragStart(taskId, taskDescription, category)}
+                                    onDragOver={handleTaskDragOver}
+                                    onDrop={() => handleTaskReorder(category, index, "Follow-Up" , cardIndex)}
+                                    onDragEnd={() => setDraggingTask(null)}  
+                                  >
+                                    <img className="drag_image_logo" src={drag} height={15} width={15} alt="drag" />
+                                    <input
+                                      type="checkbox"
+                                      checked={allotteeId==currentPersonnelId && completionDate !=null}
+                                      onClick={(e) => e.stopPropagation()}
+                                      onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
+                                      style={{ marginRight: "10px" }}
+                                      className='checkbox'
+                                    />
+                                    <div 
+                                        className="each_task" 
+                                        style={{ padding: "5px" }} 
+                                        dangerouslySetInnerHTML={{ __html: taskDescription }}
+                                    />
+
+                                  </div>
+                                ))}
+                              </div>
+
+                       </div>
+                               )}
+
               </div>
             );
           })}
