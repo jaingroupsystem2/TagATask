@@ -71,6 +71,75 @@ function TaskCreate() {
   const accessTag = [564,219,26,533];
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
+
+
+// push notification 
+const requestNotificationPermission = async () => {
+  if (!("Notification" in window)) {
+    console.log("This browser does not support notifications.");
+    return;
+  }
+
+  const permission = await Notification.requestPermission();
+  if (permission === "granted") {
+    console.log("Notification permission granted.");
+  } else {
+    console.log("Notification permission denied.");
+  }
+};
+
+// Call this function when the app loads
+useEffect(() => {
+  requestNotificationPermission();
+}, []);
+
+
+const showLocalNotification = async (title, body) => {
+  if (!("Notification" in window)) {
+    console.log("This browser does not support notifications.");
+    return;
+  }
+
+  if (Notification.permission === "granted") {
+    // If permission is granted, use service worker to show notification
+    navigator.serviceWorker.ready.then((registration) => {
+      registration.showNotification(title, {
+        body,
+        icon: "/icon-192x192.png",
+        badge: "/icon-192x192.png",
+        vibrate: [200, 100, 200], // Vibrates on mobile
+        data: { url: "/" }, // Modify the URL if needed
+      });
+    });
+  } else if (Notification.permission !== "denied") {
+    // Ask for permission if not granted yet
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        showLocalNotification(title, body);
+      }
+    });
+  }
+};
+
+// Example Usage: Call this function when a button is clicked
+const handleButtonClick = () => {
+  showLocalNotification("Task Alert", "A new task has been added!");
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const currentPersonnelId = parseInt(urlParams.get('id'));
@@ -1943,7 +2012,11 @@ const handleCrossbtn = async()=>{
           className={`add-card-button ${isHovered ? 'hovered' : ''}`}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onClick={openModal}
+          onClick={()=>
+            {
+              openModal();
+              handleButtonClick();
+            }}
         >
           <i className="fa fa-plus plus_btn"></i>
           {isHovered && <span className="add-card-text">Add Card</span>}
