@@ -21,6 +21,7 @@ self.addEventListener("push", function (event) {
     let data = {};
     if (event.data) {
         data = event.data.json(); // Parse push event payload
+        console.log("Push Data:", data);
     }
 
     const title = data.title || "New Notification";
@@ -29,6 +30,8 @@ self.addEventListener("push", function (event) {
         icon: "/icon-192x192.png",
         badge: "/icon-192x192.png",
         vibrate: [200, 100, 200], // Vibrate pattern for mobile
+        tag: "pwa-notification", // Ensures notifications don't stack
+        renotify: true, // New notifications will replace old ones with the same tag
         data: { url: data.url || "/" }, // Store a link to open
         actions: [
             { action: "open", title: "Open App" },
@@ -42,17 +45,29 @@ self.addEventListener("push", function (event) {
 // Handle click on the notification
 self.addEventListener("notificationclick", function (event) {
     event.notification.close();
+    console.log("Notification clicked, action:", event.action);
 
-    if (event.action === "open") {
-        event.waitUntil(clients.openWindow(event.notification.data.url));
-    } else {
-        event.waitUntil(
-            clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
-                if (clientList.length > 0) {
-                    return clientList[0].focus();
-                }
-                return clients.openWindow(event.notification.data.url);
-            })
-        );
+    if (event.action === "dismiss") {
+        return; // Do nothing, user dismissed the notification
     }
+
+    event.waitUntil(
+        clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+            for (let client of clientList) {
+                if (client.url === event.notification.data.url && "focus" in client) {
+                    return client.focus();
+                }
+            }
+            // If app is not open, open it in a new tab
+            if (clients.openWindow) {
+                return clients.openWindow(event.notification.data.url);
+            }
+        })
+    );
+});
+
+// Handle service worker activation
+self.addEventListener("activate", (event) => {
+    console.log("Service Worker activated");
+    event.waitUntil(self.clients.claim());
 });
