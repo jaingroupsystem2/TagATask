@@ -119,6 +119,7 @@
     position: relative;
 }
 
+
 .first-container
 {
     display: flex;
@@ -195,11 +196,24 @@
     width: 50%;
     gap: 20px;
 }
-.close_button{
+  .close-button{
     float: right;
     background:none;
     border: none;
-    margin: 10px;
+    width: 16%;
+}
+
+.close-button .button{
+    width: 25px;
+  height: 25px;
+  margin: 0;
+  overflow: hidden;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  border: 0;
+  position: fixed;
+  z-index: 1;
 }
 
 
@@ -729,13 +743,42 @@
     {
         flex-direction: column;
     }
+    .new-div:nth-child(odd) {
+        background-color: rgb(196, 167, 42);
+    }
+    
+    .new-div:nth-child(even) {
+        background-color: rgb(119, 136, 88);
+    }
+
+   .editable-div-container
+    {
+        gap: 8px;
+    }
+    .close-button
+    {
+        width: 21%;
+    }
+
+    .close-button .button
+    {
+        background-color: #67c4ac;
+        border-radius: 50px;
+        width: 35px;
+        height: 35px;
+    }
+    .editable-div-container {
+        padding: 5px;
+    }
+
     .first-container
     {
         width: 100%;
+        margin-top: 8px;
     }
     .second-container
     {
-        width: 100%;
+        margin-left: 40px;
     }
     
 }

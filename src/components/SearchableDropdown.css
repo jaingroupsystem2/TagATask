@@ -43,3 +43,17 @@
 .dropdown-option:hover {
   background: #f0f0f0;
 }
+
+
+@media (max-width:767px) {
+
+  .dropdown-display
+    {
+      border-radius: 20px;
+    }
+    
+    .dropdown-menu
+    {
+      border-radius: 15px;
+    }
+}
