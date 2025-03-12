@@ -101,18 +101,16 @@ const showLocalNotification = async (title, body) => {
   }
 
   if (Notification.permission === "granted") {
-    // If permission is granted, use service worker to show notification
     navigator.serviceWorker.ready.then((registration) => {
       registration.showNotification(title, {
         body,
         icon: "/icon-192x192.png",
         badge: "/icon-192x192.png",
-        vibrate: [200, 100, 200], // Vibrates on mobile
-        data: { url: "/" }, // Modify the URL if needed
+        vibrate: [200, 100, 200], 
+        data: { url: window.location.origin } // Ensure URL is passed
       });
     });
   } else if (Notification.permission !== "denied") {
-    // Ask for permission if not granted yet
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
         showLocalNotification(title, body);
@@ -1669,9 +1667,11 @@ const handleCrossbtn = async()=>{
       {isModalOpen && (
         <div className="modal-overlay">
           <div ref={containerRef} className="container">
-            <button className="close_button" onClick={handleCrossbtn}>
-              <img src={closebutton} className="close_icon" height={15} width={15} />
-            </button>
+            <div className="close-button">
+              <button className="button" onClick={handleCrossbtn}>
+                <img src={closebutton} className="close_icon" height={15} width={15} />
+              </button>
+            </div>
 
             {/* <select
               className="select_allottee"
@@ -1902,7 +1902,8 @@ const handleCrossbtn = async()=>{
       
                               <div data-tooltip-id="my-tooltip"
                                    data-tooltip-content="Target Time"
-                                   data-tooltip-place="top">
+                                   data-tooltip-place="top"
+                                   className={`${index<toDoCount ? "disable_task" : ""}`}>
                                     <TargetTime
                                       dateTime={task.datetime}
                                       onDatetimeChange={(newDatetime) => handleDatetimeChange(index, newDatetime)}
