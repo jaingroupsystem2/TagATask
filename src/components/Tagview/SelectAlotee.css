@@ -60,11 +60,12 @@
 
     .dropdowncontainer
     {
-      width: 144px;
+      width: 130px;
     }
     .dropdowndisplay 
     {
       padding: 7px;
+      font-size: 11px;
     }
 
   }
