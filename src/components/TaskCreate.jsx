@@ -1777,6 +1777,7 @@ const handleCrossbtn = async()=>{
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
                                   }}
+                                  onTouchEnd={(e)=>handleEditableKeyDown(index,e)}  // ✅ Mobile Support
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -1856,7 +1857,13 @@ const handleCrossbtn = async()=>{
       
                               </div>
                               {(tasks[index].allotterId === currentAllotee || !tasks[index].taskId) && (
-                                  <button className="delete-button" onClick={() => confirmDeleteTask(index)}>
+                                  <button className="delete-button" 
+                                          onClick={() => confirmDeleteTask(index)}
+                                          onTouchEnd={(e) => {
+                                            e.preventDefault(); 
+                                            confirmDeleteTask(index);
+                                          }}
+                                  >
                                     <DeleteOutlinedIcon className='cross_button' style={{ fontSize: 30 }} />
                                   </button>
                               )}
