@@ -749,7 +749,7 @@
         flex-direction: column;
     }
     .new-div:nth-child(odd) {
-        background-color: #d9dfc6;
+        background-color: #9a9b95;
     }
     
     .new-div:nth-child(even) {
