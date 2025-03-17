@@ -1768,6 +1768,7 @@ const handleCrossbtn = async()=>{
                                   contentEditable
                                   suppressContentEditableWarning={true}
                                   value={tasks}
+                                  onInput={(e) => handleTaskInput(index, e)}
                                   onChange={(e) => handleTaskInput(index, e)} // Typing input
                                   onBlur={(e) => handleTaskInput(index, e)}  // Save on blur
                                   onMouseUp={() => handleTextSelect(index)}
@@ -2153,15 +2154,15 @@ const handleCrossbtn = async()=>{
                
               >
                {isMobile ? (
-    <div className="card_header" onClick={() => 
-        setExpandedCards((prev) => ({ ...prev, [cardIndex]: !prev[cardIndex] }))
-    }>
-        <p className="name_text">{allotteeName}</p>
-        {expandedCards[cardIndex] ? <FaChevronUp className="arrow_icon" /> : <FaChevronDown className="arrow_icon" />}
-    </div>
-) : (
-    <p className="name_text">{allotteeName}</p>
-)}
+                          <div className="card_header" onClick={() => 
+                              setExpandedCards((prev) => ({ ...prev, [cardIndex]: !prev[cardIndex] }))
+                            }>
+                              <p className="name_text">{allotteeName}</p>
+                              {expandedCards[cardIndex] ? <FaChevronUp className="arrow_icon" /> : <FaChevronDown className="arrow_icon" />}
+                          </div>
+                          ) : (
+                        <p className="name_text">{allotteeName}</p>
+              )}
 
                 {/* To-Do Tasks */}
                 {(expandedCards || !isMobile) && (
