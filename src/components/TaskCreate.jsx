@@ -67,6 +67,8 @@ function TaskCreate() {
   const tagviewRef = useRef(); // Create a ref
   const [expandedCards, setExpandedCards] = useState({});
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [touchDraggedTask, setTouchDraggedTask] = useState(null);
+
   
   const accessTag = [564,219,26,533];
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
@@ -894,9 +896,46 @@ const confirmDeleteTask = (index) => {
 
 
 
-  const handleTaskDragStart = (taskId, taskDescription, allotteeName,section) => {
-    setDraggingTask({ taskId, taskDescription, allotteeName,section });
-  };
+const handleTaskDragStart = (e, taskId, taskDescription, allotteeName, section) => {
+  if (e.type === "touchstart") {
+    setDraggingTask({ taskId, taskDescription, allotteeName, section });
+    e.target.classList.add("dragging");
+    console.log("dragging");
+  } else {
+    setDraggingTask({ taskId, taskDescription, allotteeName, section });
+  }
+};
+
+const handleTaskTouchMove = (e) => {
+  if (e.cancelable) {
+    e.preventDefault();
+  }
+
+  const touch = e.touches[0];
+  const element = document.elementFromPoint(touch.clientX, touch.clientY);
+  
+  if (element && element.classList.contains("task-item-container")) {
+    element.style.backgroundColor = "#f0f0f0"; // Highlight drop area
+  }
+};
+
+
+
+const handleTaskTouchEnd = (e,targetAllotteeName, targetTaskIndex, section , cardIndex) => {
+  if (!draggingTask) return;
+
+  const touch = e.changedTouches[0];
+  const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+console.log("drop", targetAllotteeName, targetTaskIndex, section , cardIndex);
+
+    handleTaskReorder(
+      targetAllotteeName, targetTaskIndex, section , cardIndex
+    );
+  e.target.classList.remove("dragging");
+  setDraggingTask(null);
+
+};
+
 
   
   const handleTaskDragOver = (e) => {
@@ -2144,11 +2183,17 @@ const handleCrossbtn = async()=>{
                           draggable
                           data-task-id={taskId}
                           data-task-description={taskDescription}
-                          onDragStart={() => handleTaskDragStart(taskId, taskDescription, allotteeName ,"To-Do")}
+                          onDragStart={(e) => handleTaskDragStart(e,taskId, taskDescription, allotteeName ,"To-Do")}
                           onDragOver={handleTaskDragOver}
                           onDrop={() => handleTaskReorder(allotteeName, index, "To-Do" , cardIndex)}
                           onDragEnd={() => setDraggingTask(null)}
+
+
+                          onTouchStart={(e) => handleTaskDragStart(e, taskId, taskDescription, allotteeName, "To-Do")}
+                          onTouchMove={handleTaskTouchMove}
+                          onTouchEnd={(e) => handleTaskTouchEnd(e,allotteeName, index, "To-Do" , cardIndex)}
                         >
+
                           <img className="drag_image_logo" src={drag} height={15} width={15} alt="drag" />
                           <input
                             type="checkbox"
@@ -2212,10 +2257,15 @@ const handleCrossbtn = async()=>{
                           draggable
                           data-task-id={taskId}
                           data-task-description={taskDescription}
-                          onDragStart={() => handleTaskDragStart(taskId, taskDescription, allotteeName,"Follow-Up")}
+                          onDragStart={(e) => handleTaskDragStart(e,taskId, taskDescription, allotteeName,"Follow-Up")}
                           onDragOver={handleTaskDragOver}
                           onDrop={() => handleTaskReorder(allotteeName, index,"Follow-Up" , cardIndex)}
                           onDragEnd={() => setDraggingTask(null)}
+
+                          onTouchStart={(e) => handleTaskDragStart(e, taskId, taskDescription, allotteeName, "Follow-Up")}
+                          onTouchMove={handleTaskTouchMove}
+                          onTouchEnd={(e) => handleTaskTouchEnd(e,allotteeName, index, "Follow-Up" , cardIndex)}
+
                         >
                           <img className="drag_image_logo" src={drag} height={15} width={15} alt="drag" />
                           <input
