@@ -674,6 +674,11 @@
     cursor: not-allowed;
 }
 
+.card_body_wrapper
+{
+    height: 500px;
+}
+
 
 
 @media (max-width:767px) {
@@ -744,11 +749,11 @@
         flex-direction: column;
     }
     .new-div:nth-child(odd) {
-        background-color: rgb(196, 167, 42);
+        background-color: #d9dfc6;
     }
     
     .new-div:nth-child(even) {
-        background-color: rgb(119, 136, 88);
+        background-color: #f1f1f1;
     }
 
    .editable-div-container
@@ -779,6 +784,19 @@
     .second-container
     {
         margin-left: 40px;
+    }
+    .to_do_section
+    {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+     .follow_up_tasks
+    {
+        margin-bottom: 10px;
+    }
+    .allottee_container 
+    {
+        border-radius: 39px;
     }
     
 }

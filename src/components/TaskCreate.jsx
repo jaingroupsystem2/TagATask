@@ -353,6 +353,7 @@ useEffect(() => {
     if (
       containerRef.current &&
       containerRef.current.contains(event.target) ||
+      event.target.closest('.toggle_button') ||  // ✅ Ignore toggle button clicks
       event.target.closest('.allottee_container') // Ignore clicks inside tagview cards
     ) {
       console.log("Clicked inside modal or tagview card");
@@ -1453,7 +1454,7 @@ const handleDrop = (allotteeName,cardIndex) => {
   }
 };
 
-const handleToggleChange = (newState) => {
+const handleToggleChange = (newState,event) => {
   console.log('Toggle button state:', newState);
   setIsToggleOn(newState);
 };
@@ -1720,7 +1721,7 @@ const handleCrossbtn = async()=>{
                                 <img className="drag_image_logo" src={drag} height={20} width={20} alt="drag" />
                                 <input
                                   type="checkbox"
-                                  className={`new-div-checkbox ${index<toDoCount ? "disable_task" : ""}`}
+                                  className={`new-div-checkbox ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   checked={task.completed || false}
                                   onChange={(e) => handleTaskCheck(null, index, e.target.checked)}
                                 />
@@ -1737,7 +1738,7 @@ const handleCrossbtn = async()=>{
                                     }
                                   }}
                                   ref={task.ref}
-                                  className={`new-div-input ${index<toDoCount ? "disable_task" : ""}`}
+                                  className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
                                   dangerouslySetInnerHTML={{ __html: task.text }} // Only rendered when loading the tasks initially
                                 />
@@ -1865,7 +1866,7 @@ const handleCrossbtn = async()=>{
                                 <img className="drag_image_logo" src={drag} height={20} width={20} alt="drag" />
                                 <input
                                   type="checkbox"
-                                  className={`new-div-checkbox ${index<toDoCount ? "disable_task" : ""}`}
+                                  className={`new-div-checkbox ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   checked={task.completed || false}
                                   onChange={(e) => handleTaskCheck(null, index, e.target.checked)}
                                 />
@@ -1882,7 +1883,7 @@ const handleCrossbtn = async()=>{
                                     }
                                   }}
                                   ref={task.ref}
-                                  className={`new-div-input ${index<toDoCount ? "disable_task" : ""}`}
+                                  className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
                                   dangerouslySetInnerHTML={{ __html: task.text }} // Only rendered when loading the tasks initially
                                 />
