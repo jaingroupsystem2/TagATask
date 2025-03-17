@@ -38,6 +38,7 @@ self.addEventListener("push", function (event) {
             { action: "dismiss", title: "Dismiss" }
         ]
     };
+    console.log("data....",options.data);
 
     event.waitUntil(self.registration.showNotification(title, options));
 });
@@ -45,23 +46,17 @@ self.addEventListener("push", function (event) {
 // Handle click on the notification
 self.addEventListener("notificationclick", function (event) {
     event.notification.close();
-    console.log("Notification clicked, action:", event.action);
-
-    if (event.action === "dismiss") {
-        return; // Do nothing, user dismissed the notification
-    }
 
     event.waitUntil(
         clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+            // If app is open, focus it
             for (let client of clientList) {
                 if (client.url === event.notification.data.url && "focus" in client) {
                     return client.focus();
                 }
             }
-            // If app is not open, open it in a new tab
-            if (clients.openWindow) {
-                return clients.openWindow(event.notification.data.url);
-            }
+            // If app is not open, open it
+            return clients.openWindow(event.notification.data.url);
         })
     );
 });

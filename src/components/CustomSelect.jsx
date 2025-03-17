@@ -125,7 +125,7 @@ const CustomSelect = ({ taskPriorityId , sendCustomTags ,index ,allLabel}) => {
             </div>
           ))
         ) : (
-          <LabelOutlinedIcon style={{ fontSize: 30, color: "#b2b2b2" }} />
+          <LabelOutlinedIcon style={{ fontSize: 30, color: "rgb(24 22 22)" }} />
         )}
       </div>
 

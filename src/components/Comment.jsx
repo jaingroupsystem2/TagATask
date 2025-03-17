@@ -77,7 +77,7 @@ const Comment = ({ comments, sendComments, comment_index, comment_count, comment
       <ChatBubbleOutlineOutlinedIcon
         className="comment-icon"
         onClick={handleIconClick}
-        style={{ opacity: comments.length > 0 ? 1 : 0.3, cursor: 'pointer', fontSize: 30 }}
+        style={{cursor: 'pointer', fontSize: 30 , color: "rgb(24 22 22)" }}
       />
       {isPopupOpen && (
         <div ref={popupRef} className="popup-container">
