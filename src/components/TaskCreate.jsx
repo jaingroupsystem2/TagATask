@@ -352,13 +352,25 @@ useEffect(() => {
 
 
   const handleClick = (event) => {
+    const modal = containerRef.current;
+    const addCardButton = document.querySelector('.add-card-button');
+    const taskContainer = document.querySelector('.task_container');
+
+     // ✅ Allow modal to open if clicking on the Add Card button
+  if (addCardButton && addCardButton.contains(event.target)) {
+    console.log("Clicked Add Card button - Opening modal");
+    openModal();
+    return;
+  }
+  
+    // ✅ Ignore clicks inside modal, toggle button, or any interactive UI
     if (
-      containerRef.current &&
-      containerRef.current.contains(event.target) ||
-      event.target.closest('.toggle_button') ||  // ✅ Ignore toggle button clicks
-      event.target.closest('.allottee_container') // Ignore clicks inside tagview cards
+      modal && modal.contains(event.target) ||
+      event.target.closest('.toggle_button') ||  // Ignore toggle button clicks
+      event.target.closest('.allottee_container') || // Ignore clicks inside allottee cards
+      event.target.closest('.task_container')  // ✅ Ignore task container clicks
     ) {
-      console.log("Clicked inside modal or tagview card");
+      console.log("Clicked inside modal or task container");
       return;
     }
   
@@ -368,9 +380,6 @@ useEffect(() => {
       if (tagModalPopup) {
         console.log("Closing tag modal...");
         updateData();
-        
-       
-        // ✅ Ensure the main modal is also closed
       } else if (editingTask) {
         console.log("Updating and closing modal...");
         updateData();
@@ -379,11 +388,12 @@ useEffect(() => {
       } else {
         console.log("Saving and closing modal...");
         saveAllDataWithInputValue();
-        if(isMobile)
-        {
-          setIsModalOpen(true);  // ✅ Ensure modal closes
-        }else{
-          setIsModalOpen(false);  // ✅ Ensure modal closes
+  
+        // ✅ Prevent modal from opening on random clicks in mobile
+        if (isMobile) {
+          setIsModalOpen(false);
+        } else {
+          setIsModalOpen(false);
         }
       }
     }, 100);
