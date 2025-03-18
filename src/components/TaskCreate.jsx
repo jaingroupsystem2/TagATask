@@ -1781,10 +1781,9 @@ const handleCrossbtn = async()=>{
                                     }
                                   }}
                                   onTouchEnd={(e) => {
-                                    if (e.key === 'Enter' || e.key === 'Backspace' || e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Escape') {
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
-                                  }}
+                                  }
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -1939,10 +1938,9 @@ const handleCrossbtn = async()=>{
                                     }
                                   }}
                                   onTouchEnd={(e) => {
-                                    if (e.key === 'Enter' || e.key === 'Backspace' || e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Escape') {
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
-                                  }}
+                                  }
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
