@@ -602,6 +602,15 @@ useEffect(() => {
   const handleTextSelect = (index) => {
     setSelectedTaskIndex(index);
   };
+  
+  useEffect(() => {
+    if (isMobile && editableInputRef.current) {
+      editableInputRef.current.addEventListener("touchend", () => {
+        editableInputRef.current.focus();
+      });
+    }
+  }, []);
+  
 
 
   const handleTaskKeyDown = (index, event) => {
