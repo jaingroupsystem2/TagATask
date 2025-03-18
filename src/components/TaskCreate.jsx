@@ -1781,7 +1781,7 @@ const handleCrossbtn = async()=>{
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
                                   }}
-                                  tabIndex={-1}
+                                  tabIndex={0}
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -1928,7 +1928,7 @@ const handleCrossbtn = async()=>{
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
                                   }}
-                                  tabIndex={-1}
+                                  tabIndex={0}
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
