@@ -741,13 +741,17 @@ useEffect(() => {
 // delete Task .... 
 
 const confirmDeleteTask = (index) => {
-  const isConfirmed = window.confirm("Are you sure you want to delete this task?");
-  console.log("delete new task",tasks);
-  
-  if (isConfirmed) {
+  if (window.innerWidth <= 768) {
+    // Use a custom modal for mobile browsers
     handleDeleteTask(index);
+  } else {
+    const isConfirmed = window.confirm("Are you sure you want to delete this task?");
+    if (isConfirmed) {
+      handleDeleteTask(index);
+    }
   }
 };
+
 
 
   const handleDeleteTask = (index) => {
