@@ -1769,7 +1769,7 @@ const handleCrossbtn = async()=>{
                                   suppressContentEditableWarning={true}
                                   value={tasks}
                                   onChange={(e) => handleTaskInput(index, e)} // Typing input
-                                  onInput={(e) => handleTaskInput(index, e)}
+                                  onTouchEnd={(e) => handleTaskInput(index, e)}
                                   onBlur={(e) => handleTaskInput(index, e)}  // Save on blur
                                   onMouseUp={() => handleTextSelect(index)}
                                   onKeyDown={(e) => {
@@ -1917,7 +1917,7 @@ const handleCrossbtn = async()=>{
                                   suppressContentEditableWarning={true}
                                   value={tasks}
                                   onChange={(e) => handleTaskInput(index, e)} // Typing input
-                                  onInput={(e) => handleTaskInput(index, e)}
+                                  onTouchEnd={(e) => handleTaskInput(index, e)}
                                   onBlur={(e) => handleTaskInput(index, e)}  // Save on blur
                                   onMouseUp={() => handleTextSelect(index)}
                                   onKeyDown={(e) => {
