@@ -662,7 +662,6 @@ useEffect(() => {
   let accumulatedChars = '';
   const handleEditableInputChange = (event) => {
     setInputValue(event.target.value); // Update the input value state
-    console.log("event.target.value.trim()",event.target.value);
   };
 
   const handleEditableKeyDown = (event) => {
@@ -1884,7 +1883,7 @@ const handleCrossbtn = async()=>{
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
-                        onInput={handleEditableKeyDown}  // ✅ Mobile Support
+                        onTouchEnd={(e) => setTimeout(() => editableInputRef.current.focus(), 50)} // Mobile Fix                        
                         placeholder="Add Task"
                         style={{
                           padding: '5px',
@@ -2029,8 +2028,7 @@ const handleCrossbtn = async()=>{
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
                         onKeyDown={handleEditableKeyDown} 
-                        onInput={handleEditableKeyDown}  // ✅ Mobile Support
-                        // Handle key press events
+                        onTouchEnd={(e) => setTimeout(() => editableInputRef.current.focus(), 50)} // Mobile Fix
                         placeholder="Add Task"
                         style={{
                           padding: '5px',
