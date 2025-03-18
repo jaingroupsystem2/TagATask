@@ -808,6 +808,7 @@
     }
     .editable-input-container {
         pointer-events: auto;
+        z-index: 9999;
       }
       
     
