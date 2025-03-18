@@ -1769,6 +1769,7 @@ const handleCrossbtn = async()=>{
                                   suppressContentEditableWarning={true}
                                   value={tasks}
                                   onChange={(e) => handleTaskInput(index, e)} // Typing input
+                                  onInput={(e) => handleTaskInput(index, e)}
                                   onBlur={(e) => handleTaskInput(index, e)}  // Save on blur
                                   onMouseUp={() => handleTextSelect(index)}
                                   onKeyDown={(e) => {
@@ -1873,6 +1874,7 @@ const handleCrossbtn = async()=>{
                         ref={editableInputRef}
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
+                        onInput={handleEditableInputChange}   // ✅ Works for virtual keyboards
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
@@ -1915,6 +1917,7 @@ const handleCrossbtn = async()=>{
                                   suppressContentEditableWarning={true}
                                   value={tasks}
                                   onChange={(e) => handleTaskInput(index, e)} // Typing input
+                                  onInput={(e) => handleTaskInput(index, e)}
                                   onBlur={(e) => handleTaskInput(index, e)}  // Save on blur
                                   onMouseUp={() => handleTextSelect(index)}
                                   onKeyDown={(e) => {
@@ -2018,6 +2021,7 @@ const handleCrossbtn = async()=>{
                         ref={editableInputRef}
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
+                        onInput={handleEditableInputChange}   // ✅ Works for virtual keyboards
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
