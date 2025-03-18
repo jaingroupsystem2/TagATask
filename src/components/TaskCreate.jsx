@@ -1702,7 +1702,9 @@ const handleCrossbtn = async()=>{
     console.log("input........................." , inputValue);
 
   },[inputValue])
-  
+
+
+
 
   return (
 
@@ -1888,6 +1890,7 @@ const handleCrossbtn = async()=>{
                         onChange={handleEditableInputChange} // Update input value on typing
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
                         onInput={handleEditableInputChange} // Works for mobile soft keyboards
+                        onTouchEnd={handleEditableKeyDown}
                         placeholder="Add Task"
                         style={{
                           padding: '5px',
@@ -2038,6 +2041,7 @@ const handleCrossbtn = async()=>{
                         onChange={handleEditableInputChange} // Update input value on typing
                         onKeyDown={handleEditableKeyDown} 
                         onInput={handleEditableInputChange} // Works for mobile soft keyboards
+                        onTouchEnd={handleEditableKeyDown}
                         placeholder="Add Task"
                         style={{
                           padding: '5px',
