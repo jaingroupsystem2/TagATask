@@ -1149,25 +1149,30 @@ const handleAllotteeClick = (allotteeName, tasks) => {
   };
 
   const handleTaskInput = (index, event) => {
-    if (event.type === 'blur' || event.key === 'Enter') {
-      const newTasks = [...tasks];
-      console.log("ew add input " , newTasks);
-      
-      newTasks[index].text = DOMPurify.sanitize(event.currentTarget.innerHTML, {
-        ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'u', 'a'],
-        ALLOWED_ATTR: ['href', 'target']
-      });
-      setTasks(newTasks);
-      return;
-    }
-    const taskElement = event.currentTarget;
-    taskElement.innerHTML = DOMPurify.sanitize(taskElement.innerHTML, {
-      ALLOWED_TAGS: ['b', 'i', 'strong', 'em'],
+    console.log("Task Input Event:", event.type);
+  
+    // Track cursor position
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    
+    const newTasks = [...tasks];
+    
+    // Prevent HTML injection and sanitize content
+    newTasks[index].text = DOMPurify.sanitize(event.currentTarget.innerText, {
+      ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'u', 'a'],
+      ALLOWED_ATTR: ['href', 'target']
     });
+  
+    setTasks(newTasks);
+  
     setTimeout(() => {
-      moveCursorToEnd(taskElement);
+      // Restore cursor position
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
     }, 0);
   };
+  
 
   const handleCommentsChange = async (updatedComments, comment_index) => {
     const task_priority_id = tasks[comment_index].taskId;
