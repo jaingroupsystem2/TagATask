@@ -602,15 +602,6 @@ useEffect(() => {
   const handleTextSelect = (index) => {
     setSelectedTaskIndex(index);
   };
-  
-  useEffect(() => {
-    if (isMobile && editableInputRef.current) {
-      editableInputRef.current.addEventListener("touchend", () => {
-        editableInputRef.current.focus();
-      });
-    }
-  }, []);
-  
 
 
   const handleTaskKeyDown = (index, event) => {
@@ -1158,30 +1149,25 @@ const handleAllotteeClick = (allotteeName, tasks) => {
   };
 
   const handleTaskInput = (index, event) => {
-    console.log("Task Input Event:", event.type);
-  
-    // Track cursor position
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
-    
-    const newTasks = [...tasks];
-    
-    // Prevent HTML injection and sanitize content
-    newTasks[index].text = DOMPurify.sanitize(event.currentTarget.innerText, {
-      ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'u', 'a'],
-      ALLOWED_ATTR: ['href', 'target']
+    if (event.type === 'blur' || event.key === 'Enter') {
+      const newTasks = [...tasks];
+      console.log("ew add input " , newTasks);
+      
+      newTasks[index].text = DOMPurify.sanitize(event.currentTarget.innerHTML, {
+        ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'u', 'a'],
+        ALLOWED_ATTR: ['href', 'target']
+      });
+      setTasks(newTasks);
+      return;
+    }
+    const taskElement = event.currentTarget;
+    taskElement.innerHTML = DOMPurify.sanitize(taskElement.innerHTML, {
+      ALLOWED_TAGS: ['b', 'i', 'strong', 'em'],
     });
-  
-    setTasks(newTasks);
-  
     setTimeout(() => {
-      // Restore cursor position
-      range.collapse(false);
-      selection.removeAllRanges();
-      selection.addRange(range);
+      moveCursorToEnd(taskElement);
     }, 0);
   };
-  
 
   const handleCommentsChange = async (updatedComments, comment_index) => {
     const task_priority_id = tasks[comment_index].taskId;
@@ -1790,7 +1776,6 @@ const handleCrossbtn = async()=>{
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
                                   }}
-                                  tabIndex={0}
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -1887,7 +1872,6 @@ const handleCrossbtn = async()=>{
                         ref={editableInputRef}
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
-                        onInput={handleEditableInputChange}   // ✅ Works for virtual keyboards
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
@@ -1937,7 +1921,6 @@ const handleCrossbtn = async()=>{
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
                                   }}
-                                  tabIndex={0}
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -2033,7 +2016,6 @@ const handleCrossbtn = async()=>{
                         ref={editableInputRef}
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
-                        onInput={handleEditableInputChange}   // ✅ Works for virtual keyboards
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
