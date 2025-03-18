@@ -524,8 +524,6 @@ useEffect(() => {
 
   const createNewTask = (initialChar) => {
 
-    console.log("initialChar",initialChar);
-    
     if(tagModalPopup)
     {
 
@@ -570,7 +568,6 @@ useEffect(() => {
       };
 
     }
-   console.log("newTask",newTask);
    
     setTasks((prevTasks) => [...prevTasks, newTask]);
 
@@ -696,7 +693,7 @@ useEffect(() => {
     } else if (event.key !== 'Enter' && /^[a-zA-Z0-9`~!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/? ]$/.test(event.key)) {
       event.preventDefault();
       accumulatedChars += event.key;
-      clearTimeout(debounceTimer);      
+      clearTimeout(debounceTimer);
       editableInputRef.current.value = accumulatedChars;
       debounceTimer = setTimeout(() => {
         if (accumulatedChars) {
@@ -1702,9 +1699,7 @@ const handleCrossbtn = async()=>{
     console.log("input........................." , inputValue);
 
   },[inputValue])
-
-
-
+  
 
   return (
 
@@ -1773,7 +1768,6 @@ const handleCrossbtn = async()=>{
                                   contentEditable
                                   suppressContentEditableWarning={true}
                                   value={tasks}
-                                  onInput={(e) => handleTaskInput(index, e)}
                                   onChange={(e) => handleTaskInput(index, e)} // Typing input
                                   onBlur={(e) => handleTaskInput(index, e)}  // Save on blur
                                   onMouseUp={() => handleTextSelect(index)}
@@ -1782,10 +1776,7 @@ const handleCrossbtn = async()=>{
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
                                   }}
-                                  onTouchEnd={(e) => {
-                                      handleTaskKeyDown(index, e); // Handle other keys
-                                    }
-                                  }
+                                  tabIndex={-1}
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -1865,13 +1856,7 @@ const handleCrossbtn = async()=>{
       
                               </div>
                               {(tasks[index].allotterId === currentAllotee || !tasks[index].taskId) && (
-                                  <button className="delete-button" 
-                                          onClick={() => confirmDeleteTask(index)}
-                                          onTouchEnd={(e) => {
-                                            e.preventDefault(); 
-                                            confirmDeleteTask(index);
-                                          }}
-                                  >
+                                  <button className="delete-button" onClick={() => confirmDeleteTask(index)}>
                                     <DeleteOutlinedIcon className='cross_button' style={{ fontSize: 30 }} />
                                   </button>
                               )}
@@ -1889,8 +1874,6 @@ const handleCrossbtn = async()=>{
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
-                        onInput={handleEditableInputChange} // Works for mobile soft keyboards
-                        onTouchEnd={handleEditableKeyDown}
                         placeholder="Add Task"
                         style={{
                           padding: '5px',
@@ -1931,7 +1914,6 @@ const handleCrossbtn = async()=>{
                                   contentEditable
                                   suppressContentEditableWarning={true}
                                   value={tasks}
-                                  onInput={(e) => handleTaskInput(index, e)}
                                   onChange={(e) => handleTaskInput(index, e)} // Typing input
                                   onBlur={(e) => handleTaskInput(index, e)}  // Save on blur
                                   onMouseUp={() => handleTextSelect(index)}
@@ -1940,10 +1922,7 @@ const handleCrossbtn = async()=>{
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
                                   }}
-                                  onTouchEnd={(e) => {
-                                      handleTaskKeyDown(index, e); // Handle other keys
-                                    }
-                                  }
+                                  tabIndex={-1}
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -2039,9 +2018,7 @@ const handleCrossbtn = async()=>{
                         ref={editableInputRef}
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
-                        onKeyDown={handleEditableKeyDown} 
-                        onInput={handleEditableInputChange} // Works for mobile soft keyboards
-                        onTouchEnd={handleEditableKeyDown}
+                        onKeyDown={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
                           padding: '5px',
