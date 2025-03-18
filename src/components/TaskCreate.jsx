@@ -524,6 +524,8 @@ useEffect(() => {
 
   const createNewTask = (initialChar) => {
 
+    console.log("initialChar",initialChar);
+    
     if(tagModalPopup)
     {
 
@@ -568,6 +570,7 @@ useEffect(() => {
       };
 
     }
+   console.log("newTask",newTask);
    
     setTasks((prevTasks) => [...prevTasks, newTask]);
 
@@ -659,6 +662,7 @@ useEffect(() => {
   let accumulatedChars = '';
   const handleEditableInputChange = (event) => {
     setInputValue(event.target.value); // Update the input value state
+    console.log("event.target.value.trim()",event.target.value);
   };
 
   const handleEditableKeyDown = (event) => {
@@ -693,7 +697,7 @@ useEffect(() => {
     } else if (event.key !== 'Enter' && /^[a-zA-Z0-9`~!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/? ]$/.test(event.key)) {
       event.preventDefault();
       accumulatedChars += event.key;
-      clearTimeout(debounceTimer);
+      clearTimeout(debounceTimer);      
       editableInputRef.current.value = accumulatedChars;
       debounceTimer = setTimeout(() => {
         if (accumulatedChars) {
@@ -1777,7 +1781,6 @@ const handleCrossbtn = async()=>{
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
                                   }}
-                                  onTouchEnd={(e)=>handleEditableKeyDown(index,e)}  // ✅ Mobile Support
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -1881,7 +1884,7 @@ const handleCrossbtn = async()=>{
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
-                        onTouchEnd={handleEditableKeyDown}  // ✅ Mobile Support
+                        onInput={handleEditableKeyDown}  // ✅ Mobile Support
                         placeholder="Add Task"
                         style={{
                           padding: '5px',
@@ -2026,7 +2029,7 @@ const handleCrossbtn = async()=>{
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
                         onKeyDown={handleEditableKeyDown} 
-                        onTouchEnd={handleEditableKeyDown}  // ✅ Mobile Support
+                        onInput={handleEditableKeyDown}  // ✅ Mobile Support
                         // Handle key press events
                         placeholder="Add Task"
                         style={{
