@@ -1886,8 +1886,7 @@ const handleCrossbtn = async()=>{
                         ref={editableInputRef}
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
-                        onInput={handleEditableKeyDown}
-                        onKeyDown={handleEditableKeyDown}   // Handle key press events
+                        onInput={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
                           padding: '5px',
@@ -2031,8 +2030,7 @@ const handleCrossbtn = async()=>{
                         ref={editableInputRef}
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
-                        onInput={handleEditableKeyDown}
-                        onKeyDown={handleEditableKeyDown}   // Handle key press events
+                        onInput={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
                           padding: '5px',
