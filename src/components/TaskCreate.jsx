@@ -668,6 +668,7 @@ useEffect(() => {
   let debounceTimer = null;
   let accumulatedChars = '';
   const handleEditableInputChange = (event) => {
+    setInputValue(event.target.value); // Update the input value state
   };
 
   const handleEditableKeyDown = (event) => {
@@ -677,9 +678,6 @@ useEffect(() => {
       closeModal();
       return;
     }
-    console.log("i am in mbile");
-    console.log("event.key",event.key);
-    
     
     if(tagModalPopup)
       {
@@ -707,8 +705,6 @@ useEffect(() => {
       accumulatedChars += event.key;
       clearTimeout(debounceTimer);
       editableInputRef.current.value = accumulatedChars;
-      console.log("accumulatedChars");
-      
       debounceTimer = setTimeout(() => {
         if (accumulatedChars) {
           createNewTask(accumulatedChars);
@@ -1717,7 +1713,9 @@ const handleCrossbtn = async()=>{
     console.log("input........................." , inputValue);
 
   },[inputValue])
+  
 
+  // For handle Mobile key event during task creation 
   const handleEditableInput = (event) => {
     console.log("Mobile: onInput event triggered!");
     console.log("Current input value:", event.target.value);
@@ -1742,8 +1740,6 @@ const handleCrossbtn = async()=>{
       }
     }, 0);
   };
-  
-  
 
   return (
 
@@ -1915,6 +1911,7 @@ const handleCrossbtn = async()=>{
                         id="editableInput"
                         ref={editableInputRef}
                         type="text"
+                        onChange={handleEditableInput}
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
@@ -2058,8 +2055,8 @@ const handleCrossbtn = async()=>{
                         id="editableInput"
                         ref={editableInputRef}
                         type="text"
-                        onChange={handleEditableInput} // ✅ Works on mobile for character detection
-                        onKeyDown={handleEditableKeyDown} // ✅ Works on desktop
+                        onChange={handleEditableInput}
+                        onKeyDown={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
                           padding: '5px',
