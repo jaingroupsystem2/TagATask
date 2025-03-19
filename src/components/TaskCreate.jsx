@@ -1778,27 +1778,23 @@ const handleCrossbtn = async()=>{
                                   checked={task.completed || false}
                                   onChange={(e) => handleTaskCheck(null, index, e.target.checked)}
                                 />
-                               <div
-  contentEditable
-  suppressContentEditableWarning={true}
-  value={tasks}
-  onInput={(e) => handleTaskInput(index, e)} // ✅ FIXED: Works on mobile instead of `onChange`
-  onBlur={(e) => handleTaskInput(index, e)}
-  onMouseUp={() => handleTextSelect(index)}
-  onTouchEnd={() => handleTextSelect(index)} // ✅ FIXED: Added touch support for mobile
-  onKeyDown={(e) => {
-    if (['Enter', 'Backspace', 'ArrowUp', 'ArrowDown', 'Escape'].includes(e.key)) {
-      handleTaskKeyDown(index, e);
-    }
-  }}
-  onBeforeInput={(e) => handleTaskKeyDown(index, e)} // ✅ FIXED: Handles mobile keyboard events
-  tabIndex="0" // ✅ Ensures focus can be set on mobile
-  ref={task.ref}
-  className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
-  style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
-  dangerouslySetInnerHTML={{ __html: task.text }} // Only rendered when loading the tasks initially
-/>
-
+                                <div
+                                  contentEditable
+                                  suppressContentEditableWarning={true}
+                                  value={tasks}
+                                  onChange={(e) => handleTaskInput(index, e)} // Typing input
+                                  onBlur={(e) => handleTaskInput(index, e)}  // Save on blur
+                                  onMouseUp={() => handleTextSelect(index)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === 'Backspace' || e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Escape') {
+                                      handleTaskKeyDown(index, e); // Handle other keys
+                                    }
+                                  }}
+                                  ref={task.ref}
+                                  className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
+                                  style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
+                                  dangerouslySetInnerHTML={{ __html: task.text }} // Only rendered when loading the tasks initially
+                                />
       
                                 {selectedTaskIndex === index &&
                                   <SelectText
@@ -1890,6 +1886,7 @@ const handleCrossbtn = async()=>{
                         ref={editableInputRef}
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
+                        onInput={handleEditableInputChange}
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
@@ -1928,26 +1925,22 @@ const handleCrossbtn = async()=>{
                                   onChange={(e) => handleTaskCheck(null, index, e.target.checked)}
                                 />
                                 <div
-  contentEditable
-  suppressContentEditableWarning={true}
-  value={tasks}
-  onInput={(e) => handleTaskInput(index, e)} // ✅ FIXED: Works on mobile instead of `onChange`
-  onBlur={(e) => handleTaskInput(index, e)}
-  onMouseUp={() => handleTextSelect(index)}
-  onTouchEnd={() => handleTextSelect(index)} // ✅ FIXED: Added touch support for mobile
-  onKeyDown={(e) => {
-    if (['Enter', 'Backspace', 'ArrowUp', 'ArrowDown', 'Escape'].includes(e.key)) {
-      handleTaskKeyDown(index, e);
-    }
-  }}
-  onBeforeInput={(e) => handleTaskKeyDown(index, e)} // ✅ FIXED: Handles mobile keyboard events
-  tabIndex="0" // ✅ Ensures focus can be set on mobile
-  ref={task.ref}
-  className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
-  style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
-  dangerouslySetInnerHTML={{ __html: task.text }} // Only rendered when loading the tasks initially
-/>
-
+                                  contentEditable
+                                  suppressContentEditableWarning={true}
+                                  value={tasks}
+                                  onChange={(e) => handleTaskInput(index, e)} // Typing input
+                                  onBlur={(e) => handleTaskInput(index, e)}  // Save on blur
+                                  onMouseUp={() => handleTextSelect(index)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === 'Backspace' || e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Escape') {
+                                      handleTaskKeyDown(index, e); // Handle other keys
+                                    }
+                                  }}
+                                  ref={task.ref}
+                                  className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
+                                  style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
+                                  dangerouslySetInnerHTML={{ __html: task.text }} // Only rendered when loading the tasks initially
+                                />
       
                                 {selectedTaskIndex === index &&
                                   <SelectText
@@ -2038,6 +2031,7 @@ const handleCrossbtn = async()=>{
                         ref={editableInputRef}
                         type="text"
                         onChange={handleEditableInputChange} // Update input value on typing
+                        onInput={handleEditableInputChange}
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
