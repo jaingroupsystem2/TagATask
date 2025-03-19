@@ -668,7 +668,6 @@ useEffect(() => {
   let debounceTimer = null;
   let accumulatedChars = '';
   const handleEditableInputChange = (event) => {
-    setInputValue(event.target.value); // Update the input value state
   };
 
   const handleEditableKeyDown = (event) => {
