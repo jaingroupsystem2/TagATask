@@ -2058,8 +2058,9 @@ const handleCrossbtn = async()=>{
                         id="editableInput"
                         ref={editableInputRef}
                         type="text"
-                        onInput={handleEditableInput} // ✅ Works on mobile for character detection
-                        onKeyDown={handleEditableKeyDown} // ✅ Works on desktop                        placeholder="Add Task"
+                        onChange={handleEditableInput} // ✅ Works on mobile for character detection
+                        onKeyDown={handleEditableKeyDown} // ✅ Works on desktop
+                        placeholder="Add Task"
                         style={{
                           padding: '5px',
                           minHeight: '20px',
