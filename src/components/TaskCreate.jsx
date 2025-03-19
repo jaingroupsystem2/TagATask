@@ -678,6 +678,7 @@ useEffect(() => {
       return;
     }
     console.log("i am in mbile");
+    console.log("event.key",event.key);
     
     
     if(tagModalPopup)
@@ -1890,7 +1891,6 @@ const handleCrossbtn = async()=>{
                         id="editableInput"
                         ref={editableInputRef}
                         type="text"
-                        onChange={handleEditableInputChange} // Update input value on typing
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
                         placeholder="Add Task"
                         style={{
@@ -2034,9 +2034,7 @@ const handleCrossbtn = async()=>{
                         id="editableInput"
                         ref={editableInputRef}
                         type="text"
-                        onChange={handleEditableInputChange} // Update input value on typing
                         onKeyDown={handleEditableKeyDown}   // Handle key press events
-                        onInput={handleEditableKeyDown}
                         placeholder="Add Task"
                         style={{
                           padding: '5px',
