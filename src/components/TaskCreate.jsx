@@ -678,6 +678,8 @@ useEffect(() => {
       closeModal();
       return;
     }
+    console.log("i am in mbile");
+    
     
     if(tagModalPopup)
       {
@@ -705,6 +707,8 @@ useEffect(() => {
       accumulatedChars += event.key;
       clearTimeout(debounceTimer);
       editableInputRef.current.value = accumulatedChars;
+      console.log("accumulatedChars");
+      
       debounceTimer = setTimeout(() => {
         if (accumulatedChars) {
           createNewTask(accumulatedChars);
@@ -1714,9 +1718,6 @@ const handleCrossbtn = async()=>{
 
   },[inputValue])
 
-  const isMobileDevice = () => {
-    return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-  };
   
   
 
@@ -1795,10 +1796,6 @@ const handleCrossbtn = async()=>{
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
                                   }}
-                                  onInput={(e) => {
-                                      handleTaskKeyDown(index, e); // Handle other keys
-                                  }}
-                                  tabIndex={0}
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -1888,32 +1885,24 @@ const handleCrossbtn = async()=>{
                         </div>
                       </div>
                     ))}
-                   <input
-  id="editableInput"
-  ref={editableInputRef}
-  type="text"
-  onChange={handleEditableInputChange} // ✅ Works on both desktop & mobile
-  onKeyDown={(e) => {
-    if (!isMobileDevice()) {  // ✅ Use `onKeyDown` only for desktop
-      handleEditableKeyDown(e);
-    }
-  }}
-  onInput={(e) => {
-    if (isMobileDevice()) { // ✅ Use `onInput` only for mobile
-      handleEditableKeyDown(e);
-    }
-  }}
-  tabIndex={0}
-  placeholder="Add Task"
-  style={{
-    padding: "5px",
-    minHeight: "20px",
-    width: "100%",
-    outline: "none",
-    border: "none",
-  }}
-/>
-
+                    <div className="editable-input-container">
+                      <FontAwesomeIcon icon={faPlus} className="plus-icon" />
+                      <input
+                        id="editableInput"
+                        ref={editableInputRef}
+                        type="text"
+                        onChange={handleEditableInputChange} // Update input value on typing
+                        onKeyDown={handleEditableKeyDown}   // Handle key press events
+                        placeholder="Add Task"
+                        style={{
+                          padding: '5px',
+                          minHeight: '20px',
+                          width: '100%',
+                          outline: 'none',
+                          border: 'none',
+                        }}
+                      />
+                    </div>
                   </div>
                   ) : (
 
@@ -1952,10 +1941,6 @@ const handleCrossbtn = async()=>{
                                       handleTaskKeyDown(index, e); // Handle other keys
                                     }
                                   }}
-                                  onInput={(e) => {
-                                      handleTaskKeyDown(index, e); // Handle other keys
-                                  }}
-                                  tabIndex={0}
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -2047,31 +2032,20 @@ const handleCrossbtn = async()=>{
                     <div className="editable-input-container">
                       <FontAwesomeIcon icon={faPlus} className="plus-icon" />
                       <input
-  id="editableInput"
-  ref={editableInputRef}
-  type="text"
-  onChange={handleEditableInputChange} // ✅ Works on both desktop & mobile
-  onKeyDown={(e) => {
-    if (!isMobileDevice()) {  // ✅ Use `onKeyDown` only for desktop
-      handleEditableKeyDown(e);
-    }
-  }}
-  onInput={(e) => {
-    if (isMobileDevice()) { // ✅ Use `onInput` only for mobile
-      handleEditableKeyDown(e);
-    }
-  }}
-  tabIndex={0}
-  placeholder="Add Task"
-  style={{
-    padding: "5px",
-    minHeight: "20px",
-    width: "100%",
-    outline: "none",
-    border: "none",
-  }}
-/>
-
+                        id="editableInput"
+                        ref={editableInputRef}
+                        type="text"
+                        onChange={handleEditableInputChange} // Update input value on typing
+                        onKeyDown={handleEditableKeyDown}   // Handle key press events
+                        placeholder="Add Task"
+                        style={{
+                          padding: '5px',
+                          minHeight: '20px',
+                          width: '100%',
+                          outline: 'none',
+                          border: 'none',
+                        }}
+                      />
                     </div>
                   </div>
                   )
