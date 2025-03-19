@@ -1718,6 +1718,30 @@ const handleCrossbtn = async()=>{
 
   },[inputValue])
 
+  const handleEditableInput = (event) => {
+    console.log("Mobile: onInput event triggered!");
+    console.log("Current input value:", event.target.value);
+  
+    if (event.target.value.length < accumulatedChars.length) {
+      console.log("Backspace detected on mobile!");
+      accumulatedChars = event.target.value;
+    } else {
+      const newChar = event.target.value[event.target.value.length - 1]; // Get last character typed
+      console.log("New character typed:", newChar);
+      accumulatedChars += newChar;
+    }
+  
+    clearTimeout(debounceTimer);
+    editableInputRef.current.value = accumulatedChars;
+  
+    debounceTimer = setTimeout(() => {
+      if (accumulatedChars) {
+        createNewTask(accumulatedChars);
+        accumulatedChars = "";
+        editableInputRef.current.value = "";
+      }
+    }, 0);
+  };
   
   
 
@@ -2034,8 +2058,8 @@ const handleCrossbtn = async()=>{
                         id="editableInput"
                         ref={editableInputRef}
                         type="text"
-                        onKeyDown={handleEditableKeyDown}   // Handle key press events
-                        placeholder="Add Task"
+                        onInput={handleEditableInput} // ✅ Works on mobile for character detection
+                        onKeyDown={handleEditableKeyDown} // ✅ Works on desktop                        placeholder="Add Task"
                         style={{
                           padding: '5px',
                           minHeight: '20px',
