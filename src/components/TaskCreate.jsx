@@ -1796,10 +1796,9 @@ const handleCrossbtn = async()=>{
                                     }
                                   }}
                                   onInput={(e) => {
-                                    if (e.key === 'Enter' || e.key === 'Backspace' || e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Escape') {
                                       handleTaskKeyDown(index, e); // Handle other keys
-                                    }
                                   }}
+                                  tabIndex={0}
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -1904,6 +1903,7 @@ const handleCrossbtn = async()=>{
       handleEditableKeyDown(e);
     }
   }}
+  tabIndex={0}
   placeholder="Add Task"
   style={{
     padding: "5px",
@@ -1953,10 +1953,9 @@ const handleCrossbtn = async()=>{
                                     }
                                   }}
                                   onInput={(e) => {
-                                    if (e.key === 'Enter' || e.key === 'Backspace' || e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'Escape') {
                                       handleTaskKeyDown(index, e); // Handle other keys
-                                    }
                                   }}
+                                  tabIndex={0}
                                   ref={task.ref}
                                   className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
@@ -2062,6 +2061,7 @@ const handleCrossbtn = async()=>{
       handleEditableKeyDown(e);
     }
   }}
+  tabIndex={0}
   placeholder="Add Task"
   style={{
     padding: "5px",
