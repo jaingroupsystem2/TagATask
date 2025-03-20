@@ -349,8 +349,6 @@ useEffect(() => {
     setIsSaving(false);
   };
 
-
-
   const handleClick = (event) => {
     const modal = containerRef.current;
     const addCardButton = document.querySelector('.add-card-button');
@@ -360,6 +358,7 @@ useEffect(() => {
   if (addCardButton && addCardButton.contains(event.target)) {
     console.log("Clicked Add Card button - Opening modal");
     openModal();
+    handleButtonClick();
     return;
   }
   
@@ -2097,7 +2096,6 @@ const handleCrossbtn = async()=>{
           onClick={()=>
             {
               openModal();
-              handleButtonClick();
             }}
         >
           <i className="fa fa-plus plus_btn"></i>
