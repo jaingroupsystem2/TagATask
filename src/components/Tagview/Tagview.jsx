@@ -332,13 +332,20 @@ const tagViewModalOpen = (tagname,to_do_tasks,follow_up_tasks,event)=>
       {tagviewdata ? (
         <div className="tasks">
           {Object.entries(tagviewdata).map(([category, tasks], cardIndex) => {
+
+            if (!Array.isArray(tasks)) {
+              console.warn(`Skipping category "${category}" as it has no valid tasks.`);
+              return null;
+            }
+            
             const urlParams = new URLSearchParams(window.location.search);
             const currentPersonnelId = parseInt(urlParams.get("id"));
-
+            console.log("currentPersonnelId",currentPersonnelId);
+            
             let part1Tasks = [];
             let part2Tasks = [];
-            // console.log("t",tasks[0][4]);
-            // console.log("e",tasks[0][5]);
+             console.log("t",tasks[0][4]);
+             console.log("e",tasks[0][5]);
             
            
 
