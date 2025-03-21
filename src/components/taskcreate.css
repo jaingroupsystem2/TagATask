@@ -809,6 +809,12 @@
     .editable-input-container {
         pointer-events: auto;
       }
+
+      .allottee_container.dragging {
+        opacity: 0.5;
+        border: 2px dashed #aaa;
+      }
+      
       
     
 }

@@ -1445,6 +1445,8 @@ const dragAllotteeCard = (allotteeindex,allotteeName)=>{
   setDraggingAllottee(allotteeName);
   setAllotteeCardIndex(allotteeindex);
   console.log("Dragging allottee:", allotteeName,"modalitem",allotteeCardIndex,allotteeindex);
+  document.querySelectorAll('.allottee_container')[allotteeindex].classList.add('dragging');
+
 }
 
 
@@ -1506,11 +1508,13 @@ const handleFileChange = async(fileIndex , fileName) =>
 const handleDrop = (allotteeName,cardIndex) => {
   // console.log("this is card index",allotteeCardIndex);
   // setAllotteeCardIndex(null);
+
   if (draggingTask) {
     handleDropOnAllotteeContainer(allotteeName);
   } else if (draggingAllottee) {
     handleAllotteeReorder(allotteeName,cardIndex);
   }
+  document.querySelectorAll('.allottee_container')[cardIndex].classList.remove('dragging');
 };
 
 const handleToggleChange = (newState,event) => {
@@ -2195,6 +2199,9 @@ const handleCrossbtn = async()=>{
                 onDragOver={handleTaskDragOver}
                 onDragStart={()=>{dragAllotteeCard(cardIndex,allotteeName)}}
                 onDrop={() => handleDrop(allotteeName,cardIndex)}
+
+                onTouchStart={()=>{dragAllotteeCard(cardIndex,allotteeName)}}
+                onTouchEnd={() => handleDrop(allotteeName,cardIndex)}
                
               >
                {isMobile ? (
