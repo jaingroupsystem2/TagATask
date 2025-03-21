@@ -97,3 +97,10 @@
     border-radius: 4px;
     font-size: 15px;
   }
+
+  @media (max-width:767px) {
+
+    .selected-tag{
+      background-color:  #cce5ff;
+    }
+  }

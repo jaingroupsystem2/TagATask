@@ -93,6 +93,7 @@ const requestNotificationPermission = async () => {
 // Call this function when the app loads
 useEffect(() => {
   requestNotificationPermission();
+  console.log("App started with ID:", localStorage.getItem('tagatask_user_id'));
 }, []);
 
 

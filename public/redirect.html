@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting...</title>
+    <script>
+        window.onload = () => {
+          const userId = localStorage.getItem('tagatask_user_id');
+          if (userId) {
+            // Redirect to the main app with id
+            window.location.replace(`/?id=${userId}`);
+          } else {
+            // Fallback to root
+            window.location.replace('/');
+          }
+        };
+      </script>
+  </head>
+  <body>
+    <p>Redirecting...</p>
+  </body>
+</html>
