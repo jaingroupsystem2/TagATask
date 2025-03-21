@@ -67,8 +67,9 @@ function TaskCreate() {
   const tagviewRef = useRef(); // Create a ref
   const [expandedCards, setExpandedCards] = useState({});
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [touchDraggedTask, setTouchDraggedTask] = useState(null);
-
+  const [touchStartPosition, setTouchStartPosition] = useState({ x: 0, y: 0 });
+  const [isDraggingByTouch, setIsDraggingByTouch] = useState(false);
+  
   
   const accessTag = [564,219,26,533];
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
@@ -912,43 +913,48 @@ const confirmDeleteTask = (index) => {
 
 const handleTaskDragStart = (e, taskId, taskDescription, allotteeName, section) => {
   if (e.type === "touchstart") {
+    const touch = e.touches[0];
+    setTouchStartPosition({ x: touch.clientX, y: touch.clientY });
+    setIsDraggingByTouch(false);
     setDraggingTask({ taskId, taskDescription, allotteeName, section });
     e.target.classList.add("dragging");
-    console.log("dragging");
   } else {
     setDraggingTask({ taskId, taskDescription, allotteeName, section });
   }
 };
 
-const handleTaskTouchMove = (e) => {
-  if (e.cancelable) {
-    e.preventDefault();
-  }
 
+const handleTaskTouchMove = (e) => {
   const touch = e.touches[0];
-  const element = document.elementFromPoint(touch.clientX, touch.clientY);
-  
-  if (element && element.classList.contains("task-item-container")) {
-    element.style.backgroundColor = "#f0f0f0"; // Highlight drop area
+  const dx = Math.abs(touch.clientX - touchStartPosition.x);
+  const dy = Math.abs(touch.clientY - touchStartPosition.y);
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance > 10) {
+    setIsDraggingByTouch(true); // Mark as actual drag
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (element && element.classList.contains("task-item-container")) {
+      element.style.backgroundColor = "#f0f0f0"; // Optional: visual feedback
+    }
   }
 };
 
 
 
-const handleTaskTouchEnd = (e,targetAllotteeName, targetTaskIndex, section , cardIndex) => {
-  if (!draggingTask) return;
 
+const handleTaskTouchEnd = (e, targetAllotteeName, targetTaskIndex, section, cardIndex) => {
   const touch = e.changedTouches[0];
   const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
-console.log("drop", targetAllotteeName, targetTaskIndex, section , cardIndex);
 
-    handleTaskReorder(
-      targetAllotteeName, targetTaskIndex, section , cardIndex
-    );
+  if (isDraggingByTouch && draggingTask) {
+    handleTaskReorder(targetAllotteeName, targetTaskIndex, section, cardIndex);
+  }
+
   e.target.classList.remove("dragging");
   setDraggingTask(null);
-
+  setIsDraggingByTouch(false); // Reset
 };
+
 
 
   
