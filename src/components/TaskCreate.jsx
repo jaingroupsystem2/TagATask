@@ -1445,7 +1445,6 @@ const dragAllotteeCard = (allotteeindex,allotteeName)=>{
   setDraggingAllottee(allotteeName);
   setAllotteeCardIndex(allotteeindex);
   console.log("Dragging allottee:", allotteeName,"modalitem",allotteeCardIndex,allotteeindex);
-  document.querySelectorAll('.allottee_container')[allotteeindex].classList.add('dragging');
 
 }
 
@@ -1514,7 +1513,6 @@ const handleDrop = (allotteeName,cardIndex) => {
   } else if (draggingAllottee) {
     handleAllotteeReorder(allotteeName,cardIndex);
   }
-  document.querySelectorAll('.allottee_container')[cardIndex].classList.remove('dragging');
 };
 
 const handleToggleChange = (newState,event) => {
