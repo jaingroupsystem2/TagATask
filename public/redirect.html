@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Redirecting...</title>
   <script>
-    // This JS runs *before* your React app
+    // Cookie-based redirect before React even loads
     const cookies = document.cookie.split(';').reduce((acc, cookie) => {
       const [key, value] = cookie.trim().split('=');
       acc[key] = value;
       return acc;
     }, {});
-    
+
     const id = cookies['tagatask_user_id'];
     if (id) {
       window.location.replace('/?id=' + id);
