@@ -1,25 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Redirecting...</title>
-  <script>
-    // Cookie-based redirect before React even loads
-    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-      const [key, value] = cookie.trim().split('=');
-      acc[key] = value;
-      return acc;
-    }, {});
-
-    const id = cookies['tagatask_user_id'];
-    if (id) {
-      window.location.replace('/?id=' + id);
-    } else {
-      window.location.replace('/');
-    }
-  </script>
+  <meta charset="UTF-8">
+  <title>Loading Tag-A-Task...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <script type="module" src="/src/redirect-loader.js"></script>
 </head>
 <body>
-  <p>Redirecting...</p>
+  <div id="root">
+    <p>Loading...</p>
+  </div>
 </body>
 </html>

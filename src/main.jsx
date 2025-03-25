@@ -11,7 +11,7 @@ if (window.location.search.includes('id=')) {
   const id = params.get('id');
   if (id) {
     localStorage.setItem('tagatask_user_id', id);
-    document.cookie = `tagatask_user_id=${id}; path=/; max-age=31536000`; // 1 year
+    document.cookie = `tagatask_user_id=${id}; path=/; max-age=31536000`;
   }
 }
 
