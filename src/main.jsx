@@ -6,10 +6,14 @@ import { Provider } from 'react-redux'
 import store from './components/store/store.js';
 
 
-function getCookieValue(name) {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return match ? match[2] : null;
-}
+function getCookieValue(name) 
+    {
+      const regex = new RegExp(`(^| )${name}=([^;]+)`)
+      const match = document.cookie.match(regex)
+      if (match) {
+        return match[2]
+      }
+   }
 
 // Step 1: Store ID from URL (if present)
 if (window.location.search.includes('id=')) {
