@@ -1,21 +1,34 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App.jsx';
-import './index.css';
-import { Provider } from 'react-redux';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+import './index.css'
+import { Provider } from 'react-redux'
 import store from './components/store/store.js';
 
-// ✅ Store ID if present in URL (no redirect here)
+
+const currentPath = window.location.pathname + window.location.search;
+const storedId = localStorage.getItem('tagatask_user_id');
+
+// Redirect logic: if we have a stored ID but it's missing in URL
+if (storedId && !window.location.search.includes('id=')) {
+  window.location.replace(`/?id=${storedId}`);
+}
+
+// First-time storage
 if (window.location.search.includes('id=')) {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   if (id) {
     localStorage.setItem('tagatask_user_id', id);
-    document.cookie = `tagatask_user_id=${id}; path=/; max-age=31536000`;
   }
 }
 
-// ✅ Do NOT redirect here anymore — handled in redirect.html
+
+
+
+
+
+
 
 if ("serviceWorker" in navigator && "PushManager" in window) {
   navigator.serviceWorker
@@ -28,10 +41,21 @@ if ("serviceWorker" in navigator && "PushManager" in window) {
     });
 }
 
+
+
+
+
+
+
+
+
+
+
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
       <App />
     </Provider>
-  </React.StrictMode>
-);
+  </React.StrictMode>,
+)
