@@ -6,20 +6,27 @@ import { Provider } from 'react-redux'
 import store from './components/store/store.js';
 
 
-const currentPath = window.location.pathname + window.location.search;
-const storedId = localStorage.getItem('tagatask_user_id');
-
-// Redirect logic: if we have a stored ID but it's missing in URL
-if (storedId && !window.location.search.includes('id=')) {
-  window.location.replace(`/?id=${storedId}`);
+function getCookieValue(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? match[2] : null;
 }
 
-// First-time storage
+// Step 1: Store ID from URL (if present)
 if (window.location.search.includes('id=')) {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   if (id) {
+    // Save in both for safety
     localStorage.setItem('tagatask_user_id', id);
+    document.cookie = `tagatask_user_id=${id}; path=/; max-age=31536000`; // 1 year
+  }
+}
+
+// Step 2: Redirect if ?id= is missing but we have a stored ID
+if (!window.location.search.includes('id=')) {
+  const storedId = getCookieValue('tagatask_user_id') || localStorage.getItem('tagatask_user_id');
+  if (storedId) {
+    window.location.replace(`/?id=${storedId}`);
   }
 }
 
