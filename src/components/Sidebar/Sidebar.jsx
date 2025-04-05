@@ -32,9 +32,9 @@ export const Sidebar = () => {
     try {
       const response = await axios.post(Base_URL+"/sessions/destroy",{user_id:user_id});
       console.log(response.data.message);
-      //window.location.href = Base_URL;
+      window.location.href = Base_URL;
     } catch (error) {
-      console.log();
+      console.log(error);
       
     }
       
