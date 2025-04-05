@@ -1,0 +1,7 @@
+.app{
+    display: flex;
+    width: 99vw;
+    flex-direction: column;
+    position: absolute;
+    
+}

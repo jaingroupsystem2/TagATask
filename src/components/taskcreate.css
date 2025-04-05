@@ -3,6 +3,9 @@
     flex-direction: column;
     align-items: center;
     height: auto;
+    position: relative;
+    top: -25px;
+    margin-top: 20px;
     /* padding: 10px; */
     /* border-radius: 7px; */
     /* background-color: #f1f5f5; */
@@ -383,7 +386,7 @@
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: center
   }
 
   .allottee_container {
@@ -412,7 +415,6 @@
 .name_text{
     font-weight: bold;
     font-size: 18px;
-    position: sticky;
     top: 0;
     background-color: white;
     /* padding: 15px;  */
@@ -428,9 +430,25 @@
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     width: 99vw;
+}
+.follow-up-title
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.Completed-btn
+{
+    height: 25px;
+    border: none;
+    font-size: 12px;
+    border-radius: 10px;
+    background-color: rgb(188, 203, 214);
+    margin-right: 10px;
+    font-weight: 600;
+
 }
 
 .task-item-container .each_task{
@@ -454,6 +472,10 @@
     display: flex;
     align-items: flex-start;
     justify-content: center;
+}
+.task-hide
+{
+    display: none;
 }
 /* .followup-task-item-container{
     display: flex;
@@ -489,6 +511,7 @@
     display: flex;
     flex-direction: row;
     background-color: white;
+    margin-top: 6px;
 }
 .toggle_button p{
     margin: 6px;
@@ -514,7 +537,6 @@
     text-align: left;
     font-weight: 600;
     font-size: 12px;
-    width: 100%;
 }
 
 .checkbox{
@@ -590,23 +612,23 @@
   }
   
   .close-btn {
-    padding: 10px 20px;
+    /* padding: 10px 20px;
     background-color: red;
     color: white;
     border: none;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 20px; */
   }
   
   .close-btn:hover {
-    background-color: darkred;
+    /* background-color: darkred; */
   }
 
 
 .add-card-button {
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     border: 2px solid grey;

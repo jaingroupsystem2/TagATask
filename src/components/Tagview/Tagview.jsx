@@ -12,26 +12,25 @@ import {Tooltip} from "react-tooltip";
 import { setEditingTask } from '../../components/slices/Taskslice';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaChevronDown, FaChevronUp } from "react-icons/fa"; // Import icons
+import { openModal} from '../../components/slices/Taskslice'; // ✅ Import modal actions
 
 
 
 
 
-const Tagview = forwardRef(({ openModal, setTagModalPopup, editTask }, ref) => {
+
+const Tagview = forwardRef(({ setTagModalPopup, editTask }, ref) => {
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
 
   const [tagviewdata, setTagViewData] = useState([]);
-  const [draggedTask, setDraggedTask] = useState(null);
-  const [draggedCategory, setDraggedCategory] = useState(null);
+
   const [draggingTask, setDraggingTask] = useState(null);
-  const [draggingAllottee, setDraggingAllottee] = useState(null);
-  const [allotteeCardIndex,setAllotteeCardIndex] = useState(0);
-  const editingTask = useSelector((state) => state.task.editingTask);
   const dispatch = useDispatch();
   const [expandedCards, setExpandedCards] = useState({});
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
+  const isModalOpen = useSelector((state) => state.task.isModalOpen); // ✅ Get modal state from Redux
+  
   // Fetch Data
   const datafetchfunction = async () => {
     const data = await get_tag_data();
@@ -310,22 +309,11 @@ const tagViewModalOpen = (tagname,to_do_tasks,follow_up_tasks,event)=>
 {
   event.stopPropagation(); // Stop the click from bubbling up
   event.preventDefault(); 
-  openModal();
+  dispatch(openModal())
   dispatch(setEditingTask(true));
   editTask(tagname, to_do_tasks, follow_up_tasks, true); // ✅ TagView
   setTagModalPopup(true)
 }
-
-
-// remove html element 
-// const stripHtml = (html) => {
-//   const tempDiv = document.createElement("div");
-//   tempDiv.innerHTML = html;
-//   return tempDiv.textContent || tempDiv.innerText || "";
-// };
-
-
-
 
   return (
     <div className="task_container">

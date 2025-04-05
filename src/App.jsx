@@ -1,4 +1,6 @@
 import './App.css';
+import Navbar from './components/Navbar/Navbar';
+import { Sidebar } from './components/Sidebar/Sidebar';
 import TaskCreate from './components/TaskCreate';
 import { ToastContainer } from 'react-toastify';
 
@@ -7,8 +9,11 @@ function App() {
   return (
     <>
       <div>
-        <ToastContainer/>
-        <TaskCreate/>
+        <div className="app">
+          <Sidebar/>
+          <ToastContainer/>
+          <TaskCreate/>
+        </div>
       </div>
     </>
   )

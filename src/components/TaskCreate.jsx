@@ -27,6 +27,8 @@ import Tagview from './Tagview/Tagview';
 import SearchableDropdown from './SearchableDropdown';
 import SelectAlotee from './Tagview/SelectAlotee';
 import { FaChevronDown, FaChevronUp } from "react-icons/fa"; // Import icons
+import { openModal, setcloseModal } from '../components/slices/Taskslice'; // ✅ Import modal actions
+
 
 
 
@@ -45,12 +47,10 @@ function TaskCreate() {
   const { userId } = useParams();
   const [draggingTask, setDraggingTask] = useState(null);
   const [draggingAllottee, setDraggingAllottee] = useState(null);
-  const [isToggleOn, setIsToggleOn] = useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [Allottee, setAllottee] = useState({});
   const [isHovered, setIsHovered] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const tasksRef = useRef(tasks);
   const editingTask = useSelector((state) => state.task.editingTask);
   const [modalitem,setModalitem] = useState(null);
@@ -69,8 +69,9 @@ function TaskCreate() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [touchStartPosition, setTouchStartPosition] = useState({ x: 0, y: 0 });
   const [isDraggingByTouch, setIsDraggingByTouch] = useState(false);
-  
-  
+  const isModalOpen = useSelector((state) => state.task.isModalOpen); // ✅ Get modal state from Redux
+  const isToggleOn = useSelector((state) => state.task.isToggleOn);
+  const hideCompletedFollowUps = useSelector((state) => state.task.isShowOn);
   const accessTag = [564,219,26,533];
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
@@ -131,6 +132,7 @@ const handleButtonClick = () => {
 
 
 
+console.log("isToggleOn redux", isToggleOn);
 
 
 
@@ -239,7 +241,7 @@ useEffect(() => {
             console.log("Tagview inside",tagModalPopup);
             setTagModalPopup(true)
             setTasks([...tasks]);
-            openModal();
+            dispatch(openModal())
             return; // Prevent modal from closing
           }
           
@@ -344,7 +346,6 @@ useEffect(() => {
           fetchAllottee(setAllottee,setError);
         }).finally(() => {
           closeModal();
-          setIsModalOpen(false);
         });
     }
 
@@ -353,16 +354,16 @@ useEffect(() => {
 
   const handleClick = (event) => {
     const modal = containerRef.current;
-    const addCardButton = document.querySelector('.add-card-button');
-    const taskContainer = document.querySelector('.task_container');
+  //   const addCardButton = document.querySelector('.add-card-button');
+  //   const taskContainer = document.querySelector('.task_container');
 
-     // ✅ Allow modal to open if clicking on the Add Card button
-  if (addCardButton && addCardButton.contains(event.target)) {
-    console.log("Clicked Add Card button - Opening modal");
-    openModal();
-    handleButtonClick();
-    return;
-  }
+  //    // ✅ Allow modal to open if clicking on the Add Card button
+  // if (addCardButton && addCardButton.contains(event.target)) {
+  //   console.log("Clicked Add Card button - Opening modal");
+  //   dispatch(openModal())
+  //   handleButtonClick();
+  //   return;
+  // }
   
     // ✅ Ignore clicks inside modal, toggle button, or any interactive UI
     if (
@@ -390,11 +391,11 @@ useEffect(() => {
         console.log("Saving and closing modal...");
         saveAllDataWithInputValue();
   
-        // ✅ Prevent modal from opening on random clicks in mobile
+        //✅ Prevent modal from opening on random clicks in mobile
         if (isMobile) {
-          setIsModalOpen(false);
+          //dispatch(setcloseModal());
         } else {
-          setIsModalOpen(false);
+          dispatch(setcloseModal());
         }
       }
     }, 100);
@@ -1246,8 +1247,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
       
       setTasks(transformedTasks);
       tasksRef.current = transformedTasks;
-      openModal();
-
+      dispatch(openModal())
     }else
     {
         const allotteeId = await fetchAllotteeId(allotteeName);
@@ -1284,7 +1284,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
         
         setTasks(transformedTasks);
         tasksRef.current = transformedTasks;
-        openModal();
+        dispatch(openModal());
         console.log("followup tasks", allTask);
         console.log("these are all taskrefs", all_taskrefs);
     }
@@ -1310,7 +1310,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
             }
             console.log("these are all updated tasks", updatedTasks);
             // setEditingTask(null);
-            setIsModalOpen(false);
+            dispatch(setcloseModal());
             setTasks([]);
         }
     };
@@ -1569,12 +1569,10 @@ const handleRevertClick = async (taskId) => {
 
 
 
-const openModal = () => {
-  setIsModalOpen(true);
-};
+
 
 const closeModal = () => {
-  setIsModalOpen(false);
+  dispatch(setcloseModal());
   setTasks([]);
   setInputValue('');
   setTagModalPopup(false);
@@ -1603,7 +1601,7 @@ const handleCrossbtn = async()=>{
           });
           setTagModalPopup(true)
           setTasks([...tasks]);
-          openModal();
+          dispatch(openModal());
           return; // Prevent modal from closing
         }
         console.log("handleCrossbtn sanitizedData",sanitizedData);
@@ -1624,7 +1622,6 @@ const handleCrossbtn = async()=>{
     }else{
       closeModal();
       saveAllData();
-      setIsModalOpen(false);
       setTagModalPopup(false); // 🔹 Ensuring tag modal closes too
       fetchAllottee(setAllottee,setError);
     }
@@ -1748,6 +1745,9 @@ const handleCrossbtn = async()=>{
       }
     }, 0);
   };
+
+ 
+  
 
   return (
 
@@ -2104,8 +2104,8 @@ const handleCrossbtn = async()=>{
           onMouseLeave={() => setIsHovered(false)}
           onClick={()=>
             {
-              openModal();
-            }}
+              dispatch(openModal())
+                        }}
         >
           <i className="fa fa-plus plus_btn"></i>
           {isHovered && <span className="add-card-text">Add Card</span>}
@@ -2114,13 +2114,13 @@ const handleCrossbtn = async()=>{
 
 
 
-       {  accessTag.includes(currentAllotee) && 
+       {/* {  accessTag.includes(currentAllotee) && 
               <div className='toggle_button'>
                 <p className='toggle_text'>Personnel</p>
                  <ToggleButton onToggleChange={handleToggleChange}/>
                 <p className='toggle_text'>Tag</p>
               </div>
-       }
+       } */}
 
 
       {!isToggleOn ?
@@ -2188,6 +2188,11 @@ const handleCrossbtn = async()=>{
             // Add these tasks to to_do_tasks
             to_do_tasks = [...to_do_tasks, ...tasksToMoveToDo];
 
+            // Hide Button where completed task is not present
+            const hasCompletedTasks = follow_up_tasks.some(
+              ([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId]) =>
+                allotteeId === currentPersonnelId && completionDate !== null
+            );
 
             return (
           
@@ -2294,16 +2299,20 @@ const handleCrossbtn = async()=>{
                       ))}
                     </div>
 
+  
 
                     {/* Follow-Up Tasks */}
                     <div id={`follow_up_tasks_${cardIndex}` } className='follow_up_tasks'>
                     {(to_do_tasks.length > 0 && follow_up_tasks.length>0) && <hr className='section'/>} 
-                    {follow_up_tasks.length > 0 && <h3 className='section'>Follow-Up</h3>}
+                      <div className="follow-up-title">
+                          {follow_up_tasks.length > 0 && <h3 className='section'>Follow-Up</h3>}
+                         
+                      </div>
 
                       {follow_up_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId], index) => (
                         <div
                           key={taskId}
-                          className="task-item-container"
+                          className={`task-item-container ${allotteeId==currentPersonnelId && completionDate !=null && hideCompletedFollowUps ? "task-hide" :""}`}
                           draggable
                           data-task-id={taskId}
                           data-task-description={taskDescription}
@@ -2324,10 +2333,9 @@ const handleCrossbtn = async()=>{
                             onClick={(e) => e.stopPropagation()}
                             onChange={(e) => handleCheckboxChange(taskId, e.target.checked)}
                             style={{ marginRight: "10px" }}
-                            className='checkbox'
+                            className="checkbox" 
                           />
                           <div
-                            
                             suppressContentEditableWarning={true}
                             className="each_task"
                             style={{
@@ -2352,9 +2360,7 @@ const handleCrossbtn = async()=>{
         </div>
       </div>
       :
-      <div className='task_container'>
-        <Tagview  ref={tagviewRef} openModal={openModal} setTagModalPopup = {setTagModalPopup} editTask={editTask}  />
-      </div>
+        <Tagview  ref={tagviewRef}  setTagModalPopup = {setTagModalPopup} editTask={editTask}  />
       }
     </div>
   );
