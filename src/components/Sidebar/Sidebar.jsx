@@ -28,20 +28,20 @@ export const Sidebar = () => {
 
   // Log out 
   const logout = async() =>
-  {
-    try {
-      const response = await axios.get(Base_URL+"/log_out",{withCredentials:true},);
-      console.log(response.status);
-      if(response.status == 200)
-      {
-        console.log(response.data.message);
-        window.location.href = response.data.redirect_url;
+    {
+      try {
+         const res = await axios.get("https://prioritease2-c953f12d76f1.herokuapp.com/log_out",
+          {withCredentials:true },
+        );
+        console.log("redirect_url ", res.data)
+        console.log(res.status);
+        if (res.status == 200){
+          window.location.href = res.data.redirect_url;
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
     }
-      
-  }
 
 
   return (
