@@ -30,17 +30,9 @@ export const Sidebar = () => {
   const logout = async() =>
   {
     try {
-      console.log("working");
-      console.log("working" ,user_id);
-      const response = await fetch('https://prioritease2-c953f12d76f1.herokuapp.com/session/destroy', {
-        method: 'POST',
-        credentials: 'include',  // This ensures that cookies (session) are included in the request
-        body: JSON.stringify({ user_id: user_id })
-      });
-      if(response.ok)
-      {
-        window.location.href = Base_URL;
-      }
+      const response = await axios.post(Base_URL+"/log_out",{user_id:user_id});
+      console.log(response.data.message);
+      //window.location.href = Base_URL;
     } catch (error) {
       console.log(error);
       
