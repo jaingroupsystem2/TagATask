@@ -30,7 +30,7 @@ export const Sidebar = () => {
   const logout = async() =>
   {
     try {
-      const response = await axios.post(Base_URL+"/log_out",{user_id:user_id});
+      const response = await axios.post(Base_URL+"/sessions/destroy",{user_id:user_id});
       console.log(response.data.message);
       //window.location.href = Base_URL;
     } catch (error) {
