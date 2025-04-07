@@ -34,11 +34,11 @@ export const Sidebar = () => {
       console.log(response.data.message);
       if(response.data.status)
       {
+        console.log(response.data.message);
         window.location.href = Base_URL;
       }
     } catch (error) {
       console.log(error);
-      
     }
       
   }
