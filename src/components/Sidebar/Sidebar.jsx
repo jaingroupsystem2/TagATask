@@ -32,6 +32,9 @@ export const Sidebar = () => {
     try {
       const response = await fetch('https://prioritease2-c953f12d76f1.herokuapp.com/session/destroy', {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         credentials: 'include',
         body: JSON.stringify({ user_id })
       });
