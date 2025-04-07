@@ -33,7 +33,7 @@ export const Sidebar = () => {
       console.log("working");
       console.log("working" ,user_id);
       const response = await fetch('https://prioritease2-c953f12d76f1.herokuapp.com/session/destroy', {
-        method: 'DELETE',
+        method: 'POST',
         credentials: 'include',  // This ensures that cookies (session) are included in the request
         body: JSON.stringify({ user_id: user_id })
       });
