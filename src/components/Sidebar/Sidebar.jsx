@@ -30,12 +30,12 @@ export const Sidebar = () => {
   const logout = async() =>
   {
     try {
-      const response = await axios.get(Base_URL+"/log_out",{withCredentials:true});
-      console.log(response.data.message);
+      const response = await axios.get(Base_URL+"/log_out",{withCredentials:true},);
+      console.log(response.status);
       if(response.status == 200)
       {
         console.log(response.data.message);
-        window.location.href = Base_URL;
+        window.location.href = response.data.redirect_url;
       }
     } catch (error) {
       console.log(error);
