@@ -30,17 +30,12 @@ export const Sidebar = () => {
   const logout = async() =>
   {
     try {
-      const response = await fetch('https://prioritease2-c953f12d76f1.herokuapp.com/session/destroy', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify({ user_id })
-      });
-      
+      const response = await axios.post(Base_URL+"/sessions/destroy",{user_id:user_id});
       console.log(response.data.message);
-      //window.location.href = Base_URL;
+      if(response.data.status)
+      {
+        window.location.href = Base_URL;
+      }
     } catch (error) {
       console.log(error);
       
