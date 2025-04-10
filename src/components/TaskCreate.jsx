@@ -740,6 +740,7 @@ useEffect(() => {
 
   const handleDatetimeChange = (index, datetime) => {
     const newTasks = [...tasks];
+    console.log("datetime",datetime);
     newTasks[index].datetime = datetime;
     setTasks(newTasks);
   };
@@ -2194,9 +2195,16 @@ const handleCrossbtn = async()=>{
                 allotteeId === currentPersonnelId && completionDate !== null
             );
 
+            // Check if all follow-up tasks are completed (i.e., have a completionDate)
+            const hasUncheckedFollowUp = follow_up_tasks.some(([ , , completionDate]) => !completionDate);
+
+            // Final hide condition
+            const shouldHideCard = hideCompletedFollowUps && to_do_tasks.length === 0 && !hasUncheckedFollowUp;
+
+
             return (
           
-                <div className={`allottee_container ${expandedCards[cardIndex] ? "expanded" : ""}`}
+                <div className={`allottee_container ${expandedCards[cardIndex] ? "expanded" : ""} ${shouldHideCard ? "task-hide" : ""} `}
                 key={allotteeName}
                 draggable
                 onDragOver={handleTaskDragOver}
