@@ -2,19 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import DateTime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 import './tasklist.css';
-import clockicon from '../assets/clock.png';
 import AccessAlarmOutlinedIcon from '@mui/icons-material/AccessAlarmOutlined';
-
+import moment from 'moment';
 
 function TargetTime({ dateTime, onDatetimeChange }) {
     const [isPickerOpen, setIsPickerOpen] = useState(false);
     const [hovering, setHovering] = useState(false);
     const dateTimePickerRef = useRef(null);
 
-
     const handleIconClick = () => {
         setIsPickerOpen(prev => !prev);
-
     };
 
     const handleClear = () => {
@@ -22,14 +19,8 @@ function TargetTime({ dateTime, onDatetimeChange }) {
         setIsPickerOpen(false);
     };
 
-    const handleMouseEnter = () => {
-        setHovering(true);
-    };
-
-    const handleMouseLeave = () => {
-        setHovering(false);
-    };
-    
+    const handleMouseEnter = () => setHovering(true);
+    const handleMouseLeave = () => setHovering(false);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -44,6 +35,22 @@ function TargetTime({ dateTime, onDatetimeChange }) {
         };
     }, []);
 
+    const handleDateChange = (newDateTime) => {
+        if (moment.isMoment(newDateTime)) {
+            const formatted = newDateTime.format("DD-MM-YYYY HH:mm:ss"); // ✅ format for backend
+            onDatetimeChange(formatted); // send this string to backend
+        } else {
+            onDatetimeChange(null);
+        }
+        setIsPickerOpen(false);
+    };
+
+    const getMomentValue = () => {
+        if (!dateTime) return null;
+        if (moment.isMoment(dateTime)) return dateTime;
+        return moment(dateTime, "DD-MM-YYYY HH:mm:ss"); // ✅ safely parse string to moment
+    };
+
     return (
         <div className="input-with-datetime">
             <div 
@@ -51,28 +58,20 @@ function TargetTime({ dateTime, onDatetimeChange }) {
                 onMouseEnter={handleMouseEnter} 
                 onMouseLeave={handleMouseLeave}
             >
-            <AccessAlarmOutlinedIcon
-                className={`clock-icon ${dateTime ? 'black-icon' : 'grey-icon'}`}
-                onClick={handleIconClick}
-                style={{ fontSize: 30 }}
-            />
+                <AccessAlarmOutlinedIcon
+                    className={`clock-icon ${dateTime ? 'black-icon' : 'grey-icon'}`}
+                    onClick={handleIconClick}
+                    style={{ fontSize: 30 }}
+                />
                 {hovering && dateTime && (
-                    <span className="hovered-datetime">
-                        {typeof dateTime.format === 'function' 
-                            ? dateTime.format('YYYY-MM-DD') 
-                            : new Date(dateTime).toLocaleString()}
-                    </span>
+                    <span className="hovered-datetime">{dateTime}</span>
                 )}
-
             </div>
             {isPickerOpen && (
                 <div ref={dateTimePickerRef} className="datetime-picker-wrapper">
                     <DateTime
-                        value={dateTime}
-                        onChange={(newDateTime) => {
-                            onDatetimeChange(newDateTime);
-                             setIsPickerOpen(false);
-                        }}
+                        value={getMomentValue()}
+                        onChange={handleDateChange}
                         input={false}
                         closeOnSelect={false}
                     />
