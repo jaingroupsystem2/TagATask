@@ -58,9 +58,7 @@ function TargetTime({ dateTime, onDatetimeChange }) {
             />
                 {hovering && dateTime && (
                     <span className="hovered-datetime">
-                        {typeof dateTime.format === 'function' 
-                            ? dateTime.format('YYYY-MM-DD HH:mm') 
-                            : new Date(dateTime).toLocaleString()}
+                        {dateTime}
                     </span>
                 )}
 

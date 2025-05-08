@@ -298,6 +298,7 @@ useEffect(() => {
           datetime: task.datetime,
           workType: task.workType,
           comments: task.comments,
+          targetTime:task.targetTime,
           selectedTags: task.selectedTags || [],
           isBold: task.isBold || false,
           isItalic: task.isItalic || false,
@@ -576,7 +577,8 @@ useEffect(() => {
         isItalic: false,
         ref: React.createRef(),
         current_personnel_id:currentAllotee,
-        allottee_id :edit_card_allottee_id?.[0] || null
+        allottee_id :edit_card_allottee_id?.[0] || null,
+        targetTime:null
       };
 
     }
@@ -738,10 +740,10 @@ useEffect(() => {
   };
 
 
-  const handleDatetimeChange = (index, datetime) => {
+  const handleDatetimeChange = (index, targetTime) => {
     const newTasks = [...tasks];
-    console.log("datetime",datetime);
-    newTasks[index].datetime = datetime;
+    console.log("datetime",targetTime);
+    newTasks[index].targetTime = targetTime;
     setTasks(newTasks);
   };
 
@@ -1096,6 +1098,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
           datetime: task.datetime,
           workType: task.workType,
           comments: task.comments,
+          targetTime:task.targetTime,
           selectedTags: task.selectedTags || [],
           isBold: task.isBold || false,
           isItalic: task.isItalic || false,
@@ -1262,7 +1265,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
         //const commentsArray = allTask.map(task => task[7]); 
         // console.log("comments ..........." , commentsArray);
         
-         transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,labels]) => {
+         transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,labels,targetTime]) => {
           const taskRef = React.createRef();
           all_taskrefs.push(taskRef);
           return {
@@ -1277,6 +1280,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
               workType: '',
               priority: priority,
               comments: comment || null, 
+              targetTime:targetTime || null,
               isBold: false,
               isItalic: false,
           };
@@ -1850,7 +1854,7 @@ const handleCrossbtn = async()=>{
                                    data-tooltip-content="Target Time"
                                    data-tooltip-place="top">
                                     <TargetTime
-                                      dateTime={task.datetime}
+                                      dateTime={task.dateTime}
                                       onDatetimeChange={(newDatetime) => handleDatetimeChange(index, newDatetime)}
                                       onKeyDown={(e) => handleTaskKeyDown(index, e)}
                                     />
@@ -1993,9 +1997,9 @@ const handleCrossbtn = async()=>{
                               <div data-tooltip-id="my-tooltip"
                                    data-tooltip-content="Target Time"
                                    data-tooltip-place="top"
-                                   className={`${index<toDoCount ? "disable_task" : ""}`}>
+                              >
                                     <TargetTime
-                                      dateTime={task.datetime}
+                                      dateTime={task.targetTime}
                                       onDatetimeChange={(newDatetime) => handleDatetimeChange(index, newDatetime)}
                                       onKeyDown={(e) => handleTaskKeyDown(index, e)}
                                     />
