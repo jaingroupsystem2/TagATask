@@ -742,7 +742,7 @@ useEffect(() => {
 
   const handleDatetimeChange = (index, targetTime) => {
     const newTasks = [...tasks];
-    console.log("datetime",targetTime);
+    console.log("datetime..........",targetTime);
     newTasks[index].targetTime = targetTime;
     setTasks(newTasks);
   };
@@ -1994,9 +1994,11 @@ const handleCrossbtn = async()=>{
                         <div className="second-container">
                         <Tooltip id="my-tooltip" className='revert_tooltip' style={{ maxWidth: "70px"}}/>
       
-                              <div data-tooltip-id="my-tooltip"
-                                   data-tooltip-content="Target Time"
-                                   data-tooltip-place="top"
+                              <div {...(!task.targetTime && {
+                                    'data-tooltip-id': 'my-tooltip',
+                                    'data-tooltip-content': 'Target Time',
+                                    'data-tooltip-place': 'top'
+                                  })}
                               >
                                     <TargetTime
                                       dateTime={task.targetTime}
