@@ -417,12 +417,13 @@
     font-size: 18px;
     top: 0;
     background-color: white;
-    /* padding: 15px;  */
+    padding-top: 5px;
+    padding: 7px;
     color: #202124;
     width: 100%;
     font-family: 'Poppins', sans-serif;
     text-align: center;
-    margin-bottom: -8px;
+    position: sticky;
     
 }
 
@@ -670,9 +671,7 @@
     font-weight: 600;
     margin-left: 2px;
   }
-.to_do_section{
-    margin-top: 4vh;
-}
+
 #my-tooltip{
     background-color: black;
     border-radius: 5px;

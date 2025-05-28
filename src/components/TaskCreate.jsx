@@ -1958,10 +1958,12 @@ const handleCrossbtn = async()=>{
                                 <img className="drag_image_logo" src={drag} height={20} width={20} alt="drag" />
                                 <input
                                   type="checkbox"
-                                  className={`new-div-checkbox ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
+                                  className="new-div-checkbox"
                                   checked={task.completed || false}
-                                  onChange={(e) => handleTaskCheck(null, index, e.target.checked)}
+                                  onClick={(e) => e.stopPropagation()}
+                                  onChange={(e) => handleCheckboxChange(tasks[index].taskId, e.target.checked)}    
                                 />
+
                                 <div
                                   contentEditable
                                   suppressContentEditableWarning={true}
@@ -2225,11 +2227,11 @@ const handleCrossbtn = async()=>{
                           <div className="card_header" onClick={() => 
                               setExpandedCards((prev) => ({ ...prev, [cardIndex]: !prev[cardIndex] }))
                             }>
-                              <p className="name_text">{allotteeName}</p>
+                              <span className="name_text">{allotteeName}</span>
                               {expandedCards[cardIndex] ? <FaChevronUp className="arrow_icon" /> : <FaChevronDown className="arrow_icon" />}
                           </div>
                           ) : (
-                        <p className="name_text">{allotteeName}</p>
+                        <span className="name_text">{allotteeName}</span>
               )}
 
                 {/* To-Do Tasks */}
