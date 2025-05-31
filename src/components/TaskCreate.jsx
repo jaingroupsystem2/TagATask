@@ -634,6 +634,10 @@ useEffect(() => {
    
 
     if (event.key === 'Enter') {
+      console.log("index",index);
+      console.log(" tasks.length - 1", tasks.length - 1);
+      
+      
       event.preventDefault();
       if (index < tasks.length - 1) {
         createNewTaskAtIndex(index + 1);
@@ -732,6 +736,8 @@ useEffect(() => {
     setTasks((prevTasks) => {
       const newTasks = [...prevTasks];
       newTasks.splice(index, 0, newTask);
+      console.log("newTasks----------",newTasks);
+      
       return newTasks;
     });
     setTimeout(() => {
@@ -1176,7 +1182,6 @@ const handleAllotteeClick = (allotteeName, tasks) => {
   const handleTaskInput = (index, event) => {
     if (event.type === 'blur' || event.key === 'Enter') {
       const newTasks = [...tasks];
-      console.log("ew add input " , newTasks);
       
       newTasks[index].text = DOMPurify.sanitize(event.currentTarget.innerHTML, {
         ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'u', 'a'],
@@ -1520,10 +1525,7 @@ const handleDrop = (allotteeName,cardIndex) => {
   }
 };
 
-const handleToggleChange = (newState,event) => {
-  console.log('Toggle button state:', newState);
-  setIsToggleOn(newState);
-};
+
 
 const modalDragStart = (e,index)=>{
   setModalitem(index);
@@ -1802,7 +1804,7 @@ const handleCrossbtn = async()=>{
       
                     {tasks.map((task, index) => (
                       <div
-                        key={index}
+                        key={task.taskId}
                         className={`new-div`}
                         draggable
                         onDragStart={(e) => modalDragStart(e, index)}
@@ -1947,7 +1949,7 @@ const handleCrossbtn = async()=>{
       
                     {tasks.map((task, index) => (
                       <div
-                        key={index}
+                        key={task.taskId}
                         className={`new-div`}
                         draggable
                         onDragStart={(e) => modalDragStart(e, index)}
@@ -2114,7 +2116,7 @@ const handleCrossbtn = async()=>{
           onClick={()=>
             {
               dispatch(openModal())
-                        }}
+            }}
         >
           <i className="fa fa-plus plus_btn"></i>
           {isHovered && <span className="add-card-text">Add Card</span>}
