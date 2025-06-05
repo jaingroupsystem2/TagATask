@@ -7,6 +7,7 @@ import closebutton from '../../assets/close.png';
 import hamburger from '../../assets/hamburger.svg';
 import { setToggleState ,setShowState} from '../slices/Taskslice'; 
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,10 +16,22 @@ export const Sidebar = () => {
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   const urlParams = new URLSearchParams(window.location.search);
   const user_id = parseInt(urlParams.get('id'));
+  const navigate = useNavigate();
+
   // Toogle Button 
   const handleChange = (e) => {
     dispatch(setToggleState(e.target.checked));
   };
+
+// Go to Calendar
+const goToCalendar = () => {
+  navigate('/calendar');
+};
+
+const goToDeadline = () => {
+  navigate('/deadline');
+};
+
 
   // Show Hide
   const handleShowHideChange = (e) =>
@@ -95,6 +108,14 @@ export const Sidebar = () => {
               </label>
             
           </li>
+
+            <button type="button"  className= "Add-button" onClick={goToCalendar}>
+              <span className="button__text">Calendar View</span>
+            </button>
+
+            <button type="button"  className= "Add-button" onClick={goToDeadline}>
+              <span className="button__text">DeadLine View</span>
+            </button>
              
 
         </ul>
