@@ -48,7 +48,6 @@ function TaskCreate() {
   const [draggingTask, setDraggingTask] = useState(null);
   const [draggingAllottee, setDraggingAllottee] = useState(null);
   const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
   const [Allottee, setAllottee] = useState({});
   const [isHovered, setIsHovered] = useState(false);
   const tasksRef = useRef(tasks);
@@ -75,6 +74,8 @@ function TaskCreate() {
   const accessTag = [564,219,26,533];
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
+  const urlParams = new URLSearchParams(window.location.search);
+  const currentPersonnelId = parseInt(urlParams.get('id'));
 
 
 // push notification 
@@ -176,9 +177,9 @@ console.log("isToggleOn redux", isToggleOn);
  
   
   useEffect(() => {
-    sendUserId(setData, setError);
-    fetchData(setData, setError);
-    fetchAllottee(setAllottee, setError);
+    sendUserId(setData);
+    fetchData(setData);
+    fetchAllottee(setAllottee);
     console.log("these are all followup tasks",tasks);
   }, [tasks]);
 
@@ -261,7 +262,7 @@ useEffect(() => {
           console.log(" updateData sanitizedData",sanitizedData);
         }
       //sendEditTasksData(sanitizedData,edit_card_allottee_id);
-      fetchAllottee(setAllottee,setError);
+      fetchAllottee(setAllottee);
       setTagModalPopup(false);  // ✅ Close the tag modal
     }
   }
@@ -340,11 +341,11 @@ useEffect(() => {
           setTasks([]);
           console.log(isModalOpen)
           fetchAllotteeData();
-          fetchAllottee(setAllottee,setError);
+          fetchAllottee(setAllottee);
         })
         .catch((error) => {
           console.error("Error:", error);
-          fetchAllottee(setAllottee,setError);
+          fetchAllottee(setAllottee);
         }).finally(() => {
           closeModal();
         });
@@ -386,7 +387,7 @@ useEffect(() => {
       } else if (editingTask) {
         console.log("Updating and closing modal...");
         updateData();
-        fetchAllottee(setAllottee, setError);
+        fetchAllottee(setAllottee);
         dispatch(setEditingTask(false));
       } else {
         console.log("Saving and closing modal...");
@@ -459,7 +460,7 @@ useEffect(() => {
         }
       );
       if(response.data.success){
-        fetchAllottee(setAllottee,setError);
+        fetchAllottee(setAllottee);
         toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
       }
   
@@ -470,6 +471,51 @@ useEffect(() => {
       console.error("Network error while updating task status:", networkError);
     }
   };
+
+  // Handle Modal check box 
+  const handleModalCheckboxChange = (index, isChecked) => {
+
+
+    setTasks((prevTasks) => {
+      const updatedTasks = [...prevTasks];
+      updatedTasks[index] = {
+        ...updatedTasks[index],
+        completed: isChecked,
+      };
+  
+      // Auto blur the checked task
+      if (updatedTasks[index].ref?.current) {
+        updatedTasks[index].ref.current.blur();
+      }
+  
+      return updatedTasks;
+    });
+  
+    // ✅ Optionally, make backend call too
+    const taskId = tasks[index]?.taskId;
+    if (taskId) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const currentPersonnelId = parseInt(urlParams.get('id'));
+      axios.post(`${Base_URL}/done_mark`, {
+        task_priority_id: taskId,
+        completed: isChecked,
+        current_personnel: currentPersonnelId,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'ngrok-skip-browser-warning': 'any',
+        },
+      }).then((response) => {
+        if (response.data.success) {
+          toast.success(response.data.message, { position: 'top-center', hideProgressBar: true, autoClose: 400 });
+        }
+      }).catch((err) => {
+        console.error("Error updating task on backend:", err);
+      });
+    }
+  };
+  
   
   
   const showToastMessage = () => {
@@ -908,7 +954,7 @@ const confirmDeleteTask = (index) => {
       description: task.description,
     })));
 
-    await fetchAllottee(setAllottee, setError);
+    await fetchAllottee(setAllottee);
     console.log("Reordered Tasks sent to backend:", reorderedTasks);
 
     setDraggingTask(null);
@@ -1012,7 +1058,7 @@ async function collectData(event, dropTargetTaskId, dropTargetTaskDescription) {
     console.log("Task order updated successfully. Fetching updated data...");
   
     // Fetch updated data
-    await fetchAllottee(setAllottee, setError);
+    await fetchAllottee(setAllottee);
     console.log("Fetched updated data successfully.");
   } catch (error) {
     console.error("Error updating task order or fetching data:", error);
@@ -1083,7 +1129,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
 
         }  
             console.log("this is sanitizedData from line no 104" ,edit_card_allottee_id);
-      fetchAllottee(setAllottee,setError);
+      fetchAllottee(setAllottee);
       fetchAllotteeData();
     }else{
      // Debugging line
@@ -1144,7 +1190,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
           setTasks([]);
           console.log(isModalOpen)
           fetchAllotteeData();
-          fetchAllottee(setAllottee,setError);
+          fetchAllottee(setAllottee);
         })
         .catch((error) => {
           console.error('Error:', error);
@@ -1213,7 +1259,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
 
         // Send comment to API
         await sendComment(task_priority_id, comment_text);
-        await fetchAllottee(setAllottee,setError);
+        await fetchAllottee(setAllottee);
 
         // Fetch the latest comments count from the API
     } catch (error) {
@@ -1564,7 +1610,7 @@ const handleRevertClick = async (taskId) => {
     if (response.data.success) {
       console.log("Backend updated task status successfully for taskId:", taskId);
       toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
-      fetchAllottee(setAllottee,setError);
+      fetchAllottee(setAllottee);
     } else {
       console.error('Backend failed to update task status:', response.data.errors);
       toast.error(response.data.message,{position: 'top-center',hideProgressBar: true});
@@ -1625,17 +1671,16 @@ const handleCrossbtn = async()=>{
 
       }
       console.log("this is sanitizedData from line no 104",edit_card_allottee_id);
-      await fetchAllottee(setAllottee,setError);
+      await fetchAllottee(setAllottee);
     }else{
       closeModal();
       saveAllData();
       setTagModalPopup(false); // 🔹 Ensuring tag modal closes too
-      fetchAllottee(setAllottee,setError);
+      fetchAllottee(setAllottee);
     }
   }
   catch (error) {
     console.error("Error in handleCrossbtn:", error);
-    setError("An error occurred while processing your request.");
   }
 }
 
@@ -1949,7 +1994,7 @@ const handleCrossbtn = async()=>{
       
                     {tasks.map((task, index) => (
                       <div
-                        key={task.taskId}
+                        key={task.taskId || index}
                         className={`new-div`}
                         draggable
                         onDragStart={(e) => modalDragStart(e, index)}
@@ -1961,12 +2006,27 @@ const handleCrossbtn = async()=>{
                                 <input
                                   type="checkbox"
                                   className="new-div-checkbox"
-                                  checked={task.completed || false}
+                                  checked={task.completed && task.allotterId != currentPersonnelId || false}
                                   onClick={(e) => e.stopPropagation()}
-                                  onChange={(e) => handleCheckboxChange(tasks[index].taskId, e.target.checked)}    
-                                />
-
+                                  onChange={(e) => handleModalCheckboxChange(index, e.target.checked)}
+                                  />
+ {
+                            task.completed && task.allotterId==currentPersonnelId && task.allotteeId !== currentPersonnelId ? (
+                            <div>
+                              <img 
+                                src={revert_icon} 
+                                className='revert_icon'
+                                onClick={(e) =>{
+                                  e.stopPropagation();
+                                  handleRevertClick(task.taskId);
+                                }
+                                }/>
+                               
+                            </div>
+                            ) : null
+                          }   
                                 <div
+                                  key={`${task.taskId || index}-${task.completed}`}   // ✅ Force re-render on completed change
                                   contentEditable
                                   suppressContentEditableWarning={true}
                                   value={tasks}
@@ -1979,11 +2039,11 @@ const handleCrossbtn = async()=>{
                                     }
                                   }}
                                   ref={task.ref}
-                                  className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
+                                  className={`new-div-input ${task.completed && task.allotterId != currentPersonnelId ? 'task-completed' : ''} ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
                                   dangerouslySetInnerHTML={{ __html: task.text }} // Only rendered when loading the tasks initially
                                 />
-      
+  
                                 {selectedTaskIndex === index &&
                                   <SelectText
                                     targetRef={task.ref}
@@ -2140,8 +2200,7 @@ const handleCrossbtn = async()=>{
         <div className='tasks'>
         {
           Object.entries(Allottee).map(([allotteeName, tasks] , cardIndex) => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const currentPersonnelId = parseInt(urlParams.get('id'));
+            
             let part1Tasks  = [];
             let part2Tasks = [];
             
@@ -2355,7 +2414,7 @@ const handleCrossbtn = async()=>{
                           />
                           <div
                             suppressContentEditableWarning={true}
-                            className="each_task"
+                            className={` each_task ${completionDate ? 'task-completed' : ''}`}
                             style={{
                               padding: "5px",
                               whiteSpace: "pre-wrap",

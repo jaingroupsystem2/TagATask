@@ -1,0 +1,30 @@
+.rbc-calendar .rbc-toolbar .rbc-toolbar-label
+{
+    font-size: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    color: rgb(50, 106, 143);
+}
+
+.rbc-calendar .rbc-btn-group button{
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.rbc-calendar .rbc-month-header
+{
+    height: 2rem;
+    background-color: rgb(101, 187, 84);
+}
+.rbc-calendar .rbc-header
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.rbc-calendar .rbc-header span
+{
+    letter-spacing: 2px;
+    font-size: 18px;
+}

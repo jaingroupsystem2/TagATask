@@ -64,7 +64,7 @@ export const handleCheckboxChange = async (taskId, isChecked, setAllottee) => {
 
 
 // Function to send user ID to backend
-export const sendUserId = async(setData, setError) => {
+export const sendUserId = async(setData) => {
   const params = new URLSearchParams(window.location.search);
   const userId = params.get('id');
 
@@ -81,8 +81,6 @@ export const sendUserId = async(setData, setError) => {
       });
       if (response.data && response.data.names) {
         setData(response.data.names);
-      } else {
-        setError('Unexpected response structure');
       }
     } catch (error) {
       console.error('Error sending User ID:', error);
@@ -91,7 +89,7 @@ export const sendUserId = async(setData, setError) => {
 };
 
 // Function to fetch options from Rails API
-export const fetchData = async (setData, setError) => {
+export const fetchData = async (setData) => {
   try {
     const response = await axios.get(`${Base_URL}/allot`, {
       headers: {
@@ -103,17 +101,15 @@ export const fetchData = async (setData, setError) => {
       setData(response.data.names);
     } else {
       console.error('Unexpected data structure:', response.data.names);
-      setError('Invalid data format received.');
     }
   } catch (error) {
     console.error('Error fetching data:', error);
-    setError('Error fetching data. Please check the console for more details.');
   }
 };
 
 
 
-export const fetchAllottee = async (setAllottee, setError) => {
+export const fetchAllottee = async (setAllottee) => {
   try {
     const userId = new URLSearchParams(window.location.search).get('id'); // Get user ID from URL
     const response = await axios.get(`${Base_URL}/task_data?user_id=${userId}`, {
@@ -126,7 +122,6 @@ export const fetchAllottee = async (setAllottee, setError) => {
      setAllottee(response.data.personnels);
   } catch (error) {
     console.error('Error fetching data:', error);
-     setError(error);
   }
 };
 
