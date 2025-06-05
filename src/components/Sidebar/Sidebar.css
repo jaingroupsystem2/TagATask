@@ -23,6 +23,27 @@
     cursor: pointer;
     margin-bottom: -4px;
   }
+
+  .sidebar_button
+  {
+   position: relative;
+   width: 155px;
+   height: 35px;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   border: 1px solid #4b504c;
+   background-color: #666d67;
+   border-radius: 30px;
+  }
+ 
+  .button__text
+  {
+   transform: translateX(30px);
+   color: #fff;
+   font-weight: 600;
+  }
+ 
   
   .sidebar {
     position: fixed;
@@ -55,64 +76,47 @@
   }
 
   /* From Uiverse.io by andrew-demchenk0 */ 
-.Add-button {
-    position: relative;
-    width: 155px;
-    height: 35px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    border: 1px solid #34974d;
-    background-color: #3aa856;
-    border-radius: 30px;
-  }
-  
-  .Add-button, .button__icon, .button__text {
+
+  .sidebar_button, .button__icon, .button__text {
     transition: all 0.3s;
   }
   
-  .Add-button .button__text {
+  .saved-comment .button__text {
     transform: translateX(30px);
     color: #fff;
     font-weight: 600;
   }
   
-  .Add-button .button__icon {
+  .sidebar_button .button__icon {
     position: absolute;
     transform: translateX(114px);
     height: 100%;
     width: 33px;
-    background-color: #34974d;
+    background-color: #666d67;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 30px;
   }
   
-  .Add-button .svg {
+  .sidebar_button .svg {
     width: 30px;
     stroke: #fff;
   }
   
-  .Add-button:hover {
-    background: #34974d;
-  }
   
-  .Add-button:hover .button__text {
-    color: transparent;
-  }
   
-  .Add-button:hover .button__icon {
+  .sidebar_button:hover .button__icon {
     width: 141px;
     transform: translateX(0);
   }
   
-  .Add-button:active .button__icon {
-    background-color: #2e8644;
+  .sidebar_button:active .button__icon {
+    background-color: #666d67;
   }
   
-  .Add-button:active {
-    border: 1px solid #2e8644;
+  .sidebar_button:active {
+    border: 1px solid #666d67;
   }
   
   .hidden {
@@ -124,19 +128,8 @@
     gap: 10px;
     align-items: center;
   }
-  .first-list
-  {
-    margin-left: 13px;
-  }
-  .second-list
-  {
-    margin-left: 17px;
-  }
+ 
 
-  .second-list-hide
-  {
-    margin-left: 15px;
-  }
 
   .sidebar .close-btn{
     display: flex;
@@ -196,7 +189,7 @@ label {
   content: attr(data-off);
   width: 78px;
   height: 22px;
-  background: #2e8644;
+  background: #666d67;
   border-radius: 26px;
   position: absolute;
   left: 2px;
@@ -322,7 +315,7 @@ label {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #2e8644;
+  background-color: #666d67;
   -webkit-transition: .4s;
   transition: .4s;
   border-radius: 34px;
@@ -393,7 +386,7 @@ label {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #2e8644;
+  background-color: #666d67;
   -webkit-transition: .4s;
   transition: .4s;
   border-radius: 34px;
