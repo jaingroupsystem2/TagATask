@@ -71,7 +71,6 @@ function TaskCreate() {
   const isModalOpen = useSelector((state) => state.task.isModalOpen); // ✅ Get modal state from Redux
   const isToggleOn = useSelector((state) => state.task.isToggleOn);
   const hideCompletedFollowUps = useSelector((state) => state.task.isShowOn);
-  const accessTag = [564,219,26,533];
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
   const urlParams = new URLSearchParams(window.location.search);
@@ -474,32 +473,41 @@ useEffect(() => {
 
   // Handle Modal check box 
   const handleModalCheckboxChange = (index, isChecked) => {
-
-
+    const currentPersonnelId = localStorage.getItem("tagatask_user_id");
+  
     setTasks((prevTasks) => {
       const updatedTasks = [...prevTasks];
-      updatedTasks[index] = {
-        ...updatedTasks[index],
+      const task = updatedTasks[index];
+  
+      // Blur if there's a ref
+      if (task.ref?.current) {
+        task.ref.current.blur();
+      }
+  
+      // Apply the new completion state first
+      const updatedTask = {
+        ...task,
         completed: isChecked,
       };
   
-      // Auto blur the checked task
-      if (updatedTasks[index].ref?.current) {
-        updatedTasks[index].ref.current.blur();
+      // If completed and the alloterId matches currentPersonnelId, remove it
+      if (isChecked && String(task.allotterId) === String(currentPersonnelId)) {
+        updatedTasks.splice(index, 1);
+      } else {
+        updatedTasks[index] = updatedTask;
       }
   
       return updatedTasks;
     });
   
-    // ✅ Optionally, make backend call too
+    // ✅ Backend call
     const taskId = tasks[index]?.taskId;
     if (taskId) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const currentPersonnelId = parseInt(urlParams.get('id'));
+      const currentPersonnelIdInt = parseInt(currentPersonnelId);
       axios.post(`${Base_URL}/done_mark`, {
         task_priority_id: taskId,
         completed: isChecked,
-        current_personnel: currentPersonnelId,
+        current_personnel: currentPersonnelIdInt,
       }, {
         headers: {
           'Content-Type': 'application/json',
@@ -508,7 +516,11 @@ useEffect(() => {
         },
       }).then((response) => {
         if (response.data.success) {
-          toast.success(response.data.message, { position: 'top-center', hideProgressBar: true, autoClose: 400 });
+          toast.success(response.data.message, {
+            position: 'top-center',
+            hideProgressBar: true,
+            autoClose: 400
+          });
         }
       }).catch((err) => {
         console.error("Error updating task on backend:", err);
@@ -1860,10 +1872,25 @@ const handleCrossbtn = async()=>{
                                 <img className="drag_image_logo" src={drag} height={20} width={20} alt="drag" />
                                 <input
                                   type="checkbox"
-                                  className={`new-div-checkbox ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
-                                  checked={task.completed || false}
-                                  onChange={(e) => handleTaskCheck(null, index, e.target.checked)}
+                                  className="new-div-checkbox"
+                                  checked={task.completed && task.allotterId != currentPersonnelId || false}
+                                  onChange={(e) => handleModalCheckboxChange(index, e.target.checked)}
                                 />
+                        {
+                            task.completed && task.allotterId==currentPersonnelId && task.allotteeId !== currentPersonnelId ? (
+                            <div>
+                              <img 
+                                src={revert_icon} 
+                                className='revert_icon'
+                                onClick={(e) =>{
+                                  e.stopPropagation();
+                                  handleRevertClick(task.taskId);
+                                }
+                                }/>
+
+                            </div>
+                            ) : null
+                          } 
                                 <div
                                   contentEditable
                                   suppressContentEditableWarning={true}
@@ -1877,7 +1904,7 @@ const handleCrossbtn = async()=>{
                                     }
                                   }}
                                   ref={task.ref}
-                                  className={`new-div-input ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
+                                  className={`new-div-input ${task.completed && task.allotterId != currentPersonnelId ? 'task-completed' : ''} ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
                                   dangerouslySetInnerHTML={{ __html: task.text }} // Only rendered when loading the tasks initially
                                 />
@@ -2010,7 +2037,7 @@ const handleCrossbtn = async()=>{
                                   onClick={(e) => e.stopPropagation()}
                                   onChange={(e) => handleModalCheckboxChange(index, e.target.checked)}
                                   />
- {
+                          {
                             task.completed && task.allotterId==currentPersonnelId && task.allotteeId !== currentPersonnelId ? (
                             <div>
                               <img 

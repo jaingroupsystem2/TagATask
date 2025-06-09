@@ -332,8 +332,7 @@ const tagViewModalOpen = (tagname,to_do_tasks,follow_up_tasks,event)=>
             
             let part1Tasks = [];
             let part2Tasks = [];
-             console.log("t",tasks[0][4]);
-             console.log("e",tasks[0][5]);
+
             
            
 
@@ -523,7 +522,7 @@ const tagViewModalOpen = (tagname,to_do_tasks,follow_up_tasks,event)=>
                                       className='checkbox'
                                     />
                                     <div 
-                                        className="each_task" 
+                                        className={` each_task ${completionDate ? 'task-completed' : ''}`}
                                         style={{ padding: "5px" }} 
                                         dangerouslySetInnerHTML={{ __html: taskDescription }}
                                     />
