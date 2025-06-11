@@ -7,6 +7,7 @@ import closebutton from '../../assets/close.png';
 import hamburger from '../../assets/hamburger.svg';
 import { setToggleState ,setShowState} from '../slices/Taskslice'; 
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,11 +15,30 @@ export const Sidebar = () => {
   const isToggleOn = useSelector((state) => state.task.isToggleOn);
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   const urlParams = new URLSearchParams(window.location.search);
-  const user_id = parseInt(urlParams.get('id'));
+  const currentPersonnelId = parseInt(urlParams.get('id'));
+  const navigate = useNavigate();
+  //console.log("user_id",user_id);
+  
+
   // Toogle Button 
   const handleChange = (e) => {
     dispatch(setToggleState(e.target.checked));
   };
+
+// Go to Calendar
+const goToCalendar = () => {
+  navigate('/calendar');
+};
+
+const goToDeadline = () => {
+  navigate('/deadline');
+};
+
+const goToHome = () =>
+{
+   navigate(`/?id=${localStorage.getItem("tagatask_user_id")}`)
+}
+
 
   // Show Hide
   const handleShowHideChange = (e) =>
@@ -46,7 +66,6 @@ export const Sidebar = () => {
 
   return (
     <div className="hamburger">
-      {/* <img className="hamburger-img" src={hamburger} alt="Hamburger" height={30} width={30} onClick={() => setIsOpen(!isOpen)}/>    */}
       <svg xmlns="http://www.w3.org/2000/svg" className="hamburger-img" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"  onClick={() => setIsOpen(!isOpen)}><path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>
       <div className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="close-btn" onClick={() => setIsOpen(!isOpen)}>
@@ -55,9 +74,12 @@ export const Sidebar = () => {
 
         <ul className="item-list">
 
+            <button type="button"  className= "sidebar_button" onClick={goToHome}>
+              <span className="button__text">Home</span>
+            </button>
+
           <li className="list first-list">
-            <CirclePlus  color="white"/>
-            <button type="button"  className={`Add-button ${!isOpen ? "hidden" : ""}`} onClick={() => dispatch(openModal())}>
+            <button type="button"  className={`sidebar_button ${!isOpen ? "hidden" : ""}`} onClick={() => dispatch(openModal())}>
               <span className="button__text">Add Card</span>
               <span className="button__icon">
                 <svg
@@ -80,7 +102,6 @@ export const Sidebar = () => {
           </li>
 
           <li className="list second-list">
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h440q19 0 36 8.5t28 23.5l216 288-216 288q-11 15-28 23.5t-36 8.5H160Zm0-80h440l180-240-180-240H160v480Zm220-240Z"/></svg>
                    <label className="switch-personal" >
                       <input value="1" id="" name=""  type="checkbox" onChange={handleChange}/>
                       <span className="slider-personnel"></span>
@@ -88,13 +109,20 @@ export const Sidebar = () => {
           </li>
 
           <li className="list second-list-hide">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"/></svg>
              <label className="switch-hide hide-show" >
                 <input type="checkbox" onChange={handleShowHideChange}/>
                 <span className="slider"></span>
               </label>
             
           </li>
+
+            <button type="button"  className= "sidebar_button" onClick={goToCalendar}>
+              <span className="button__text">Calendar View</span>
+            </button>
+
+            <button type="button"  className= "sidebar_button" onClick={goToDeadline}>
+              <span className="button__text">DeadLine View</span>
+            </button>
              
 
         </ul>
