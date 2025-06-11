@@ -1622,6 +1622,17 @@ const handleRevertClick = async (taskId) => {
     if (response.data.success) {
       console.log("Backend updated task status successfully for taskId:", taskId);
       toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+      setTasks(prevTasks => {
+        return prevTasks.map(task => {
+          if (task.taskId === taskId) {
+            return {
+              ...task,
+              completed: false  // if needed to disable checkbox
+            };
+          }
+          return task;
+        });
+      });
       fetchAllottee(setAllottee);
     } else {
       console.error('Backend failed to update task status:', response.data.errors);
@@ -1923,7 +1934,7 @@ const handleCrossbtn = async()=>{
 
                         <div className="second-container">
                         <Tooltip id="my-tooltip" className='revert_tooltip' style={{ maxWidth: "70px"}}/>
-      
+
                               <div data-tooltip-id="my-tooltip"
                                    data-tooltip-content="Target Time"
                                    data-tooltip-place="top">

@@ -51,6 +51,22 @@ function TargetTime({ dateTime, onDatetimeChange }) {
         return moment(dateTime, "DD-MM-YYYY HH:mm:ss"); // ✅ safely parse string to moment
     };
 
+    // Function to calculate delay if the dateTime is in the past
+    const getDelayInDays = () => {
+        if (!dateTime) return null;
+        const targetMoment = getMomentValue();
+        const now = moment();
+        
+        // If the dateTime is in the past, calculate the delay in days
+        if (targetMoment.isBefore(now, 'day')) {
+            const daysDiff = now.diff(targetMoment, 'days');
+            return daysDiff;
+        }
+        return null;
+    };
+
+    const delayInDays = getDelayInDays();
+
     return (
         <div className="input-with-datetime">
             <div 
@@ -76,6 +92,12 @@ function TargetTime({ dateTime, onDatetimeChange }) {
                         closeOnSelect={false}
                     />
                     <button className="clear-button" onClick={handleClear}>Clear</button>
+                </div>
+            )}
+            {/* Display delay if the date is in the past */}
+            {delayInDays !== null && delayInDays > 0 && (
+                <div className="delay-message">
+                    {delayInDays} {delayInDays === 1 ? 'day' : 'days'} delay
                 </div>
             )}
         </div>
