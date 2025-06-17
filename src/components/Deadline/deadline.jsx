@@ -13,11 +13,26 @@ import {getDeadLineData} from '../ApiList';
 
 
     useEffect(() => {
-      const loadTasks = async () => {
-        const data =  getDeadLineData();
-        setTasks(data);
+       const getDeadLineData = async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const current_user_id = urlParams.get('id');
+        try {
+          const response = await axios.get(`${Base_URL}/deadline_view?user_id=${current_user_id}`, {
+            headers: {
+              'Accept': 'application/json',
+              'ngrok-skip-browser-warning': "any",
+              "user_id": current_user_id
+            }
+          });    
+      
+          console.log("response" , response);
+          return response.data;
+          
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
       };
-      loadTasks();
+      getDeadLineData();
     }, []);
 
 
