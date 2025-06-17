@@ -15,13 +15,12 @@ import {getDeadLineData} from '../ApiList';
 
     useEffect(() => {
        const getDeadLineData = async () => {
-        const current_user_id = localStorage.get("tagatask_user_id");
+        const current_user_id = localStorage.getItem("tagatask_user_id");
         try {
           const response = await axios.get(`${Base_URL}/deadline_view?user_id=${current_user_id}`, {
             headers: {
               'Accept': 'application/json',
               'ngrok-skip-browser-warning': "any",
-              "user_id": current_user_id
             }
           });    
       
