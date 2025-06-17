@@ -50,7 +50,8 @@ const goToHome = () =>
   const logout = async() =>
     {
       try {
-         const res = await axios.get(`${Base_URL}/task_data?user_id=${userId}`, {
+        const current_user_id = localStorage.getItem("tagatask_user_id");
+         const res = await axios.get(`${Base_URL}/log_out?user_id=${current_user_id}`, {
           headers: {
             'Accept': 'application/json',
             'ngrok-skip-browser-warning': "any",
