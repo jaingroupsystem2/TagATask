@@ -14,7 +14,7 @@ import {getDeadLineData} from '../ApiList';
 
     useEffect(() => {
       const loadTasks = async () => {
-        const data = await getDeadLineData();
+        const data =  getDeadLineData();
         setTasks(data);
       };
       loadTasks();
