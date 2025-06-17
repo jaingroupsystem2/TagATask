@@ -15,8 +15,7 @@ import {getDeadLineData} from '../ApiList';
 
     useEffect(() => {
        const getDeadLineData = async () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const current_user_id = urlParams.get('id');
+        const current_user_id = localStorage.get("tagatask_user_id");
         try {
           const response = await axios.get(`${Base_URL}/deadline_view?user_id=${current_user_id}`, {
             headers: {
