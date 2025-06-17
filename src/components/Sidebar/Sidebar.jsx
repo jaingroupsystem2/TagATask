@@ -50,9 +50,17 @@ const goToHome = () =>
   const logout = async() =>
     {
       try {
-         const res = await axios.get("https://prioritease2-c953f12d76f1.herokuapp.com/log_out",
-          {withCredentials:true },
-        );
+         const res = await axios.post("https://prioritease2-c953f12d76f1.herokuapp.com/log_out",
+          {
+            user_id: currentPersonnelId,
+          }, {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'ngrok-skip-browser-warning': "any"
+            },
+          });
+
         console.log("redirect_url ", res.data)
         console.log(res.status);
         if (res.status == 200){

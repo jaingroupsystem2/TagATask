@@ -350,3 +350,25 @@ export const deleteTagsByUserId = async (task_priority_id,tag_id) => {
     console.error("Error fetching tags:", error.response ? error.response.data : error.message);
   }
 };
+
+
+// DeadLine View 
+export const getDeadLineData = async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const current_user_id = urlParams.get('id');
+  try {
+    const response = await axios.get(`${Base_URL}/deadline_view?user_id=${current_user_id}`, {
+      headers: {
+        'Accept': 'application/json',
+        'ngrok-skip-browser-warning': "any",
+        "user_id": current_user_id
+      }
+    });    
+
+    console.log("response" , response);
+    return response.data;
+    
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
