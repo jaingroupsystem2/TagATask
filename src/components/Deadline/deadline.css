@@ -59,25 +59,22 @@
   {
     margin-bottom: 6px;
     font-size: 16px;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     text-overflow: ellipsis;
     max-height: 67px;
-    /* -webkit-line-clamp: 3;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical; */
-    display: flex;
+    display: table;
     gap: 5px;
-   align-items: center;
-   padding: 5px;
+    align-items: center;
+    padding: 5px;
   }
 
   .deadline-card .task-item span{
     text-overflow: ellipsis;
+    font-size: 15px;
     max-height: 71px;
     -webkit-line-clamp: 4;
     overflow: hidden;
-    display: -webkit-box;
+    display: table-cell;
     -webkit-box-orient: vertical;
   }
   .deadline-card .cardTitle
@@ -94,6 +91,19 @@
     text-align: center;
     color:rgb(50, 106, 143);
     letter-spacing: 3px;
+  }
+
+  .deadline-card .task-item .deadline-checkbox
+  {
+    font-size: large;
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
+    accent-color: grey;
+    border: none;
+    margin-top: 5px;
+    position: relative;
+    top: 3px;margin-right: 5px;
   }
 
   .deadline-card .No-tag
@@ -150,7 +160,7 @@
   border: none;
   cursor: pointer;
 }
-/* 
+
 .new-div {
   margin: 10px 0;
   border: 1px solid #ccc;
@@ -170,6 +180,8 @@
 
 .new-div-checkbox {
   transform: scale(1.2);
+  width: 13px;
+  height: 13px;
 }
 
 .editable-task {
@@ -177,4 +189,4 @@
   border: none;
   outline: none;
   padding: 4px;
-} */
+}

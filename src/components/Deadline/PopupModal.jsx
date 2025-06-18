@@ -42,13 +42,14 @@ const PopupModal = ({
                             suppressContentEditableWarning={true}
                             className="editable-task"
                         >
-                            {task.title}
+                             <span dangerouslySetInnerHTML={{ __html: task.title }} />
+
                         </div>
                         
                     </div>
                     <div className="second-container">
                         <TargetTime/>
-                        <Comment/>
+                        <Comment />
                      </div>
                 </div>
                

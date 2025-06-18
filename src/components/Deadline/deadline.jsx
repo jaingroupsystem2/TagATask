@@ -153,7 +153,7 @@ const DeadlineView = () => {
                 checked={false}
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) => handleCheckboxChange(task.id, e.target.checked)}
-                className="checkbox"
+                className="deadline-checkbox"
               />
               <span dangerouslySetInnerHTML={{ __html: task.title }} />
             </li>
@@ -174,7 +174,7 @@ const DeadlineView = () => {
                 checked={false}
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) => handleCheckboxChange(task.id, e.target.checked)}
-                className="checkbox"
+                className="deadline-checkbox"
               />
               <span dangerouslySetInnerHTML={{ __html: task.title }} />
             </li>
