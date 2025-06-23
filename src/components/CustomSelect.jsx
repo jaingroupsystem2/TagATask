@@ -47,6 +47,8 @@ const CustomSelect = ({ taskPriorityId , sendCustomTags ,index ,allLabel}) => {
       prevTags.filter((selected) => selected[0] !== tag[0])
     );
     await deleteTagsByUserId(taskPriorityId, tag[0]); 
+    const data = await fetchTasks();
+    
 
   }
 

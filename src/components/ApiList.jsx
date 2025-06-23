@@ -1,6 +1,8 @@
 import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
+import { fetchTasks } from "../components/Deadline/deadline";
+
 
  const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
@@ -335,6 +337,9 @@ export const deleteTagsByUserId = async (task_priority_id,tag_id) => {
     if(response.data.success)
     {
       toast.success(response.data.message,{position: 'top-center',hideProgressBar: true , autoClose: 300});
+      const data = await fetchTasks();
+      console.log(data);
+      
     }
     else{
       toast.error(response.data.message,{position: 'top-center',hideProgressBar: true});

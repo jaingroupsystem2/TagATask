@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 export const fetchTasks = async () => {
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   const current_user_id = localStorage.getItem("tagatask_user_id");
+console.log(Base_URL);
 
   try {
     const response = await axios.get(`${Base_URL}/deadline_view?user_id=${current_user_id}`, {
@@ -58,6 +59,11 @@ export const fetchTasks = async () => {
         const weekBefore = overdueBlock.week_before_previous_week_data || {};
         const lastMonth = overdueBlock.last_month_data || {};
 
+        if(lastWeek["1 - 7 Days"])
+          {
+            result.overdue["1 - 7 Days"] = lastWeek["1 - 7 Days"].map(mapTask);
+          }
+  
         if (weekBefore["2 - 4 Weeks"]) {
           result.overdue["2 - 4 weeks"] = weekBefore["2 - 4 Weeks"].map(mapTask);
         }
@@ -66,11 +72,7 @@ export const fetchTasks = async () => {
           result.overdue["> 1 month"] = lastMonth["Greater than 1 Month"].map(mapTask);
         }
 
-        if(lastWeek["1 - 7 Days"])
-        {
-          result.overdue["1 - 7 Days"] = lastWeek["1 - 7 Days"].map(mapTask);
-        }
-
+        
       }
 
       // Future
@@ -125,13 +127,15 @@ const DeadlineView = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
 
+  const loadTasks = async () => {
+    const data = await fetchTasks();
+    setTasks(data);
+  };
+  
   useEffect(() => {
-    const loadTasks = async () => {
-      const data = await fetchTasks();
-      setTasks(data);
-    };
     loadTasks();
   }, []);
+  
 
   const handleCardClick = (category) => {
     setActiveCategory(category);
@@ -141,14 +145,6 @@ const DeadlineView = () => {
   const handleCheckboxChange = (taskId, isChecked) => {
     console.log("Toggled task:", taskId, isChecked);
   };
-
-  const renderTasks = (category) => {
-    const categoryColors = {
-      overdue: "red",
-      today: "white",
-      future: "skyblue",
-      targetless: "white"
-    };
 
 
     // handle revert task 
@@ -197,6 +193,17 @@ const DeadlineView = () => {
         console.error('An error occurred while updating task status:', error);
       }
     };
+
+  const renderTasks = (category) => {
+    const categoryColors = {
+      overdue: "red",
+      today: "white",
+      future: "skyblue",
+      targetless: "white"
+    };
+
+
+  
 
 
     if (category === "targetless" || category === "today") {
@@ -331,7 +338,10 @@ const DeadlineView = () => {
           activeCategory={activeCategory}
           tasks={tasks}
           setTasks={setTasks}
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false);
+            loadTasks(); // ✅ Refresh tasks after modal closes
+          }}
           handleCheckboxChange={handleCheckboxChange}
         />
       )}
