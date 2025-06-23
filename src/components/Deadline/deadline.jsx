@@ -3,8 +3,12 @@ import React, { useEffect, useState } from "react";
 import "./deadline.css";
 import PopupModal from "./PopupModal";
 import axios from "axios";
+import {Tooltip} from "react-tooltip";
+import revert_icon from '../../assets/revert.png';
+import { toast } from 'react-toastify';
 
-const fetchTasks = async () => {
+
+export const fetchTasks = async () => {
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   const current_user_id = localStorage.getItem("tagatask_user_id");
 
@@ -36,13 +40,15 @@ const fetchTasks = async () => {
       console.log("targetlessBlock" , targetlessBlock);
       console.log("overdueBlock" , todayBlock);
 
-      
+
 
       // Helper
       const mapTask = (task) => ({
         id: task.task_priority_id,
         title: task.task_description,
+        completed_on:task.completed_on,
         comments: task.Comments,
+        tag_data:task.tag_data,
         target_date: task.target_date
       });
 
@@ -117,6 +123,7 @@ const DeadlineView = () => {
   const [tasks, setTasks] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
+  const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
 
   useEffect(() => {
     const loadTasks = async () => {
@@ -143,20 +150,104 @@ const DeadlineView = () => {
       targetless: "white"
     };
 
+
+    // handle revert task 
+    const handleRevertClick = async (taskId) => {
+      try {
+        const response = await axios.post(`${Base_URL}/revert`, {
+          task_priority_id: taskId,
+          status: "task is reverted",
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'ngrok-skip-browser-warning': 'any', // Custom header
+          }
+        }
+      );
+    
+        if (response.data.success) {
+          console.log("Backend updated task status successfully for taskId:", taskId);
+          toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+          
+           // 🔥 Remove the task from the current category in UI
+            setTasks(prevTasks => {
+              const updatedTasks = { ...prevTasks };
+
+              if (activeCategory === "today" || activeCategory === "targetless") {
+                updatedTasks[activeCategory] = updatedTasks[activeCategory].filter(
+                  task => task.id !== taskId
+                );
+              } else {
+                for (const subCat in updatedTasks[activeCategory]) {
+                  updatedTasks[activeCategory][subCat] = updatedTasks[activeCategory][subCat].filter(
+                    task => task.id !== taskId
+                  );
+                }
+              }
+
+              return updatedTasks;
+            });
+        
+        } else {
+          toast.error(response.data.message,{position: 'top-center',hideProgressBar: true});
+        }
+      } catch (error) {
+        console.error('An error occurred while updating task status:', error);
+      }
+    };
+
+
     if (category === "targetless" || category === "today") {
       return (
         <ul>
           {(tasks[category] || []).map((task) => (
             <li key={task.id} className="task-item">
-              <input
-                type="checkbox"
-                checked={false}
-                onClick={(e) => e.stopPropagation()}
-                onChange={(e) => handleCheckboxChange(task.id, e.target.checked)}
-                className="deadline-checkbox"
-              />
-              <span dangerouslySetInnerHTML={{ __html: task.title }} />
-            </li>
+
+
+            <div className="task-check">
+                <input
+                  type="checkbox"
+                  checked={false}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => handleCheckboxChange(task.id, e.target.checked)}
+                  className="deadline-checkbox"
+                />
+           </div>
+
+            <div className="task-revert">
+              {
+                task.completed_on ? (
+                    <>
+                        <Tooltip id="my-tooltip" className='revert_tooltip'/>
+                          <img 
+                            data-tooltip-id="my-tooltip"
+                            data-tooltip-content="Revert This Task"
+                            data-tooltip-place="top"
+                            src={revert_icon} 
+                            className='revert_icon'
+                            data-tip="Send back this task to the Allottee"
+                            onClick={(e) =>{
+                                     e.stopPropagation();
+                                     handleRevertClick(task.id);
+                                  }
+                              }/>
+                          <Tooltip
+                            place="top"
+                            type="dark"
+                            effect="solid"
+                            delayShow={200}
+                          />
+                     </>
+                  ) : null
+              }              
+              </div> 
+                                    
+              <div className="task-title">
+                 <span dangerouslySetInnerHTML={{ __html: task.title }} />
+              </div>
+          </li>
           ))}
         </ul>
       );
@@ -169,14 +260,46 @@ const DeadlineView = () => {
         <ul>
           {list.map((task) => (
             <li key={task.id} className="task-item">
-              <input
-                type="checkbox"
-                checked={false}
-                onClick={(e) => e.stopPropagation()}
-                onChange={(e) => handleCheckboxChange(task.id, e.target.checked)}
-                className="deadline-checkbox"
-              />
-              <span dangerouslySetInnerHTML={{ __html: task.title }} />
+
+              <div className="task-check">
+                <input
+                  type="checkbox"
+                  checked={false}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => handleCheckboxChange(task.id, e.target.checked)}
+                  className="deadline-checkbox"
+                />
+              </div>
+              <div className="task-revert">
+              {
+                task.completed_on ? (
+                    <>
+                        <Tooltip id="my-tooltip" className='revert_tooltip'/>
+                          <img 
+                            data-tooltip-id="my-tooltip"
+                            data-tooltip-content="Revert This Task"
+                            data-tooltip-place="top"
+                            src={revert_icon} 
+                            className='revert_icon'
+                            data-tip="Send back this task to the Allottee"
+                            onClick={(e) =>{
+                                     e.stopPropagation();
+                                     handleRevertClick(task.id);
+                                  }
+                              }/>
+                          <Tooltip
+                            place="top"
+                            type="dark"
+                            effect="solid"
+                            delayShow={200}
+                          />
+                     </>
+                  ) : null
+              }              
+              </div>
+            <div className="task-title">
+               <  span dangerouslySetInnerHTML={{ __html: task.title }} />
+            </div>
             </li>
           ))}
         </ul>
@@ -207,6 +330,7 @@ const DeadlineView = () => {
         <PopupModal
           activeCategory={activeCategory}
           tasks={tasks}
+          setTasks={setTasks}
           onClose={() => setShowModal(false)}
           handleCheckboxChange={handleCheckboxChange}
         />

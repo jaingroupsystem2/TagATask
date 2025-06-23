@@ -7,7 +7,7 @@ import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutline
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip } from "react-tooltip";
 
-const Comment = ({ comments, sendComments, comment_index, comment_count, comment_delete }) => {
+const Comment = ({ comments, sendComments, comment_index}) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [editIndex, setEditIndex] = useState(null);
@@ -32,9 +32,9 @@ const Comment = ({ comments, sendComments, comment_index, comment_count, comment
     setEditedValue(comments[index]);
   };
 
-  const handleDeleteComment = (index) => {
-    comment_delete(comment_index, index);
-  };
+  // const handleDeleteComment = (index) => {
+  //   comment_delete(comment_index, index);
+  // };
 
   const handleClickOutside = (event) => {
     if (popupRef.current && !popupRef.current.contains(event.target)) {
@@ -48,13 +48,11 @@ const Comment = ({ comments, sendComments, comment_index, comment_count, comment
       const newComments = [inputValue];
       setInputValue('');
       sendComments(newComments, comment_index);
-      comment_count(newComments.length);
     }
     if (editIndex !== null) {
       const updatedComments = [...comments];
       updatedComments[editIndex] = editedValue;
       sendComments(updatedComments, comment_index);
-      comment_count(updatedComments.length);
       setEditIndex(null);
     }
   };

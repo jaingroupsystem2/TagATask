@@ -13,15 +13,6 @@ const CustomSelect = ({ taskPriorityId , sendCustomTags ,index ,allLabel}) => {
   const [selectedTags, setSelectedTags] = useState(allLabel);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // useEffect(() => {
-  //   if (Array.isArray(allLabel) && allLabel.length > 0) {
-  //     setSelectedTags(allLabel);
-  //   }
-  //   console.log("tagssssss",selectedTags);
-    
-  // }, [selectedTags]);
-  
-
 
   const handleToggleDropdown = async (event) => {
     setDropdownOpen(!dropdownOpen);

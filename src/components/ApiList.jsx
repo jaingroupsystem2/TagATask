@@ -193,8 +193,7 @@ console.log("..............",payload);
 
 export const sendEditTasksData = async (tasksData,edit_card_allottee_id) => {
   
-  const urlParams = new URLSearchParams(window.location.search);
-  const userId = urlParams.get('id');
+  const userId = localStorage.getItem("tagatask_user_id");
   console.log("this is from 165",edit_card_allottee_id,userId);
   console.log("tasksData",tasksData);
  
@@ -242,8 +241,7 @@ export const deleteTask = async(task_priority_id,allottee_id , allotter_id)=>{
 }
 
 export const sendComment = async(task_priority_id , comment_text)=>{
-  const urlParams = new URLSearchParams(window.location.search);
-  const userId = urlParams.get('id');
+  const userId = localStorage.getItem("tagatask_user_id");
   const payload = {
     "task_priority_id":task_priority_id,
     "comment":comment_text[0],
@@ -265,8 +263,7 @@ export const sendComment = async(task_priority_id , comment_text)=>{
 
 export const fetchTagsByUserId = async () => {
   try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const current_user_id = urlParams.get('id');
+    const current_user_id = localStorage.getItem("tagatask_user_id");
     console.log("api calling for tag section",current_user_id);
     const response = await axios.get(`${Base_URL}/api_list/tag_option?user_id=${current_user_id}`,{
       headers: {
@@ -283,8 +280,7 @@ export const fetchTagsByUserId = async () => {
 
 export const sendTagsByUserId = async (task_priority_id,tag_id,tag_description) => {
   try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const current_user_id = urlParams.get('id');
+    const current_user_id =  localStorage.getItem("tagatask_user_id");
     const payload = {
       "task_priority_id":task_priority_id,
       "tag_id":tag_id,
@@ -324,11 +320,8 @@ export const get_tag_data = async () => {
  
 // Delete Tag by Tag  ID
 export const deleteTagsByUserId = async (task_priority_id,tag_id) => {
-  console.log("hit delete", tag_id);
   
   try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const current_user_id = urlParams.get('id');
     const payload = {
       "task_priority_id":task_priority_id,
       "tag_id":tag_id

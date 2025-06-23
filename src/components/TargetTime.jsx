@@ -5,6 +5,7 @@ import './tasklist.css';
 import AccessAlarmOutlinedIcon from '@mui/icons-material/AccessAlarmOutlined';
 import moment from 'moment';
 
+
 function TargetTime({ dateTime, onDatetimeChange }) {
     const [isPickerOpen, setIsPickerOpen] = useState(false);
     const [hovering, setHovering] = useState(false);
@@ -97,7 +98,7 @@ function TargetTime({ dateTime, onDatetimeChange }) {
             {/* Display delay if the date is in the past */}
             {delayInDays !== null && delayInDays > 0 && (
                 <div className="delay-message">
-                    {delayInDays} {delayInDays === 1 ? 'day' : 'days'} delay
+                    {delayInDays}
                 </div>
             )}
         </div>

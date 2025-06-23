@@ -56,7 +56,6 @@ function TaskCreate() {
   const [allotteeCardIndex,setAllotteeCardIndex] = useState(0);
   const [edit_card_allottee_id, setEditCardAllottee] = useState(null);
   const dispatch = useDispatch();
-  const [commentcount ,setCommentcount] = useState(0);
   const [tagoption, setTagoptions] = useState([]);
   const [toDoCount,setToDoCount] = useState(0);
   const [currentAllotee,setCurrentAllotee] = useState("");
@@ -1123,9 +1122,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
 
 
   const saveAllData = useCallback(() => {
-    console.log('====================================');
-    console.log(editingTask);
-    console.log('====================================');
+  
     if(editingTask){
       console.log("Saving all data from first line", { inputValue, tasks });
       const sanitizedData = tasks.map(({ ref, ...rest }) => rest);
@@ -1257,16 +1254,24 @@ const handleAllotteeClick = (allotteeName, tasks) => {
     }, 0);
   };
 
-  const handleCommentsChange = async (updatedComments, comment_index) => {
-    const task_priority_id = tasks[comment_index].taskId;
-    const comment_text = updatedComments;
+  const handleCommentsChange = async (updatedCommentText, taskId) => {
+    const task_priority_id = taskId;
+    const comment_text = updatedCommentText;
+    console.log("task_priority_id" , task_priority_id , comment_text);
+    
 
     try {
         // Optimistically update UI first
         setTasks((prevTasks) => {
-            const updatedTasks = [...prevTasks];
-            updatedTasks[comment_index].comments.push(comment_text); // Add comment locally
-            return updatedTasks;
+          return prevTasks.map((task) => {
+            if (task.taskId === taskId) {
+              const updatedComments = Array.isArray(task.comments)
+                ? [...task.comments, updatedCommentText]
+                : [updatedCommentText]; // fallback for null
+              return { ...task, comments: updatedComments };
+            }
+            return task;
+          });
         });
 
         // Send comment to API
@@ -1707,20 +1712,17 @@ const handleCrossbtn = async()=>{
   }
 }
 
-  function takecount(count){
-    setCommentcount(count)
-  }
   
-  function deleteComment(task_index,del_index){
-    console.log(task_index , del_index);
-    let updated_comments = tasks[task_index].comments.filter((item ,index)=> item[index] !== item[del_index]);
-    console.log("Updated comments:", updated_comments);
-    setTasks((pre)=>{
-     const  updated_Task = [...pre];
-      updated_Task[task_index].comments = updated_comments;
-      return updated_Task;
-    })
-  }
+  // function deleteComment(task_index,del_index){
+  //   console.log(task_index , del_index);
+  //   let updated_comments = tasks[task_index].comments.filter((item ,index)=> item[index] !== item[del_index]);
+  //   console.log("Updated comments:", updated_comments);
+  //   setTasks((pre)=>{
+  //    const  updated_Task = [...pre];
+  //     updated_Task[task_index].comments = updated_comments;
+  //     return updated_Task;
+  //   })
+  // }
 
   const handleCustomTags =(tag , index)=>
   {
@@ -1967,13 +1969,10 @@ const handleCrossbtn = async()=>{
                                   <Comment
                                     comments={Array.isArray(task.comments) ? task.comments : []}
                                     sendComments={ handleCommentsChange}
-                                    comment_index = {index}
-                                    comment_count = {takecount}
-                                    comment_delete = {deleteComment}
+                                    comment_index = {task.taskId}
                                   />
                                   <div className='count_layer'>{tasks[index] && tasks[index].comments && tasks[index].comments.length>0 ?tasks[index].comments.length:null}</div>
                                 </div>
-                                 
                                 <div>
                                   <FileUpload fileIndex= {index} sendFile={handleFileChange} />
                                 </div>
@@ -2130,9 +2129,7 @@ const handleCrossbtn = async()=>{
                                   <Comment
                                     comments={Array.isArray(task.comments) ? task.comments : []}
                                     sendComments={ handleCommentsChange}
-                                    comment_index = {index}
-                                    comment_count = {takecount}
-                                    comment_delete = {deleteComment}
+                                    comment_index = {task.taskId}
                                   />
                                   <div className='count_layer'>{tasks[index] && tasks[index].comments && tasks[index].comments.length>0 ?tasks[index].comments.length:null}</div>
                                 </div>
