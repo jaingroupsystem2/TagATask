@@ -6,6 +6,7 @@ import axios from "axios";
 import {Tooltip} from "react-tooltip";
 import revert_icon from '../../assets/revert.png';
 import { toast } from 'react-toastify';
+import { FaChevronDown, FaChevronUp } from "react-icons/fa"; // Import icons
 
 
 export const fetchTasks = async () => {
@@ -126,6 +127,8 @@ const DeadlineView = () => {
   const [showModal, setShowModal] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
+  const [expandedCards, setExpandedCards] = useState({});
+
 
   const loadTasks = async () => {
     const data = await fetchTasks();
@@ -136,16 +139,60 @@ const DeadlineView = () => {
     loadTasks();
   }, []);
   
-
+  const toggleCardExpansion = (category) => {
+    setExpandedCards((prev) => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
+  };
+  
   const handleCardClick = (category) => {
     setActiveCategory(category);
     setShowModal(true);
   };
 
-  const handleCheckboxChange = (taskId, isChecked) => {
-    console.log("Toggled task:", taskId, isChecked);
-  };
-
+ 
+  // Handle Done Mork 
+   const handleCheckboxChange = async (taskId, isChecked) => {
+      if (!taskId || typeof isChecked !== "boolean") {
+        console.error("Invalid parameters passed to handleCheckboxChange:", {
+          taskId,
+          isChecked,
+        });
+        return;
+      }
+    
+     
+      try {
+        const currentPersonnelId = localStorage.getItem("tagatask_user_id");
+        const response = await axios.post(
+          `${Base_URL}/done_mark`,
+          {
+            task_priority_id: taskId,
+            completed: isChecked,
+            current_personnel: currentPersonnelId
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'ngrok-skip-browser-warning': 'any', // Custom header
+            }
+          }
+        );
+        if(response.data.success){
+          toast.success(response.data.message,{position: 'top-center',hideProgressBar: true,autoClose:400});
+          loadTasks();
+        }
+    
+        if (!response.data.success) {
+          console.error("Backend failed to update task status:", response.data.errors);
+        }
+      } catch (networkError) {
+        console.error("Network error while updating task status:", networkError);
+      }
+    };
+  
 
     // handle revert task 
     const handleRevertClick = async (taskId) => {
@@ -318,20 +365,25 @@ const DeadlineView = () => {
 
   return (
     <div className="deadline-container">
-      {categories.map((category) => (
-        <div
-          key={category}
-          className="deadline-card"
-          onClick={() => handleCardClick(category)}
-          style={{ cursor: "pointer" }}
-        >
-          <div className="cardTitle">
-              <span>{category}</span>
-          </div>
+      {categories.map((category) => {
+  const isExpanded = expandedCards[category];
 
+  return (
+    <div key={category} className="deadline-card">
+      <div className="cardTitle" onClick={() => toggleCardExpansion(category)}>
+        <span>{category}</span>
+        {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+
+      {isExpanded && (
+        <div className="cardBody">
           {tasks[category] ? renderTasks(category) : <p>Loading...</p>}
         </div>
-      ))}
+      )}
+    </div>
+  );
+})}
+
 
       {showModal && (
         <PopupModal

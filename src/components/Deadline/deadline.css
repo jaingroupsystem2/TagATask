@@ -4,6 +4,19 @@
     gap: 20px;
     padding: 20px;
   }
+  .deadline-card .cardBody {
+    transition: max-height 0.3s ease;
+  }
+  
+  .deadline-card .cardTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    padding: 10px;
+  }
+  
   
   .deadline-card {
     border: 1px solid #ddd;
@@ -11,9 +24,11 @@
     border-radius: 8px;
     background-color: #fff;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    height: 550px;
-    overflow: scroll;
-  }
+      max-height: 100%;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
   .deadline-card::-webkit-scrollbar {
     display: none;
   }
@@ -176,7 +191,23 @@
   gap: 10px;
   width: 50%;
 }
+.second-container-modal
+{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
 
+.comment-count
+{
+    display: inline;
+    position: relative;
+    top: -21px;
+    left: -16px;
+    border-radius: 50%;
+    font-family: Poppins, sans-serif;
+    font-size: 12px;
+}
 .drag_image_logo {
   cursor: grab;
 }
@@ -192,4 +223,27 @@
   border: none;
   outline: none;
   min-height: 37px;
+}
+
+
+
+
+@media (max-width:767px) {
+
+  .main-div{
+    flex-direction: column;
+  }
+  .first-container-modal  {
+    width: 100%;
+  }
+  .second-container
+  {
+    margin-left: 0;
+  }
+  .comment-count
+  {
+    top: -21px;
+    left: -16px;
+  }
+
 }

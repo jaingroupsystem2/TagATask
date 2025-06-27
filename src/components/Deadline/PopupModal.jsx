@@ -18,7 +18,6 @@ const PopupModal = ({
   tasks,
   setTasks,
   onClose,
-  handleCheckboxChange,
 }) => {
   if (!activeCategory) return null;
 
@@ -120,6 +119,48 @@ const PopupModal = ({
   };
   
 
+  // Handle Checkbox
+  const handleCheckboxChange = async (taskId, isChecked) => {
+    try {
+      const currentPersonnelId = localStorage.getItem("tagatask_user_id");
+  
+      const response = await axios.post(
+        `${Base_URL}/done_mark`,
+        {
+          task_priority_id: taskId,
+          completed: isChecked,
+          current_personnel: currentPersonnelId
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'ngrok-skip-browser-warning': 'any',
+          }
+        }
+      );
+  
+      if (response.data.success) {
+        toast.success(response.data.message, {
+          position: 'top-center',
+          hideProgressBar: true,
+          autoClose: 400
+        });
+  
+        // ✅ Remove task from popup
+        setFlattenedTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+  
+      } else {
+        toast.error(response.data.message, {
+          position: 'top-center',
+          hideProgressBar: true
+        });
+      }
+    } catch (error) {
+      console.error("Error marking task as done:", error);
+    }
+  };
+  
 
 
 
@@ -161,9 +202,10 @@ const PopupModal = ({
             <div key={task.id} className="main-div">
               <div className="first-container-modal">
                 <input
+                  checked={false}
                   type="checkbox"
                   className="new-div-checkbox"
-                  onChange={() => handleCheckboxChange(task.id, true)}
+                  onChange={(e) => handleCheckboxChange(task.id, e.target.checked)}
                 />
                   {
                     task.completed_on ? (
@@ -200,20 +242,33 @@ const PopupModal = ({
                 </div>
 
               </div>
-              <div className="second-container">
+              <div className="second-container-modal">
+                        <Tooltip id="my-tooltip" className='revert_tooltip' style={{ maxWidth: "70px"}}/>
 
-                <TargetTime
-                  dateTime={task.target_date}
-                  onDatetimeChange={(newDatetime) => handleDatetimeChange(task.id, newDatetime)}
-                />
-
+                <div {...(!task.target_date && {
+                                    'data-tooltip-id': 'my-tooltip',
+                                    'data-tooltip-content': 'Target Time',
+                                    'data-tooltip-place': 'top'
+                                  })}
+                              >
+                      <TargetTime
+                        dateTime={task.target_date}
+                        onDatetimeChange={(newDatetime) => handleDatetimeChange(task.id, newDatetime)}
+                      />
+                </div>
                 <div id='icon_div'>
-                  <CustomSelect
-                    taskPriorityId={task.id}
-                    sendCustomTags={handleCustomTags}
-                    index={index}
-                    allLabel={Array.isArray(task.tag_data) ? task.tag_data : []}
-                  />
+                    <div {...(!task.tag_data && {
+                                    'data-tooltip-id': 'my-tooltip',
+                                    'data-tooltip-content': 'Add Label',
+                                    'data-tooltip-place': 'top'
+                                  })}>
+                          <CustomSelect
+                            taskPriorityId={task.id}
+                            sendCustomTags={handleCustomTags}
+                            index={index}
+                            allLabel={Array.isArray(task.tag_data) ? task.tag_data : []}
+                          />
+                          </div>
                 </div>
 
                 <Comment
@@ -222,7 +277,7 @@ const PopupModal = ({
                   comment_index={task.id}
                 />
                 {task.comments.length > 0 && (
-                  <div className="count_layer"> ({task.comments.length})</div>
+                  <div className="comment-count"> ({task.comments.length})</div>
                 )}
 
               </div>

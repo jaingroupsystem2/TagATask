@@ -1863,7 +1863,6 @@ const handleCrossbtn = async()=>{
              >
                 <SearchableDropdown data={data} setInputValue={setInputValue}  />
             </div>
-
                 {
                   tagModalPopup ? (
                     <div 
