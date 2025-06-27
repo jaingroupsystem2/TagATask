@@ -245,5 +245,9 @@
     top: -21px;
     left: -16px;
   }
+  .deadline-card
+  {
+    border-radius: 43px;
+  }
 
 }

@@ -128,23 +128,36 @@ const DeadlineView = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   const [expandedCards, setExpandedCards] = useState({});
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
 
   const loadTasks = async () => {
     const data = await fetchTasks();
     setTasks(data);
+    if (!isMobile) {
+      const allExpanded = {};
+      categories.forEach((cat) => (allExpanded[cat] = true));
+      setExpandedCards(allExpanded);
+    }
   };
   
   useEffect(() => {
     loadTasks();
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+
   
   const toggleCardExpansion = (category) => {
+    if (!isMobile) return; // Do nothing on desktop
     setExpandedCards((prev) => ({
       ...prev,
       [category]: !prev[category]
     }));
   };
+  
   
   const handleCardClick = (category) => {
     setActiveCategory(category);
@@ -372,11 +385,13 @@ const DeadlineView = () => {
     <div key={category} className="deadline-card">
       <div className="cardTitle" onClick={() => toggleCardExpansion(category)}>
         <span>{category}</span>
-        {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
-      </div>
+        {isMobile && (isExpanded ? <FaChevronUp /> : <FaChevronDown />)}
+        </div>
 
       {isExpanded && (
-        <div className="cardBody">
+        <div className="cardBody" onClick={() => {
+          handleCardClick(category); // ✅ Open modal too
+        }}>
           {tasks[category] ? renderTasks(category) : <p>Loading...</p>}
         </div>
       )}
