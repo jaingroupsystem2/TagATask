@@ -347,7 +347,7 @@ label {
  }
  
  .slider-personnel:after {
-  content: 'Personnel View';
+  content: 'Tag View';
   color: white;
   display: block;
   position: absolute;
@@ -359,7 +359,7 @@ label {
  }
  
  input:checked + .slider-personnel:after {
-  content: 'Tag View';
+  content: 'Personnel View';
  }
  
 
