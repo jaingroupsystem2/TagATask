@@ -132,9 +132,9 @@ const goToHome = () =>
 
         </ul>
 
-        <div className="right-bar">
+        {/* <div className="right-bar">
             <button className="button" onClick={logout}>Log Out</button>
-        </div>
+        </div> */}
       </div>
        
     </div>
