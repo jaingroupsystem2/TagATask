@@ -30,6 +30,7 @@ const Tagview = forwardRef(({ setTagModalPopup, editTask }, ref) => {
   const [expandedCards, setExpandedCards] = useState({});
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isModalOpen = useSelector((state) => state.task.isModalOpen); // ✅ Get modal state from Redux
+  const hideCompletedFollowUps = useSelector((state) => state.task.isShowOn);
   
   // Fetch Data
   const datafetchfunction = async () => {
@@ -503,7 +504,7 @@ const tagViewModalOpen = (tagname,to_do_tasks,follow_up_tasks,event)=>
                                 {follow_up_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId ], index) => (
                                   <div
                                     key={index}
-                                    className="task-item-container"
+                                    className={`task-item-container ${allotteeId==currentPersonnelId && completionDate !=null && hideCompletedFollowUps ? "task-hide" :""}`}
                                     draggable
                                     data-task-id={taskId}
                                     data-task-description={taskDescription}
