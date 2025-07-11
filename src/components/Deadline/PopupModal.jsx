@@ -235,7 +235,7 @@ const PopupModal = ({
                 <div
                   contentEditable
                   suppressContentEditableWarning={true}
-                  className="new-div-input-modal"
+                  className="new-div-input-modal disable_task"
                 >
                   <span dangerouslySetInnerHTML={{ __html: task.title }} />
 
