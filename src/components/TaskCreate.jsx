@@ -1296,7 +1296,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
       setTagName(allotteeName);
       let all_taskrefs = [];
       //console.log("this is all tasks type",typeof(followUpTasks),allTask);
-        transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,taskAlloteeName]) => {
+        transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,taskAlloteeName,targetTime]) => {
         const taskRef = React.createRef();
         all_taskrefs.push(taskRef);
         return {
@@ -1311,6 +1311,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
             workType: '',
             priority: priority,
             comments: comment || null, 
+            targetTime:targetTime || null,
             isBold: false,
             isItalic: false,
         };
@@ -1837,25 +1838,6 @@ const handleCrossbtn = async()=>{
                 <img src={closebutton} className="close_icon" height={15} width={15} />
               </button>
             </div>
-
-            {/* <select
-              className="select_allottee"
-              id="inputField"
-              value={inputValue || ''}
-              onChange={(e) => setInputValue(e.target.value)}
-              style={{
-                display:editingTask?'none':'block'
-              }}
-            >
-            
-              
-              {data.map(([id, name]) => (
-                <option key={id} value={id} multiple={false}>
-                  {name}
-                </option>
-              ))}
-            </select> */}
-
             <div className='select_allottee'  
                 style={{
                 display:editingTask?'none':'block'
@@ -1935,12 +1917,14 @@ const handleCrossbtn = async()=>{
 
                         <div className="second-container">
                         <Tooltip id="my-tooltip" className='revert_tooltip' style={{ maxWidth: "70px"}}/>
-
-                              <div data-tooltip-id="my-tooltip"
-                                   data-tooltip-content="Target Time"
-                                   data-tooltip-place="top">
+                              <div {...(!task.targetTime && {
+                                    'data-tooltip-id': 'my-tooltip',
+                                    'data-tooltip-content': 'Target Time',
+                                    'data-tooltip-place': 'top'
+                                  })}
+                              >
                                     <TargetTime
-                                      dateTime={task.dateTime}
+                                      dateTime={task.targetTime}
                                       onDatetimeChange={(newDatetime) => handleDatetimeChange(index, newDatetime)}
                                       onKeyDown={(e) => handleTaskKeyDown(index, e)}
                                     />
@@ -1988,7 +1972,7 @@ const handleCrossbtn = async()=>{
                                   />
                                 </div>)} 
                                 
-      
+
                               </div>
                               {(tasks[index].allotterId === currentAllotee || !tasks[index].taskId) && (
                                   <button className="delete-button" onClick={() => confirmDeleteTask(index)}>
