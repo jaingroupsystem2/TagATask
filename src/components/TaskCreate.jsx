@@ -1838,6 +1838,9 @@ const handleCrossbtn = async()=>{
                 <img src={closebutton} className="close_icon" height={15} width={15} />
               </button>
             </div>
+
+
+
             <div className='select_allottee'  
                 style={{
                 display:editingTask?'none':'block'
@@ -1956,7 +1959,9 @@ const handleCrossbtn = async()=>{
                                   />
                                   <div className='count_layer'>{tasks[index] && tasks[index].comments && tasks[index].comments.length>0 ?tasks[index].comments.length:null}</div>
                                 </div>
-                                <div>
+
+                                
+                                {/* <div>
                                   <FileUpload fileIndex= {index} sendFile={handleFileChange} />
                                 </div>
       
@@ -1971,7 +1976,7 @@ const handleCrossbtn = async()=>{
                                     }}
                                   />
                                 </div>)} 
-                                
+                                 */}
 
                               </div>
                               {(tasks[index].allotterId === currentAllotee || !tasks[index].taskId) && (
