@@ -72,9 +72,6 @@ export default function TeamTask() {
       {sample_data.map((card) => (
         <div key={card.id} className="task_card">
           <div className="card_header">
-            <div className="avatar">
-              {card.assignee.split(" ").map((w) => w[0]).join("").toUpperCase()}
-            </div>
             <h3 className="card_title">{card.assignee}</h3>
           </div>
 
@@ -86,18 +83,29 @@ export default function TeamTask() {
               )}
               {card.todo_tasks.map((task) => (
                 <div key={task.id} className="task_item">
+                <input
+                  type="checkbox"
+                  checked={false}
+                  className="deadline-checkbox"
+                />
                   <span className="task_text">{task.text}</span>
                 </div>
               ))}
             </div>
 
             <div className="task_section">
-              <h4>Follow-Up (Completed)</h4>
+              <h4>Follow-Up</h4>
               {card.followup_tasks.length === 0 && (
                 <p className="empty">No follow-ups</p>
               )}
               {card.followup_tasks.map((task) => (
                 <div key={task.id} className="task_item followup">
+              
+                  <input
+                    type="checkbox"
+                    checked={false}
+                    className="deadline-checkbox"
+                    />
                   <span className="task_text">{task.text}</span>
                 </div>
               ))}

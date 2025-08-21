@@ -9,8 +9,7 @@
 }
 
 .task_card {
-  background: linear-gradient(180deg, #f8fafc, #fbfcfd);
-  border: 1px solid #080808;
+  border: 1px solid #ddd;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -24,20 +23,12 @@
   align-items: center;
   gap: 10px;
   padding-bottom: 8px;
-  border-bottom: 1px dashed #253244;
+  border-bottom: 1px solid #253244;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  background: rgba(122, 162, 255, 0.15);
-  color: #3860bd;
-  letter-spacing: 0.5px;
-}
 
 .card_title {
   margin: 0;
@@ -70,22 +61,25 @@
   color: #080808;
   opacity: 0.9;
   padding: 6px 10px;
-  border: 1px dashed #080808;
+  border: 1px solid #080808;
   border-radius: 10px;
 }
 
 .task_item {
-  background: rgba(10, 10, 10, 0.02);
-  border: 1px solid #253244;
-  padding: 8px 10px;
-  border-radius: 10px;
-  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  transition: transform 0.1s ease, border-color 0.2s ease;
+  margin-bottom: 8px;
 }
 
 .task_text {
   font-size: 14px;
   line-height: 1.35;
   color: #000000;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .followup .task_text {
