@@ -34,6 +34,11 @@ const goToDeadline = () => {
   navigate('/deadline');
 };
 
+const goToTeamTaskTracker = () => {
+  navigate('/teamtask');
+};
+
+
 const goToHome = () =>
 {
    navigate(`/?id=${localStorage.getItem("tagatask_user_id")}`)
@@ -79,13 +84,13 @@ const goToHome = () =>
 
         <ul className="item-list">
 
-            <button type="button"  className= "sidebar_button" onClick={goToHome}>
+            <button type="button"  className= "sidebar_btn" onClick={goToHome}>
               <span className="button__text">Home</span>
             </button>
 
           <li className="list first-list">
             <button type="button"  className={`sidebar_button ${!isOpen ? "hidden" : ""}`} onClick={() => dispatch(openModal())}>
-              <span className="button__text">Add Card</span>
+              <span className="button__text add-btn">Add Card</span>
               <span className="button__icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -121,14 +126,17 @@ const goToHome = () =>
             
           </li>
 
-            <button type="button"  className= "sidebar_button" onClick={goToCalendar}>
+            <button type="button"  className= "sidebar_btn" onClick={goToCalendar}>
               <span className="button__text">Calendar View</span>
             </button>
 
-            <button type="button"  className= "sidebar_button" onClick={goToDeadline}>
+            <button type="button"  className= "sidebar_btn" onClick={goToDeadline}>
               <span className="button__text">DeadLine View</span>
             </button>
              
+            <button type="button"  className= "sidebar_btn" onClick={goToTeamTaskTracker}>
+              <span className="button__text">Team Task Tracker</span>
+            </button>
 
         </ul>
 

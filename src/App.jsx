@@ -7,6 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import CalendarPage from './components/Calendar/CalendarPage';
 import Deadline from './components/Deadline/deadline';
+import TeamTask from './components/TeamTask/teamtask'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/" element={<TaskCreate />} />
             <Route path="/calendar" element={<CalendarPage/>} />
             <Route path="/deadline" element={<Deadline/>} />
+            <Route path="/teamtask" element={<TeamTask/>} />
           </Routes>
         </BrowserRouter>
       </div>

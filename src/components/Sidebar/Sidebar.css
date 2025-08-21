@@ -24,6 +24,7 @@
     margin-bottom: -4px;
   }
 
+  
   .sidebar_button
   {
    position: relative;
@@ -36,10 +37,27 @@
    background-color: #666d67;
    border-radius: 30px;
   }
+
+  .sidebar_btn
+  {
+    position: relative;
+   width: 155px;
+   height: 35px;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border: 1px solid #4b504c;
+   background-color: #666d67;
+   border-radius: 30px;
+  }
  
+  .add-btn{
+   transform: translate(30px);
+  }
+
   .button__text
   {
-   transform: translateX(30px);
    color: #fff;
    font-weight: 600;
   }

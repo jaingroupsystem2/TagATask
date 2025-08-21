@@ -1,0 +1,94 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* show 5 cards in a row */
+  gap: 16px;
+  padding: 20px;
+  min-height: 100vh;
+  color: #e9eef6;
+  box-sizing: border-box;
+}
+
+.task_card {
+  background: linear-gradient(180deg, #f8fafc, #fbfcfd);
+  border: 1px solid #080808;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  height: 400px;              /* fixed height */
+  overflow: hidden;           /* prevent overflow */
+}
+
+.card_header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #253244;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  background: rgba(122, 162, 255, 0.15);
+  color: #3860bd;
+  letter-spacing: 0.5px;
+}
+
+.card_title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #080808;
+}
+
+.card_content {
+  flex: 1;                     /* take remaining space */
+  overflow-y: auto;            /* make content scrollable */
+  margin-top: 10px;
+  padding-right: 6px;          /* space for scrollbar */
+}
+
+.task_section {
+  margin-bottom: 12px;
+}
+
+.task_section h4 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #000000;
+}
+
+.empty {
+  font-size: 13px;
+  color: #080808;
+  opacity: 0.9;
+  padding: 6px 10px;
+  border: 1px dashed #080808;
+  border-radius: 10px;
+}
+
+.task_item {
+  background: rgba(10, 10, 10, 0.02);
+  border: 1px solid #253244;
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+}
+
+.task_text {
+  font-size: 14px;
+  line-height: 1.35;
+  color: #000000;
+}
+
+.followup .task_text {
+  text-decoration: line-through;
+  opacity: 0.95;
+}
