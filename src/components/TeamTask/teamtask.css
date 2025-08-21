@@ -1,4 +1,5 @@
 .board {
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* show 5 cards in a row */
   gap: 16px;
@@ -9,38 +10,46 @@
 }
 
 .task_card {
-  border: 1px solid #ddd;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  padding: 14px;
-  height: 400px;              /* fixed height */
-  overflow: hidden;           /* prevent overflow */
+    margin: .5%;
+    height: auto;
+    min-height: 500px;
+    max-height: 500px;
+    overflow: scroll;
+    display: flex;
+    justify-content: flex-start;
+    align-items: start;
+    text-align: left;
+    flex-direction: column;
+    border-radius: 8px;
+    overflow-x: hidden;
+    border: 1px solid #d5d5d5;           /* prevent overflow */
 }
+
 
 .card_header {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   padding-bottom: 8px;
-  border-bottom: 1px solid #253244;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  padding: 7px;
 }
 
 
 .card_title {
   margin: 0;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: #080808;
+  font-family: Poppins, sans-serif;
 }
 
 .card_content {
   flex: 1;                     /* take remaining space */
   overflow-y: auto;            /* make content scrollable */
   margin-top: 10px;
+  margin-left: 8px;
   padding-right: 6px;          /* space for scrollbar */
 }
 
@@ -48,12 +57,12 @@
   margin-bottom: 12px;
 }
 
-.task_section h4 {
-  margin: 0 0 6px;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: #000000;
+.task_section .h4 {
+    font-family: Poppins, sans-serif;
+    color: #484848;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
 }
 
 .empty {
@@ -68,18 +77,23 @@
 .task_item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  transition: transform 0.1s ease, border-color 0.2s ease;
-  margin-bottom: 8px;
 }
 
 .task_text {
-  font-size: 14px;
-  line-height: 1.35;
-  color: #000000;
-  font-family: Arial, Helvetica, sans-serif;
+  width: 90%;
+    padding: 10px;
+    margin: -2px;
+    cursor: pointer;
+    font-family: Poppins, sans-serif;
+    text-align: left;
+    font-size: 15px;
+    color: #635656;
+    text-overflow: ellipsis;
+    max-height: 61px;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
 }
 
 .followup .task_text {

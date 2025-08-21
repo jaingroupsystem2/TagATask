@@ -12,6 +12,16 @@ const sample_data = [
       { id: 4, text: "Arrange client meeting at site" },
       { id: 5, text: "Send updated price sheet" },
       { id: 6, text: "Draft new brochure" },
+      { id: 7, text: "Draft new brochure" },
+      { id: 8, text: "Draft new brochure" },
+      { id: 9, text: "Draft new brochure" },
+      { id: 10, text: "Draft new brochure" },
+      { id: 11, text: "Draft new brochure" },
+      { id: 12, text: "Draft new brochure" },
+      { id: 13, text: "Draft new brochure" },
+      { id: 14, text: "Draft new brochure" },
+      { id: 15, text: "Draft new brochure" },
+
     ],
     followup_tasks: [
       { id: 7, text: "Follow up: Site visit with Sharma family" },
@@ -77,7 +87,7 @@ export default function TeamTask() {
 
           <div className="card_content">
             <div className="task_section">
-              <h4>To-Do</h4>
+              <span className="h4">To-Do</span>
               {card.todo_tasks.length === 0 && (
                 <p className="empty">No tasks</p>
               )}
@@ -92,9 +102,9 @@ export default function TeamTask() {
                 </div>
               ))}
             </div>
-
+        <hr/>
             <div className="task_section">
-              <h4>Follow-Up</h4>
+              <span className="h4">Follow-Up</span>
               {card.followup_tasks.length === 0 && (
                 <p className="empty">No follow-ups</p>
               )}
