@@ -22,6 +22,7 @@ const PopupModal = ({
   if (!activeCategory) return null;
 
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
+  const currentPersonnelId = localStorage.getItem("tagatask_user_id");
   const [flattenedTasks, setFlattenedTasks] = useState(
     Array.isArray(tasks[activeCategory])
       ? tasks[activeCategory]
@@ -63,11 +64,42 @@ const PopupModal = ({
 
   // Handle Target Date
   const handleDatetimeChange = async (taskId, newTargetTime) => {
+
     setFlattenedTasks(prevTasks =>
       prevTasks.map(task =>
         task.id === taskId ? { ...task, target_date: newTargetTime } : task
       )
     );
+if(activeCategory === "targetless")
+{
+
+  try {
+    const payload = {
+      "current_personnel_id":currentPersonnelId,
+      "task_priority_id":taskId,
+      "target":newTargetTime
+    }
+    console.log("datgdede e",payload);
+    
+    const response = await axios.post(`${Base_URL}/api_list/task_target_update`,payload,{
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'ngrok-skip-browser-warning': 'any', 
+      },
+    });
+    if(response.data.success)
+    {
+      toast.success(response.data.message,{position: 'top-center',hideProgressBar: true , autoClose: 300}); 
+    }
+    else{
+      toast.error(response.data.message,{position: 'top-center',hideProgressBar: true});
+    }
+  } catch (error) {
+    console.error("Error add target:", error.response ? error.response.data : error.message);
+  }
+}
+ 
   };
   
 
