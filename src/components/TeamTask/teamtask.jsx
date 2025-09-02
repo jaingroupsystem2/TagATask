@@ -66,7 +66,12 @@ export default function TeamTask() {
       {error && <p className="error">{error}</p>}
 
       {!is_loading && !error && Object.keys(todo_tasks).length === 0 && (
-        <p className="empty">No tasks found.</p>
+       <div className="empty-wrapper">
+  <div className="task_card">
+    <p className="empty">Ups Sorry, You Don’t Have Any Team</p>
+  </div>
+</div>
+
       )}
 
       {/* Render each assignee card */}
@@ -153,8 +158,8 @@ export default function TeamTask() {
                         })}
                     >
                       <div style={{ pointerEvents: "none" }}>
-  <TargetTime dateTime={task.target_date} />
-</div>
+                        <TargetTime dateTime={task.target_date} />
+                      </div>
 
                     </div>                 
                     <div className="task-given-name">

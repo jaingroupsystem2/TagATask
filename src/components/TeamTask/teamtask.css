@@ -66,12 +66,14 @@
 }
 
 .empty {
+  text-align: center;
   font-size: 13px;
   color: #080808;
   opacity: 0.9;
   padding: 6px 10px;
   border: 1px solid #080808;
-  border-radius: 10px;
+  border-radius: 20px;
+
 }
 
 .task_item {
@@ -138,4 +140,26 @@
   display: flex; gap: 16px;
   font-size: .95rem; color: #444;
   flex-wrap: wrap;
+}
+
+.empty-wrapper {
+  display: flex;
+  justify-content: center;   /* horizontal center */
+  align-items: center;       /* vertical center */
+  height: 100vh;             /* full viewport height */
+  width: 100%;               /* full width */
+}
+
+.task_card {
+  padding: 20px 30px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.task_card .empty {
+  font-size: 16px;
+  color: #555;
+  margin: 0;
 }
