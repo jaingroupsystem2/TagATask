@@ -66,11 +66,11 @@ export default function TeamTask() {
       {error && <p className="error">{error}</p>}
 
       {!is_loading && !error && Object.keys(todo_tasks).length === 0 && (
-       <div className="empty-wrapper">
-  <div className="task_card">
-    <p className="empty">Ups Sorry, You Don’t Have Any Team</p>
-  </div>
-</div>
+        <div className="empty-wrapper">
+          <div className="task_card">
+            <p className="empty">Ups Sorry, You Don’t Have Any Team</p>
+          </div>
+        </div>
 
       )}
 
@@ -129,50 +129,52 @@ export default function TeamTask() {
               {active_assignee || "Tasks"}
             </h4>
 
-          
-        {active_tasks.map((task, index) => (
-          <>
-            <div key={task.task_priority_id} className="main-div">
-              <div className="first-container-modal">
-                <input
-                  checked={false}
-                  type="checkbox"
-                  className="new-div-checkbox"
-                />
-                <div
-                  suppressContentEditableWarning={true}
-                  className="new-div-input-modal"
-                >
-                  <span dangerouslySetInnerHTML={{ __html: task.task_description }} />
 
-                </div>
+            {[...active_tasks]
+  .sort((a, b) => {
+    const A = (a?.task_given_by ?? "").trim();
+    const B = (b?.task_given_by ?? "").trim();
 
-              </div>
-              <div className="second-container-modal">
-                  <Tooltip id="my-tooltip" className='revert_tooltip' style={{ maxWidth: "70px"}}/>
+    // push blanks to the bottom
+    if (!A && !B) return 0;
+    if (!A) return 1;
+    if (!B) return -1;
 
-                    <div {...(!task.target_date && {
-                            'data-tooltip-id': 'my-tooltip',
-                            'data-tooltip-content': 'Target Time',
-                            'data-tooltip-place': 'top'
-                        })}
+    return A.localeCompare(B, undefined, { sensitivity: "base" }); // case-insensitive A→Z
+  }).map((task, index) => (
+              <>
+                <div key={task.task_priority_id} className="main-div">
+                  <div className="first-container-modal">
+                    <input
+                      checked={false}
+                      type="checkbox"
+                      className="new-div-checkbox"
+                    />
+                    <div
+                      suppressContentEditableWarning={true}
+                      className="new-div-input-modal"
                     >
-                      <div style={{ pointerEvents: "none" }}>
+                      <span dangerouslySetInnerHTML={{ __html: task.task_description }} />
+
+                    </div>
+
+                  </div>
+                  <div className="second-container-modal">
+                      <div >
                         <TargetTime dateTime={task.target_date} />
                       </div>
 
-                    </div>                 
                     <div className="task-given-name">
-                        <span>{task.task_given_by}</span>
+                      <span>{task.task_given_by}</span>
                     </div>
-                                          
-               </div>
-            </div>
 
-          </>
+                  </div>
+                </div>
 
-        ))}
-        
+              </>
+
+            ))}
+
           </div>
         </div>
       )}

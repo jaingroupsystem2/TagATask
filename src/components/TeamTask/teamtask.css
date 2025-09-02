@@ -150,13 +150,25 @@
   width: 100%;               /* full width */
 }
 
-.task_card {
-  padding: 20px 30px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-align: center;
+.task-given-name {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-top: 8px;
+  border-radius: 20px;
+  background: #f0f4ff;          /* soft blue background */
+  color: #1a3e72;               /* dark blue text */
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: background 0.2s ease, transform 0.2s ease;
 }
+
+.task-given-name:hover {
+  background: #e0eaff;          /* slightly darker blue */
+  transform: translateY(-1px);  /* subtle lift on hover */
+}
+
 
 .task_card .empty {
   font-size: 16px;
