@@ -1,92 +1,89 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import "./teamtask.css";
-
-const sample_data = [
-  {
-    id: 1,
-    assignee: "Rishi Jain",
-    todo_tasks: [
-      { id: 1, text: "Call broker for Dream Valley dbch cy rbfr f r fr fbrf rf rbfrbfrbf rfbrfrf rfvrfgrfvr fgrvfrvrfrvfrvfr fgrvfr gfrvfgvrgfrgfr fgrvfrgf rfr gf rgf " },
-      { id: 2, text: "Share brochure with lead #45231" },
-      { id: 3, text: "Confirm site visit schedule" },
-      { id: 4, text: "Arrange client meeting at site" },
-      { id: 5, text: "Send updated price sheet" },
-      { id: 6, text: "Draft new brochure" },
-      { id: 7, text: "Draft new brochure" },
-      { id: 8, text: "Draft new brochure" },
-      { id: 9, text: "Draft new brochure" },
-      { id: 10, text: "Draft new brochure" },
-      { id: 11, text: "Draft new brochure" },
-      { id: 12, text: "Draft new brochure" },
-      { id: 13, text: "Draft new brochure" },
-      { id: 14, text: "Draft new brochure" },
-      { id: 15, text: "Draft new brochure" },
-
-    ],
-  },
-  {
-    id: 2,
-    assignee: "Saikat Roy",
-    todo_tasks: [
-      { id: 9, text: "Prepare weekly CPL/CPQL sheet" },
-      { id: 10, text: "Publish Gurukul testimonial reel" },
-    ],
-  },
-  {
-    id: 3,
-    assignee: "Ananya Sen",
-    todo_tasks: [
-      { id: 13, text: "Update project landing page banners" },
-      { id: 14, text: "Schedule DWC social media posts" },
-    ],
-  },
-  {
-    id: 4,
-    assignee: "Kunal Sharma",
-    todo_tasks: [
-      { id: 17, text: "Prepare monthly sales report" },
-      { id: 18, text: "Follow up with new leads" },
-    ],
-  },
-  {
-    id: 5,
-    assignee: "Priya Mehta",
-    todo_tasks: [
-      { id: 20, text: "Design ad creatives for Dream Valley" },
-      { id: 21, text: "Plan content calendar" },
-    ],
-  },
-];
+import axios from 'axios';
 
 export default function TeamTask() {
+  const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
+  const current_user_id = localStorage.getItem("tagatask_user_id");
+
+  const [is_loading, set_is_loading] = useState(false);
+  const [error, set_error] = useState(null);
+  const [todo_tasks, setTodo_tasks] = useState({}); // <-- object, not array
+
+  const fetch_teamTask_data = async () => {
+    set_is_loading(true);
+    set_error(null);
+    try {
+      const response = await axios.get(
+        `${Base_URL}/api_list/team_task_tracker`, // <-- backticks fixed
+        {
+          params: { current_personnel_id: current_user_id },
+          headers: {
+            Accept: 'application/json',
+            'ngrok-skip-browser-warning': 'any',
+          },
+        }
+      );
+
+      // API shape: { personnels: { "<assignee>": [ {task...}, ... ], ... } }
+      const api_items = response?.data?.personnels ?? {};
+      setTodo_tasks(api_items);
+    } catch (err) {
+      console.error('calendar fetch failed', err);
+      set_error('Failed to load team tasks.');
+      setTodo_tasks({});
+    } finally {
+      set_is_loading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (current_user_id) fetch_teamTask_data();
+  }, [current_user_id]);
+
   return (
     <div className="board">
-      {sample_data.map((card) => (
-        <div key={card.id} className="task_card">
-          <div className="card_header">
-            <h3 className="card_title">{card.assignee}</h3>
-          </div>
+      {is_loading && <p className="loading">Loading…</p>}
+      {error && <p className="error">{error}</p>}
 
-          <div className="card_content">
-            <div className="task_section">
-              <span className="h4">To-Do</span>
-              {card.todo_tasks.length === 0 && (
-                <p className="empty">No tasks</p>
-              )}
-              {card.todo_tasks.map((task) => (
-                <div key={task.id} className="task_item">
-                <input
-                  type="checkbox"
-                  checked={false}
-                  className="deadline-checkbox"
-                />
-                  <span className="task_text">{task.text}</span>
-                </div>
-              ))}
+      {!is_loading && !error && Object.keys(todo_tasks).length === 0 && (
+        <p className="empty">No tasks found.</p>
+      )}
+
+      {/* todo_tasks is an object: { assigneeName: [tasks] } */}
+      {Object.entries(todo_tasks).map(([assignee, tasks]) => {
+        const safe_tasks = Array.isArray(tasks) ? tasks : [];
+        return (
+          <div key={assignee} className="task_card">
+            <div className="card_header">
+              <h3 className="card_title">{assignee}</h3>
+            </div>
+
+            <div className="card_content">
+              <div className="task_section">
+                <span className="h4">To-Do</span>
+
+                {safe_tasks.length === 0 && <p className="empty">No tasks</p>}
+
+                {safe_tasks.map((task) => (
+                  <div key={task.task_priority_id} className="task_item">
+                    <input
+                      type="checkbox"
+                      className="deadline-checkbox"
+                      checked={false}
+                      readOnly
+                    />
+                      <span className="task_text" dangerouslySetInnerHTML={{ __html: task.task_description }} />
+                  </div>
+                ))}
+
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
+
+
