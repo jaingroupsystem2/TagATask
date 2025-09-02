@@ -6,6 +6,7 @@ import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
+import startOfMonth from 'date-fns/startOfMonth';
 import { enGB } from 'date-fns/locale/en-GB';
 
 import "./CalendarPage.css";
@@ -22,22 +23,30 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-const sanitize_html = (html = '') => {
-  // bare-minimum sanitize: remove <script>...</script> and on* handlers
-  return html
+// basic sanitizer so titles like <b>...</b> / <a>...</a> work safely
+const sanitize_html = (html = '') =>
+  html
     .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
     .replace(/\son\w+="[^"]*"/gi, '')
     .replace(/\son\w+='[^']*'/gi, '');
-};
 
 const EventRenderer = ({ event }) => {
-  // Allow simple HTML (e.g., <b>, <a>) coming from backend titles
   const safe_html = sanitize_html(event.title || '');
   return <div dangerouslySetInnerHTML={{ __html: safe_html }} />;
 };
 
+// Convert incoming strings -> Date
+const to_date = (value) => {
+  if (!value) return null;
+  const d = value instanceof Date ? value : new Date(value);
+  return isNaN(d.getTime()) ? null : d;
+};
+
 const CalendarPage = () => {
   const my_view = useMemo(() => ({ calendar: { labels: true } }), []);
+  // Start of the current month in local time (IST on your machine)
+  const current_month_start = useMemo(() => startOfMonth(new Date()), []);
+
   const Base_URL = "https://prioritease2-c953f12d76f1.herokuapp.com";
   const current_user_id = localStorage.getItem("tagatask_user_id");
 
@@ -45,33 +54,22 @@ const CalendarPage = () => {
   const [is_loading, set_is_loading] = useState(false);
   const [error, set_error] = useState(null);
 
-  const normalize_to_date = (value) => {
-    if (!value) return null;
-    const d = value instanceof Date ? value : new Date(value);
-    return isNaN(d.getTime()) ? null : d;
-  };
-
-  const adapt_to_calendar_events = (items = []) => {
-    return items
+  const adapt_to_calendar_events = (items = []) =>
+    items
       .map((item) => {
-        const start = normalize_to_date(item.start);
-        const end = normalize_to_date(item.end);
+        const start = to_date(item.start);
+        const end = to_date(item.end);
         if (!start || !end) return null;
 
-        // Keep title as-is (may contain HTML like <b> and <a>)
-        const title = typeof item.title === 'string' ? item.title : 'Untitled';
-
-        // Optional color support in future; default RbC blue otherwise
-        const color = item.color || '#3174ad';
-
-        // Treat multi-day ranges as timed, unless you want allDay true:
-        // const allDay = true; // <- switch if your data are full-day tasks
-        const allDay = !!item.allDay;
-
-        return { start, end, title, color, allDay };
+        return {
+          start,
+          end,
+          title: typeof item.title === 'string' ? item.title : 'Untitled',
+          color: item.color || '#3174ad', // fallback (overridden to red if past-month)
+          allDay: !!item.allDay,
+        };
       })
       .filter(Boolean);
-  };
 
   const fetch_calender_data = async () => {
     set_is_loading(true);
@@ -84,10 +82,8 @@ const CalendarPage = () => {
           'ngrok-skip-browser-warning': 'any',
         },
       });
-
       const api_items = response?.data?.all_target_tasks || [];
-      const mapped = adapt_to_calendar_events(api_items);
-      set_events(mapped);
+      set_events(adapt_to_calendar_events(api_items));
     } catch (err) {
       console.error('calendar fetch failed', err);
       set_error('Failed to load calendar data.');
@@ -108,6 +104,7 @@ const CalendarPage = () => {
           {error}
         </div>
       )}
+
       <Calendar
         localizer={localizer}
         events={events}
@@ -116,15 +113,20 @@ const CalendarPage = () => {
         titleAccessor="title"
         components={{ event: EventRenderer }}
         style={{ height: '100%' }}
-        eventPropGetter={(event) => ({
-          style: {
-            backgroundColor: event.color || '#3174ad',
-            borderRadius: '5px',
-            color: '#fff',
-            border: 'none',
-            padding: '2px 4px',
-          },
-        })}
+        eventPropGetter={(event) => {
+          // RED if the target/end is before the 1st day of the current month
+          const is_before_current_month = event.end < current_month_start;
+
+          return {
+            style: {
+              backgroundColor: is_before_current_month ? '#ff0000' : (event.color || '#3174ad'),
+              borderRadius: '5px',
+              color: '#fff',
+              border: 'none',
+              padding: '2px 4px',
+            },
+          };
+        }}
         messages={{
           noEventsInRange: is_loading ? 'Loading…' : 'No events in range',
         }}
