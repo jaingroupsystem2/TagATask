@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "./teamtask.css";
 import axios from 'axios';
-import { Tooltip } from "react-tooltip";
 import TargetTime from "../TargetTime";
 
 
@@ -131,49 +130,49 @@ export default function TeamTask() {
 
 
             {[...active_tasks]
-  .sort((a, b) => {
-    const A = (a?.task_given_by ?? "").trim();
-    const B = (b?.task_given_by ?? "").trim();
+              .sort((a, b) => {
+                const A = (a?.task_given_by ?? "").trim();
+                const B = (b?.task_given_by ?? "").trim();
 
-    // push blanks to the bottom
-    if (!A && !B) return 0;
-    if (!A) return 1;
-    if (!B) return -1;
+                // push blanks to the bottom
+                if (!A && !B) return 0;
+                if (!A) return 1;
+                if (!B) return -1;
 
-    return A.localeCompare(B, undefined, { sensitivity: "base" }); // case-insensitive A→Z
-  }).map((task, index) => (
-              <>
-                <div key={task.task_priority_id} className="main-div">
-                  <div className="first-container-modal">
-                    <input
-                      checked={false}
-                      type="checkbox"
-                      className="new-div-checkbox"
-                    />
-                    <div
-                      suppressContentEditableWarning={true}
-                      className="new-div-input-modal"
-                    >
-                      <span dangerouslySetInnerHTML={{ __html: task.task_description }} />
+                return A.localeCompare(B, undefined, { sensitivity: "base" }); // case-insensitive A→Z
+              }).map((task, index) => (
+                <>
+                  <div key={task.task_priority_id} className="main-div">
+                    <div className="first-container-modal">
+                      <input
+                        checked={false}
+                        type="checkbox"
+                        className="new-div-checkbox"
+                      />
+                      <div
+                        suppressContentEditableWarning={true}
+                        className="new-div-input-modal"
+                      >
+                        <span dangerouslySetInnerHTML={{ __html: task.task_description }} />
+
+                      </div>
 
                     </div>
-
-                  </div>
-                  <div className="second-container-modal">
+                    <div className="second-container-modal">
                       <div >
                         <TargetTime dateTime={task.target_date} />
                       </div>
 
-                    <div className="task-given-name">
-                      <span>{task.task_given_by}</span>
+                      <div className="task-given-name">
+                        <span>{task.task_given_by}</span>
+                      </div>
+
                     </div>
-
                   </div>
-                </div>
 
-              </>
+                </>
 
-            ))}
+              ))}
 
           </div>
         </div>
