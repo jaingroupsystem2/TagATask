@@ -17,6 +17,9 @@ export const Sidebar = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const currentPersonnelId = parseInt(urlParams.get('id'));
   const navigate = useNavigate();
+  const current_user_id = localStorage.getItem("tagatask_user_id");
+
+  const id = ["219"];
   //console.log("user_id",user_id);
   
 
@@ -133,10 +136,19 @@ const goToHome = () =>
             <button type="button"  className= "sidebar_btn" onClick={goToDeadline}>
               <span className="button__text">DeadLine View</span>
             </button>
-             
-            <button type="button"  className= "sidebar_btn" onClick={goToTeamTaskTracker}>
-              <span className="button__text">Team Task Tracker</span>
-            </button>
+            
+
+            {id.includes(current_user_id) && (
+  <button
+    type="button"
+    className="sidebar_btn"
+    onClick={goToTeamTaskTracker}
+  >
+    <span className="button__text">Team Task Tracker</span>
+  </button>
+)}
+
+           
 
         </ul>
 

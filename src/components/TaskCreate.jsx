@@ -74,6 +74,10 @@ function TaskCreate() {
   //const Base_URL = "https://94cd-49-37-8-126.ngrok-free.app";
   const urlParams = new URLSearchParams(window.location.search);
   const currentPersonnelId = parseInt(urlParams.get('id'));
+  const current_user_id = localStorage.getItem("tagatask_user_id");
+
+
+  const id=["219"];
 
 
 // push notification 
@@ -2127,7 +2131,8 @@ const handleCrossbtn = async()=>{
                                 </div>
       
       
-                                {(tasks[index].allotterId === currentAllotee || !tasks[index].taskId) && (
+                                {/* {(tasks[index].allotterId === currentAllotee || !tasks[index].taskId) && ( */}
+                            {id.includes(current_user_id) && (
                                  <div className='timer_inp'>
                                   <WorkType selectedOption={task.workType}
                                     setSelectedOption={(value) => {
@@ -2136,7 +2141,8 @@ const handleCrossbtn = async()=>{
                                       setTasks(updatedTasks);
                                     }}
                                   />
-                                </div>)} 
+                                 </div>
+                            )} 
                                 
       
                               </div>
