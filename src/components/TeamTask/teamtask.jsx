@@ -73,7 +73,7 @@ export default function TeamTask() {
                       checked={false}
                       readOnly
                     />
-                      <span className="task_text" dangerouslySetInnerHTML={{ __html: task.task_description }} />
+                    <span className="task_text" dangerouslySetInnerHTML={{ __html: task.task_description }} />
                   </div>
                 ))}
 
@@ -85,5 +85,7 @@ export default function TeamTask() {
     </div>
   );
 }
+
+
 
 

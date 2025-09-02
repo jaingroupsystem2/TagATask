@@ -50,7 +50,8 @@
   overflow-y: auto;            /* make content scrollable */
   margin-top: 10px;
   margin-left: 8px;
-  padding-right: 6px;          /* space for scrollbar */
+  padding-right: 6px;    
+  width: 320px;      /* space for scrollbar */
 }
 
 .task_section {
