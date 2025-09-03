@@ -1338,7 +1338,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
         //const commentsArray = allTask.map(task => task[7]); 
         // console.log("comments ..........." , commentsArray);
         
-         transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,labels,targetTime]) => {
+         transformedTasks = allTask.map(([taskId, taskDescription, completionDate, verificationDate, allotterId, allotteeId, priority, comment,labels,targetTime,workType]) => {
           const taskRef = React.createRef();
           all_taskrefs.push(taskRef);
           return {
@@ -1350,7 +1350,7 @@ const handleAllotteeClick = (allotteeName, tasks) => {
               completed: completionDate ? true : false,
               datetime: completionDate || verificationDate || null,
               label: labels,
-              workType: '',
+              workType: workType || null,
               priority: priority,
               comments: comment || null, 
               targetTime:targetTime || null,

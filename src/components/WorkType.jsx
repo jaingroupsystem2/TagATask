@@ -6,10 +6,12 @@ import AllInclusiveOutlinedIcon from '@mui/icons-material/AllInclusiveOutlined';
 import SignpostOutlinedIcon from '@mui/icons-material/SignpostOutlined';
 
 const WorkType = ({ selectedOption, setSelectedOption }) => {
-  const options = ['Daily', 'Weekly', 'Bi-weekly', 'Monthly', 'Quarterly', 'Annually', 'WorkFlow'];
+  const options = ['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Half Yearly', 'Annually'];
   const [showOptions, setShowOptions] = useState(false);
   const dropdownRef = useRef(null);
 
+  console.log("selectedOption",selectedOption);
+  
   const handleIconClick = () => {
     setShowOptions(!showOptions);
   };
