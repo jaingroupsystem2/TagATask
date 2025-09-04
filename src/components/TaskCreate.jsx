@@ -2337,7 +2337,7 @@ const handleCrossbtn = async()=>{
     
                     <div id={`to_do_tasks_${cardIndex}`} className='to_do_section'>
                       {to_do_tasks.length > 0 && <h3 className='section'>To-Do</h3>}
-                      {to_do_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId ], index) => (
+                      {to_do_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId,priority, comment,labels,targetTime,workType ], index) => (
                         <div
                           key={taskId}
                           className="task-item-container"
@@ -2399,8 +2399,11 @@ const handleCrossbtn = async()=>{
                               whiteSpace: "pre-wrap",
                               fontSize: "15px",
                             }}
-                            dangerouslySetInnerHTML={{ __html: taskDescription }}
-                          />
+                            dangerouslySetInnerHTML={{
+                                __html: workType
+                                  ? `<strong><em>${taskDescription}</em></strong>`
+                                  : taskDescription,
+                              }}                          />
                         </div>
                       ))}
                     </div>
@@ -2415,7 +2418,7 @@ const handleCrossbtn = async()=>{
                          
                       </div>
 
-                      {follow_up_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId], index) => (
+                      {follow_up_tasks.map(([taskId, taskDescription, completionDate,verificationDate , allotterId, allotteeId,priority, comment,labels,targetTime,workType], index) => (
                         <div
                           key={taskId}
                           className={`task-item-container ${allotteeId==currentPersonnelId && completionDate !=null && hideCompletedFollowUps ? "task-hide" :""}`}
@@ -2450,8 +2453,11 @@ const handleCrossbtn = async()=>{
                               fontSize: "15px",
                               
                             }}
-                            dangerouslySetInnerHTML={{ __html: taskDescription }}
-                          />
+                            dangerouslySetInnerHTML={{
+                                __html: workType
+                                  ? `<strong><em>${taskDescription}</em></strong>`
+                                  : taskDescription,
+                              }}                          />
                         </div>
                       ))}
                     </div>
