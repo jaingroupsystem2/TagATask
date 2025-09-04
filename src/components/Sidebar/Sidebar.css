@@ -283,7 +283,7 @@ label {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 60%;
+    margin-top: 40%;
 }
 
 .right-bar .button::before {
