@@ -2070,7 +2070,11 @@ const handleCrossbtn = async()=>{
                                   ref={task.ref}
                                   className={`new-div-input ${task.completed && task.allotterId != currentPersonnelId ? 'task-completed' : ''} ${tasks[index]?.taskId ? (tasks[index].allotterId === currentAllotee ? "" : "disable_task") : ""}`}
                                   style={{ border: '1px solid #ccc', padding: '5px', minHeight: '37px', whiteSpace: 'pre-wrap' }}
-                                  dangerouslySetInnerHTML={{ __html: task.text }} // Only rendered when loading the tasks initially
+                                  dangerouslySetInnerHTML={{
+                                                  __html: task.workType
+                                                    ? `<strong><em>${task.text}</em></strong>`
+                                                    : task.text,
+                                                }} // Only rendered when loading the tasks initially
                                 />
   
                                 {selectedTaskIndex === index &&
