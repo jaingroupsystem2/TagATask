@@ -2299,7 +2299,7 @@ const handleCrossbtn = async()=>{
             // Final hide condition
             const shouldHideCard = hideCompletedFollowUps && to_do_tasks.length === 0 && !hasUncheckedFollowUp;
 
-
+            
             return (
           
                 <div className={`allottee_container ${expandedCards[cardIndex] ? "expanded" : ""} ${shouldHideCard ? "task-hide" : ""} `}

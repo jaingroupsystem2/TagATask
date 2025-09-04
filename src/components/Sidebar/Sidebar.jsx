@@ -151,10 +151,14 @@ const goToHome = () =>
            
 
         </ul>
+            {id.includes(current_user_id) && (
 
-        {/* <div className="right-bar">
+         <div className="right-bar">
             <button className="button" onClick={logout}>Log Out</button>
-        </div> */}
+        </div> 
+
+        )}
+
       </div>
        
     </div>
