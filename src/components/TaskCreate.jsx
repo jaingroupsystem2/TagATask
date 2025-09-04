@@ -1828,6 +1828,32 @@ const handleCrossbtn = async()=>{
     }, 0);
   };
 
+
+
+  // handle recurence before choose target time
+
+  // ✅ Helpers to block WorkType until targetTime exists
+const canPickWorkType = (task) => Boolean(task?.targetTime);
+
+const notifyTargetTimeRequired = () => {
+  toast.warn("Please First select the Target Time", {
+    position: "top-center",
+    hideProgressBar: true,
+    autoClose: 600,
+  });
+};
+
+// returns false when blocked
+const handleWorkTypeGuard = (index, event) => {
+  if (!canPickWorkType(tasks[index])) {
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    notifyTargetTimeRequired();
+    return false;
+  }
+  return true;
+};
+
  
   
 
@@ -2138,13 +2164,35 @@ const handleCrossbtn = async()=>{
                                 {/* {(tasks[index].allotterId === currentAllotee || !tasks[index].taskId) && ( */}
                             {id.includes(current_user_id) && (
                                  <div className='timer_inp'>
-                                  <WorkType selectedOption={task.workType}
-                                    setSelectedOption={(value) => {
-                                      const updatedTasks = [...tasks];
-                                      updatedTasks[index].workType = value;
-                                      setTasks(updatedTasks);
-                                    }}
-                                  />
+                                  {/* WorkType (blocked until targetTime chosen) */}
+                                      <div
+                                        // Show tooltip when blocked
+                                        {...(!tasks[index].targetTime && {
+                                          "data-tooltip-id": "my-tooltip",
+                                          "data-tooltip-content": "Recurence",
+                                          "data-tooltip-place": "top",
+                                        })}
+                                        className={!tasks[index].targetTime ? "disabled-worktype" : ""}
+                                        onClick={(e) => {
+                                          // If blocked, stop the dropdown from opening and show the tooltip/toast
+                                          if (!handleWorkTypeGuard(index, e)) return;
+                                        }}
+                                      >
+                                        <WorkType
+                                          selectedOption={task.workType}
+                                          setSelectedOption={(value) => {
+                                            // Hard block selection without targetTime
+                                            if (!canPickWorkType(tasks[index])) {
+                                              notifyTargetTimeRequired();
+                                              return;
+                                            }
+                                            const updatedTasks = [...tasks];
+                                            updatedTasks[index].workType = value;
+                                            setTasks(updatedTasks);
+                                          }}
+                                        />
+                                      </div>
+
                                  </div>
                             )} 
                                 
