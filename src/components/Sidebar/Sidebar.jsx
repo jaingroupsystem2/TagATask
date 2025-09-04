@@ -55,26 +55,18 @@ const goToHome = () =>
     } 
 
   // Log out 
-  const logout = async() =>
-    {
-      try {
-        const current_user_id = localStorage.getItem("tagatask_user_id");
-         const res = await axios.get(`${Base_URL}/log_out?user_id=${current_user_id}`, {
-          headers: {
-            'Accept': 'application/json',
-            'ngrok-skip-browser-warning': "any",
-          },
-        });
-        
-        console.log("redirect_url ", res.data)
-        console.log(res.status);
-        if (res.status == 200){
-          window.location.href = res.data.redirect_url;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
+ const handleLogout = async () => {
+  try {
+    await fetch(`${Base_URL}/log_out`, {
+      method: "DELETE",
+      credentials: "include", // VERY important so cookies are sent
+    });
+    // After logout, redirect user to login page or landing
+    window.location.href = "https://prioritease2-c953f12d76f1.herokuapp.com";
+  } catch (error) {
+    console.error("Logout failed", error);
+  }
+};
 
 
   return (
@@ -154,7 +146,7 @@ const goToHome = () =>
             {id.includes(current_user_id) && (
 
          <div className="right-bar">
-            <button className="button" onClick={logout}>Log Out</button>
+            <button className="button" onClick={handleLogout}>Log Out</button>
         </div> 
 
         )}
